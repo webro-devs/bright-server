@@ -1,0 +1,1 @@
+export {default as TypeOrmDataSource} from './typeorm.config'
