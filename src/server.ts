@@ -7,10 +7,10 @@ const app: express.Application = express();
 
 TypeOrmDataSource.initialize()
   .then(() => {
-    const { categoryRouter } = require("./router");
+    const { categoryRouter, adminRouter } = require("./router");
 
     app.use(express.json());
-    app.use(categoryRouter);
+    app.use(categoryRouter, adminRouter);
 
     console.log("Data Source has been initialized!");
   })
