@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
-@Entity("newsLanguage")
-export class newsLanguage {
+@Entity("news_language")
+export class NewsLanguage {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
