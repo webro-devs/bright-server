@@ -1,10 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("permission")
-export class Permission {
+@Entity("file")
+export class File {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Column({ type: "varchar" })
+  url: string;
+
   @Column({ type: "text" })
-  title: string;
+  path: string;
 }
