@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("permissions")
+@Entity("permission")
 export class Permission {
   @PrimaryGeneratedColumn("uuid")
   id: string;

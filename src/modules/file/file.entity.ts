@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("files")
+@Entity("file")
 export class File {
   @PrimaryGeneratedColumn("uuid")
   id: string;

@@ -1,10 +1,13 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-class UpdateFileDto {
+class CreatFileDto {
   @IsNotEmpty()
   @IsString()
   url: string;
+
+  @IsNotEmpty()
+  @IsString()
   path: string;
 }
 
-export default UpdateFileDto;
+export default CreatFileDto;
