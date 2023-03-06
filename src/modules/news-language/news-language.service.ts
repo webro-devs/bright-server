@@ -1,5 +1,5 @@
 import { UpdateResult, DeleteResult, Repository } from "typeorm";
-import { NewsLanguage } from "./index.entity";
+import { NewsLanguage } from "./news-language.entity";
 import { CreateNewsLanguageDto, UpdateNewsLanguageDto } from "./dto";
 
 export class CategoryService {

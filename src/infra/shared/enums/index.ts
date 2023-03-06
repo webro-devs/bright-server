@@ -1,0 +1,1 @@
+export { default as NewsLanguageEnum } from "./news-language";
