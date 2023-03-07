@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
 import { Admin } from "../admin/admin.entity";
 
-@Entity("permissions")
+@Entity("permission")
 export class Permission {
   @PrimaryGeneratedColumn("uuid")
   id: string;

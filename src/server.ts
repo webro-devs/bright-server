@@ -12,12 +12,19 @@ TypeOrmDataSource.initialize()
       adminRouter,
       categoryRouter,
       permissionRouter,
+      positionRouter,
       authRouter,
     } = require("./router");
 
     app.use(express.json());
     app.use(AccessTokenMiddleware);
-    app.use(adminRouter, categoryRouter, permissionRouter, authRouter);
+    app.use(
+      adminRouter,
+      categoryRouter,
+      permissionRouter,
+      positionRouter,
+      authRouter,
+    );
 
     console.log("Data Source has been initialized!");
   })
