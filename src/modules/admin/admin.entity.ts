@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
+import * as bcrypt from "bcrypt";
+import { Permission } from "../permission/permission.entity";
 
 @Entity("admin")
 export class Admin {
@@ -25,4 +33,18 @@ export class Admin {
 
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
+
+  @ManyToMany(() => Permission, (permission) => permission.admins, {
+    onDelete: "CASCADE",
+  })
+  @JoinTable()
+  permissions: Permission[];
+
+  public async hashPassword(password: string): Promise<void> {
+    this.password = await bcrypt.hash(password, 10);
+  }
+
+  public isPasswordValid(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
