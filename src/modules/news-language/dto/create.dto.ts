@@ -8,6 +8,10 @@ class CreateLanguageDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  shortDescription: string;
 }
 
 export default CreateLanguageDto;

@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from "typeorm";
 import { NewsLanguageEnum } from "../../infra/shared/enums";
+import { News } from "../news/news.entity";
 
 @Entity("news_language")
 export class NewsLanguage {
@@ -18,12 +26,12 @@ export class NewsLanguage {
   @Column({ type: "enum", enum: NewsLanguageEnum })
   languageKey: NewsLanguageEnum;
 
-  @Column("url")
+  @Column({ type: "varchar" })
   shortLink: string;
 
-  @Column("url")
-  img: string;
+  @Column({ type: "varchar" })
+  file: string;
 
-  @Column({ type: "array" })
+  @Column({ type: "varchar" })
   tags: string[];
 }

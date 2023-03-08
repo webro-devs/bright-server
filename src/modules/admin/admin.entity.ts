@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { News } from "../news/news.entity";
 
 @Entity("admin")
 export class Admin {
@@ -25,4 +26,7 @@ export class Admin {
 
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
+
+  @OneToMany(() => News, (news) => news.creator)
+  news: News[];
 }

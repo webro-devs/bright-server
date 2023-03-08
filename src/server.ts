@@ -12,10 +12,17 @@ TypeOrmDataSource.initialize()
       categoryRouter,
       permissionRouter,
       positionRouter,
+      newsRouter,
     } = require("./router");
 
     app.use(express.json());
-    app.use(adminRouter, categoryRouter, permissionRouter, positionRouter);
+    app.use(
+      adminRouter,
+      categoryRouter,
+      permissionRouter,
+      positionRouter,
+      newsRouter,
+    );
 
     console.log("Data Source has been initialized!");
   })
