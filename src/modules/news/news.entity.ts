@@ -4,8 +4,6 @@ import {
   Column,
   ManyToOne,
   ManyToMany,
-  JoinColumn,
-  OneToMany,
   OneToOne,
 } from "typeorm";
 import { State } from "../../infra/shared/enums";
@@ -30,19 +28,15 @@ export class News {
   @ManyToOne(() => Admin, (admin) => admin.news)
   creator: Admin;
 
-  @OneToOne(() => NewsLanguage, { cascade: true })
-  @JoinColumn()
+  @OneToOne(() => NewsLanguage)
   uz: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage, { cascade: true })
-  @JoinColumn()
+  @OneToOne(() => NewsLanguage)
   уз: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage, { cascade: true })
-  @JoinColumn()
+  @OneToOne(() => NewsLanguage)
   ru: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage, { cascade: true })
-  @JoinColumn()
+  @OneToOne(() => NewsLanguage)
   en: NewsLanguage;
 }
