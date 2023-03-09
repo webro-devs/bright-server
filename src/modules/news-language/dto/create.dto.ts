@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 
 class CreateLanguageDto {
   @IsNotEmpty()
@@ -8,6 +8,22 @@ class CreateLanguageDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  shortDescription: string;
+
+  @IsNotEmpty()
+  @IsString()
+  shortLink: string;
+
+  @IsNotEmpty()
+  @IsString()
+  file: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  tags: string[];
 }
 
 export default CreateLanguageDto;

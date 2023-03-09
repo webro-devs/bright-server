@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString, IsArray } from "class-validator";
 
 class UpdateLanguageDto {
   @IsOptional()
@@ -8,6 +8,22 @@ class UpdateLanguageDto {
   @IsOptional()
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsString()
+  shortDescription: string;
+
+  @IsOptional()
+  @IsString()
+  shortLink: string;
+
+  @IsOptional()
+  @IsString()
+  file: string;
+
+  @IsOptional()
+  @IsArray()
+  tags: string[];
 }
 
 export default UpdateLanguageDto;

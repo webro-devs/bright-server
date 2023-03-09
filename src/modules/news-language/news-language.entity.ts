@@ -1,29 +1,48 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
-import { NewsLanguageEnum } from "../../infra/shared/enums";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  OneToOne,
+} from "typeorm";
+import { News } from "../news/news.entity";
 
 @Entity("news_language")
 export class NewsLanguage {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: true })
   title: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: true })
   shortDescription: string;
 
-  @Column({ type: "enum", enum: NewsLanguageEnum })
-  languageKey: NewsLanguageEnum;
-
-  @Column("url")
+  @Column({ type: "varchar", nullable: true })
   shortLink: string;
 
-  @Column("url")
-  img: string;
+  @Column({ type: "varchar", nullable: true })
+  file: string;
 
-  @Column({ type: "array" })
+  @Column({ type: "varchar", nullable: true })
   tags: string[];
+
+  @OneToOne(() => News, (news) => news.uz, { onDelete: "CASCADE" })
+  @JoinColumn()
+  uz: News;
+
+  @OneToOne(() => News, (news) => news.ru, { onDelete: "CASCADE" })
+  @JoinColumn()
+  ru: News;
+
+  @OneToOne(() => News, (news) => news.en, { onDelete: "CASCADE" })
+  @JoinColumn()
+  en: News;
+
+  @OneToOne(() => News, (news) => news.уз, { onDelete: "CASCADE" })
+  @JoinColumn()
+  уз: News;
 }

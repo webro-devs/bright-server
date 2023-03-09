@@ -11,8 +11,8 @@ export class PositionService {
   }
 
   async create(values: CreatPositionDto): Promise<Position> {
-    const response = await this.positionRepository.create(values);
-    return response;
+    const response = this.positionRepository.create(values);
+    return this.positionRepository.save(response);
   }
 
   async update(values: UpdatePositionDto, id: string): Promise<UpdateResult> {

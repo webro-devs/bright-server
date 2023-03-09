@@ -13,6 +13,7 @@ TypeOrmDataSource.initialize()
       categoryRouter,
       permissionRouter,
       positionRouter,
+      newsRouter,
       authRouter,
     } = require("./router");
 
@@ -23,6 +24,7 @@ TypeOrmDataSource.initialize()
       categoryRouter,
       permissionRouter,
       positionRouter,
+      newsRouter,
       authRouter,
     );
 
