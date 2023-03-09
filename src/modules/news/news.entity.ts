@@ -5,6 +5,7 @@ import {
   ManyToOne,
   ManyToMany,
   OneToOne,
+  JoinColumn,
 } from "typeorm";
 import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
@@ -19,13 +20,14 @@ export class News {
   @Column({ type: "enum", enum: State })
   state: State[];
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: "timestamp" })
   publishDate: Date;
 
   @ManyToMany(() => Category, (category) => category.news)
   categories: Category[];
 
   @ManyToOne(() => Admin, (admin) => admin.news)
+  @JoinColumn()
   creator: Admin;
 
   @OneToOne(() => NewsLanguage)

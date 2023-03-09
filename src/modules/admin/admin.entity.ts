@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
 import * as bcrypt from "bcrypt";
+import { Permission } from "../permission/permission.entity";
+import { News } from "../news/news.entity";
 
 @Entity("admin")
 export class Admin {
@@ -26,6 +35,15 @@ export class Admin {
 
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
+
+  @ManyToMany(() => Permission, (permission) => permission.admins, {
+    onDelete: "CASCADE",
+  })
+  @JoinTable()
+  permissions: Permission[];
+
+  @OneToMany(() => News, (news) => news.creator)
+  news: News[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

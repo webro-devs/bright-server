@@ -29,7 +29,7 @@ export class AdminService {
     return admin;
   }
 
-  async create(values: CreateAdminDto): Promise<Admin> {
+  async create(values: CreateAdminDto) {
     const permissions = await this.permissionService.getManyPermissionsById(
       values.permissions,
     );
