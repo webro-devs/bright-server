@@ -5,9 +5,10 @@ import {
   DataSource,
   EntityManager,
 } from "typeorm";
+import { hashPassword } from "../../infra/helpers";
 import { PermissionService } from "../permission/permission.service";
 import { Admin } from "./admin.entity";
-import { CreateAdminDto, UpdateAdminDto } from "./dto";
+import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 
 export class AdminService {
   constructor(
@@ -55,7 +56,44 @@ export class AdminService {
   }
 
   async update(values: UpdateAdminDto, id: string): Promise<UpdateResult> {
-    const response = await this.adminRepository.update(id, values);
+    let password,
+      permissions,
+      admin = await this.getById(id);
+    permissions = admin.permissions;
+    password = admin.password;
+
+    if (values.permissions) {
+      permissions = await this.permissionService.getManyPermissionsById(
+        values.permissions,
+      );
+    }
+    if (values.password) {
+      password = hashPassword(values.password);
+    }
+    const response = await this.adminRepository.update(id, {
+      ...values,
+      password,
+      permissions,
+    });
+    return response;
+  }
+
+  async changeActive(id: string, isActive: boolean) {
+    const response = await this.adminRepository.update(id, { isActive });
+    return response;
+  }
+
+  async changeProfile(id: string, values: UpdateAdminProfileDto) {
+    let password,
+      admin = await this.getById(id);
+    password = admin.password;
+    if (values.password) {
+      password = hashPassword(values.password);
+    }
+    const response = await this.adminRepository.update(id, {
+      ...values,
+      password,
+    });
     return response;
   }
 
