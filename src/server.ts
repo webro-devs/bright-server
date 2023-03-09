@@ -2,6 +2,7 @@ import * as express from "express";
 import { TypeOrmDataSource } from "./config";
 import * as dotenv from "dotenv";
 dotenv.config();
+import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
 
@@ -13,15 +14,18 @@ TypeOrmDataSource.initialize()
       permissionRouter,
       positionRouter,
       newsRouter,
+      authRouter,
     } = require("./router");
 
     app.use(express.json());
+    app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,
       permissionRouter,
       positionRouter,
       newsRouter,
+      authRouter,
     );
 
     console.log("Data Source has been initialized!");

@@ -1,6 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { News } from "../../news/news.entity";
-import { NewsLanguageEnum } from "../../../infra/shared/enums";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 
 class CreateLanguageDto {
   @IsNotEmpty()
@@ -22,6 +20,10 @@ class CreateLanguageDto {
   @IsNotEmpty()
   @IsString()
   file: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  tags: string[];
 }
 
 export default CreateLanguageDto;

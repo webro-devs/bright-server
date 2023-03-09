@@ -15,6 +15,13 @@ export class PermissionService {
     return category;
   }
 
+  async getManyPermissionsById(ids: string[]) {
+    return this.permissionRepository
+      .createQueryBuilder()
+      .where("id IN(:...ids)", { ids })
+      .getMany();
+  }
+
   async create(values: CreatPermissionDto): Promise<Permission> {
     const response = await this.permissionRepository.create(values);
     return response;

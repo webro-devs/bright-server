@@ -26,7 +26,4 @@ export class Admin {
 
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
-
-  @OneToMany(() => News, (news) => news.creator)
-  news: News[];
 }

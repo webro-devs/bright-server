@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 
 class CreateAdminDto {
   @IsNotEmpty()
@@ -24,6 +24,10 @@ class CreateAdminDto {
   @IsNotEmpty()
   @IsString()
   education: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  permissions: string[];
 }
 
 export default CreateAdminDto;
