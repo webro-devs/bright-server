@@ -18,8 +18,9 @@ export class NewsLanguageService {
   }
 
   async create(values: CreateNewsLanguageDto): Promise<NewsLanguage> {
-    const response = await this.languageRepository.create(values);
-    return response;
+    const response = this.languageRepository.create(values);
+
+    return await this.languageRepository.save(response);
   }
 
   async bulkCreate(arr, newsEntity): Promise<News> {

@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsString } from "class-validator";
+import { News } from "../../news/news.entity";
+import { NewsLanguageEnum } from "../../../infra/shared/enums";
 
 class CreateLanguageDto {
   @IsNotEmpty()
@@ -11,10 +13,6 @@ class CreateLanguageDto {
 
   @IsNotEmpty()
   @IsString()
-  languageKey: string;
-
-  @IsNotEmpty()
-  @IsString()
   shortDescription: string;
 
   @IsNotEmpty()
@@ -24,22 +22,6 @@ class CreateLanguageDto {
   @IsNotEmpty()
   @IsString()
   file: string;
-
-  @IsNotEmpty()
-  @IsString()
-  uz: string;
-
-  @IsNotEmpty()
-  @IsString()
-  ru: string;
-
-  @IsNotEmpty()
-  @IsString()
-  en: string;
-
-  @IsNotEmpty()
-  @IsString()
-  уз: string;
 }
 
 export default CreateLanguageDto;

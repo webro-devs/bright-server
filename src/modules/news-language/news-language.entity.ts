@@ -5,7 +5,6 @@ import {
   JoinColumn,
   OneToOne,
 } from "typeorm";
-import { NewsLanguageEnum } from "../../infra/shared/enums";
 import { News } from "../news/news.entity";
 
 @Entity("news_language")
@@ -21,9 +20,6 @@ export class NewsLanguage {
 
   @Column({ type: "varchar", nullable: true })
   shortDescription: string;
-
-  @Column({ type: "enum", enum: NewsLanguageEnum, nullable: true })
-  languageKey: NewsLanguageEnum;
 
   @Column({ type: "varchar", nullable: true })
   shortLink: string;
