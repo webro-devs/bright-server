@@ -16,7 +16,7 @@ export class NewsService {
   }
 
   async create(values: CreateNewsDto): Promise<News> {
-    const response = await this.newsRepository.create(values);
+    const response = this.newsRepository.create(values);
     return response;
   }
 

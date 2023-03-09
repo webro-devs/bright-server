@@ -23,23 +23,6 @@ export class NewsLanguageService {
     return await this.languageRepository.save(response);
   }
 
-  async bulkCreate(arr, newsEntity): Promise<News> {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].languageKey == "uz") {
-        const newsLang = await this.languageRepository.create(arr[i]);
-        ("");
-      } else if (arr[i].languageKey == "ru") {
-        newsEntity.ru = await this.languageRepository.create(arr[i]);
-      } else if (arr[i].languageKey == "en") {
-        newsEntity.en = await this.languageRepository.create(arr[i]);
-      } else if (arr[i].languageKey == "уз") {
-        newsEntity["уз"] = await this.languageRepository.create(arr[i]);
-      }
-    }
-
-    return newsEntity;
-  }
-
   async update(
     values: UpdateNewsLanguageDto,
     id: string,
