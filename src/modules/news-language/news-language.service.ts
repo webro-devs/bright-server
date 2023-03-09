@@ -17,10 +17,15 @@ export class NewsLanguageService {
     return response;
   }
 
-  async create(values: CreateNewsLanguageDto): Promise<NewsLanguage> {
-    const response = this.languageRepository.create(values);
+  async create(values: CreateNewsLanguageDto) {
+    const response = await this.languageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(NewsLanguage)
+      .values(values)
+      .execute();
 
-    return await this.languageRepository.save(response);
+    return response;
   }
 
   async update(

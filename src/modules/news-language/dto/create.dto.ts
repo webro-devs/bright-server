@@ -1,4 +1,5 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { News } from "../../news/news.entity";
 
 class CreateLanguageDto {
   @IsNotEmpty()
@@ -24,6 +25,22 @@ class CreateLanguageDto {
   @IsNotEmpty()
   @IsArray()
   tags: string[];
+
+  @IsOptional()
+  @IsString()
+  uz: News;
+
+  @IsOptional()
+  @IsString()
+  ru: News;
+
+  @IsOptional()
+  @IsString()
+  en: News;
+
+  @IsOptional()
+  @IsString()
+  уз: News;
 }
 
 export default CreateLanguageDto;
