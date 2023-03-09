@@ -23,8 +23,8 @@ export class PermissionService {
   }
 
   async create(values: CreatPermissionDto): Promise<Permission> {
-    const response = await this.permissionRepository.create(values);
-    return response;
+    const response = this.permissionRepository.create(values);
+    return this.permissionRepository.save(response);
   }
 
   async update(
