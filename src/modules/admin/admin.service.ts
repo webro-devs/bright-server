@@ -1,4 +1,10 @@
-import { UpdateResult, DeleteResult, Repository } from "typeorm";
+import {
+  UpdateResult,
+  DeleteResult,
+  Repository,
+  DataSource,
+  EntityManager,
+} from "typeorm";
 import { PermissionService } from "../permission/permission.service";
 import { Admin } from "./admin.entity";
 import { CreateAdminDto, UpdateAdminDto } from "./dto";
@@ -7,6 +13,7 @@ export class AdminService {
   constructor(
     private readonly adminRepository: Repository<Admin>,
     private readonly permissionService: PermissionService,
+    private readonly connection: DataSource,
   ) {}
 
   async getAll(): Promise<Admin[]> {
@@ -33,8 +40,18 @@ export class AdminService {
     const permissions = await this.permissionService.getManyPermissionsById(
       values.permissions,
     );
-    const response = this.adminRepository.create({ ...values, permissions });
-    return await this.adminRepository.save(response);
+    const admin = new Admin();
+    admin.fullName = values.fullName;
+    admin.education = values.education;
+    admin.city = values.city;
+    admin.login = values.login;
+    admin.phone = values.phone;
+    admin.permissions = permissions;
+    await admin.hashPassword(values.password);
+    this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(admin);
+    });
+    return admin;
   }
 
   async update(values: UpdateAdminDto, id: string): Promise<UpdateResult> {

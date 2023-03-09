@@ -6,4 +6,8 @@ import { permissionService } from "../permission";
 
 export const repository = TypeOrmDataSource.getRepository(Admin);
 
-export const adminService = new AdminService(repository, permissionService);
+export const adminService = new AdminService(
+  repository,
+  permissionService,
+  TypeOrmDataSource,
+);

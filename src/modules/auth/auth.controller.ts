@@ -13,6 +13,7 @@ export const Login = async (req, res: Response) => {
   const refreshToken = authService.getJWT("refresh", req.user.id);
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
+  res.send("");
   try {
   } catch (err) {
     res.sendStatus(400).send(err.massage);

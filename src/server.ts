@@ -1,7 +1,9 @@
 import * as express from "express";
-import { TypeOrmDataSource } from "./config";
 import * as dotenv from "dotenv";
 dotenv.config();
+import * as cookieParser from "cookie-parser";
+import { TypeOrmDataSource } from "./config";
+
 import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
@@ -18,6 +20,7 @@ TypeOrmDataSource.initialize()
     } = require("./router");
 
     app.use(express.json());
+    app.use(cookieParser());
     app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
