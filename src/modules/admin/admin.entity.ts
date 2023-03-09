@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { News } from "../news/news.entity";
+import * as bcrypt from "bcrypt";
 
 @Entity("admin")
 export class Admin {
@@ -26,4 +26,12 @@ export class Admin {
 
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
+
+  public async hashPassword(password: string): Promise<void> {
+    this.password = await bcrypt.hash(password, 10);
+  }
+
+  public isPasswordValid(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
