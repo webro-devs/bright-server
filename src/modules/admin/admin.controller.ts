@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { CreateAdminDto, UpdateAdminDto } from "./dto";
+import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 
 import { adminService } from ".";
 
@@ -30,5 +30,19 @@ export async function update(req: Request, res: Response) {
   const { id } = req.params;
   const updateData: UpdateAdminDto = req.body;
   const response = await adminService.update(updateData, id);
+  res.send(response);
+}
+
+export async function changeActive(req: Request, res: Response) {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  const response = await adminService.changeActive(id, isActive);
+  res.send(response);
+}
+
+export async function changeProfile(req: Request, res: Response) {
+  const { id } = req.params;
+  const updateData: UpdateAdminProfileDto = req.body;
+  const response = await adminService.changeProfile(id, updateData);
   res.send(response);
 }
