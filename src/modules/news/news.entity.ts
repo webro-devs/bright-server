@@ -20,7 +20,7 @@ export class News {
   @Column({ type: "enum", enum: State })
   state: State[];
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   publishDate: Date;
 
   @ManyToMany(() => Category, (category) => category.news)

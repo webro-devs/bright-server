@@ -10,31 +10,13 @@ import { newsLanguageService } from "../news-language/index";
 
 export async function getAll(req: Request, res: Response) {
   const news = await newsService.getAll();
-  return news;
+  res.send(news);
 }
 
 export async function create(req: Request, res: Response) {
-  const langs = ["uz", "ru", "en", "уз"];
+  const newsData = req.body;
 
-  const newsLanguage = [];
-  const body = req.body;
-  await Promise.all(
-    langs?.map(async (key) => {
-      if (body[key]) {
-        newsLanguage.push({ ...body[key], languageKey: key });
-        delete body[key];
-      }
-    }),
-  );
+  const news = await newsService.create(newsData);
 
-  //   const NewsLanguage = await newsLanguageService.bulkCreate(newsLanguage);
-
-  console.log(newsLanguage);
-
-  const createData: CreateNewsDto = req.body;
-
-  //   const createNews = await newsService.create(createData);
-  res.send(newsLanguage);
+  res.send(news);
 }
-
-const data = {};

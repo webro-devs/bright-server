@@ -1,5 +1,6 @@
 import * as express from "express";
-import * as dotenv from "dotenv";
+// import * as dotenv from "dotenv";
+const dotenv = require("dotenv");
 dotenv.config();
 import * as cookieParser from "cookie-parser";
 import { TypeOrmDataSource } from "./config";
@@ -21,7 +22,7 @@ TypeOrmDataSource.initialize()
 
     app.use(express.json());
     app.use(cookieParser());
-    app.use(AccessTokenMiddleware);
+    // app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,
