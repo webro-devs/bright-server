@@ -13,6 +13,9 @@ export class NewsService {
     const response = await this.newsRepository.find({
       relations: {
         uz: true,
+        ru: true,
+        en: true,
+        уз: true,
       },
     });
     return response;
@@ -23,15 +26,29 @@ export class NewsService {
     return response;
   }
 
-  async create(values: CreateNewsDto) {
-    const response = await this.newsRepository
-      .createQueryBuilder()
-      .insert()
-      .into(News)
-      .values(values)
-      .execute();
+  async create(values: CreateNewsDto, creator: string) {
+    console.log(values);
+    console.log("jjj");
 
-    return response;
+    const uz = await this.newsLanguageService.create({
+      ...values.uz,
+    });
+    const ru = await this.newsLanguageService.create({
+      ...values.ru,
+    });
+    const en = await this.newsLanguageService.create({
+      ...values.en,
+    });
+    const уз = await this.newsLanguageService.create({
+      ...values.уз,
+    });
+    values.en = en;
+    values.ru = ru;
+    values.uz = uz;
+    values.уз = уз;
+    const response = this.newsRepository.create(values);
+
+    return await this.newsRepository.save(response);
   }
 
   async update(values: UpdateNewsDto, id: string): Promise<UpdateResult> {

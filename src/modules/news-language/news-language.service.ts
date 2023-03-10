@@ -18,14 +18,8 @@ export class NewsLanguageService {
   }
 
   async create(values: CreateNewsLanguageDto) {
-    const response = await this.languageRepository
-      .createQueryBuilder()
-      .insert()
-      .into(NewsLanguage)
-      .values(values)
-      .execute();
-
-    return response;
+    const response = this.languageRepository.create(values);
+    return await this.languageRepository.save(response);
   }
 
   async update(

@@ -30,15 +30,15 @@ export class News {
   @JoinColumn()
   creator: Admin;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.uz)
   uz: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.уз)
   уз: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.ru)
   ru: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en)
   en: NewsLanguage;
 }

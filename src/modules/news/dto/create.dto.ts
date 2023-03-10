@@ -1,6 +1,5 @@
 import { IsArray, IsNotEmpty, IsString, IsObject } from "class-validator";
 import { Category } from "../../category/category.entity";
-import { Admin } from "../../admin/admin.entity";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 
@@ -18,19 +17,19 @@ class CreateNewsDto {
   categories: Category[];
 
   @IsNotEmpty()
-  @IsString()
-  creator: Admin;
-
-  @IsNotEmpty()
+  @IsObject()
   uz: NewsLanguage;
 
   @IsNotEmpty()
+  @IsObject()
   ru: NewsLanguage;
 
   @IsNotEmpty()
+  @IsObject()
   en: NewsLanguage;
 
   @IsNotEmpty()
+  @IsObject()
   уз: NewsLanguage;
 }
 
