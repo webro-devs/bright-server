@@ -15,7 +15,7 @@ class CreateNewsDto {
 
   @IsNotEmpty()
   @IsArray()
-  categories: Category[];
+  categories: string[];
 
   @IsNotEmpty()
   @IsString()

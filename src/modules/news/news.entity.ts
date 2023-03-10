@@ -30,15 +30,23 @@ export class News {
   @JoinColumn()
   creator: Admin;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.uz, {
+    onDelete: "SET NULL",
+  })
   uz: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.уз, {
+    onDelete: "SET NULL",
+  })
   уз: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.ru, {
+    onDelete: "SET NULL",
+  })
   ru: NewsLanguage;
 
-  @OneToOne(() => NewsLanguage)
+  @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en, {
+    onDelete: "SET NULL",
+  })
   en: NewsLanguage;
 }
