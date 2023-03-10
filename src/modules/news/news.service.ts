@@ -15,6 +15,9 @@ export class NewsService {
     const response = await this.newsRepository.find({
       relations: {
         uz: true,
+        ru: true,
+        en: true,
+        уз: true,
       },
     });
     return response;

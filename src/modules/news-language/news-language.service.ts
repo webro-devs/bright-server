@@ -17,7 +17,6 @@ export class NewsLanguageService {
 
   async create(values: CreateNewsLanguageDto) {
     const response = this.languageRepository.create(values);
-
     return await this.languageRepository.save(response);
   }
 

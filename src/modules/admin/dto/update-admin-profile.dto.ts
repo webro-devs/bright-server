@@ -1,6 +1,6 @@
-import { IsArray, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
-class UpdateAdminDto {
+class UpdateAdminProfileDto {
   @IsOptional()
   @IsString()
   login: string;
@@ -24,10 +24,6 @@ class UpdateAdminDto {
   @IsOptional()
   @IsString()
   education: string;
-
-  @IsOptional()
-  @IsArray()
-  permissions: string[];
 }
 
-export default UpdateAdminDto;
+export default UpdateAdminProfileDto;
