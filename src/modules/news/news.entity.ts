@@ -26,7 +26,10 @@ export class News {
   @ManyToMany(() => Category, (category) => category.news)
   categories: Category[];
 
-  @ManyToOne(() => Admin, (admin) => admin.news)
+  @ManyToOne(() => Admin, (admin) => admin.news, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   creator: Admin;
 

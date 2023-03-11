@@ -1,4 +1,5 @@
 import * as express from "express";
+const fileUpload = require("express-fileupload");
 // import * as dotenv from "dotenv";
 const dotenv = require("dotenv");
 dotenv.config();
@@ -21,6 +22,7 @@ TypeOrmDataSource.initialize()
     } = require("./router");
 
     app.use(express.json());
+    app.use(fileUpload());
     app.use(cookieParser());
     // app.use(AccessTokenMiddleware);
     app.use(

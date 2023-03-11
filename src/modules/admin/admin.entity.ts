@@ -33,6 +33,9 @@ export class Admin {
   @Column({ type: "text" })
   education: string;
 
+  @Column({ type: "text" })
+  avatar: string;
+
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
 

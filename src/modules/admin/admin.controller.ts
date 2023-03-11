@@ -1,7 +1,9 @@
 import { Response, Request } from "express";
-import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 
+import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 import { adminService } from ".";
+import { fileService } from "../../infra/helpers";
+import { Upload } from "../../infra/shared/interface";
 
 export async function getAll(req: Request, res: Response) {
   const categories = await adminService.getAll();
@@ -16,7 +18,16 @@ export async function getById(req: Request, res: Response) {
 
 export async function create(req: Request, res: Response) {
   const createData: CreateAdminDto = req.body;
-  const response = await adminService.create(createData);
+  const avatar = await fileService.uploadImage((req as Upload).files.avatar);
+  if (avatar.error) {
+    res.sendStatus(500).send("Image upload error");
+    return;
+  }
+
+  const response = await adminService.create({
+    ...createData,
+    avatar: avatar.url,
+  });
   res.send(response);
 }
 
