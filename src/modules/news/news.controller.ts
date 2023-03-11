@@ -12,7 +12,7 @@ export async function create(req, res: Response) {
   const newsData: CreateNewsDto = req.body;
   console.log(newsData);
 
-  const news = await newsService.create(newsData, req.user.id);
+  const news = await newsService.create(newsData);
 
   res.send(news);
 }

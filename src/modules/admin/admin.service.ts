@@ -31,27 +31,30 @@ export class AdminService {
     return admin;
   }
 
-  async create(values: CreateAdminDto 
-   & {avatar:string}
-    ) {
-      console.log(values.permissions);
-      
-    const permissions = await this.permissionService.getManyPermissionsById(
-      JSON.parse(values.permissions),
-    );
-    const admin = new Admin();
-    admin.fullName = values.fullName;
-    admin.education = values.education;
-    admin.city = values.city;
-    admin.login = values.login;
-    admin.phone = values.phone;
-    admin.permissions = permissions;
-   admin.avatar = values.avatar
-    await admin.hashPassword(values.password);
-    this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(admin);
-    });
-    return admin;
+  async create(values: CreateAdminDto & { avatar: string }) {
+    try {
+      const permissions = await this.permissionService.getManyPermissionsById(
+        values.permissions,
+      );
+      const admin = new Admin();
+      admin.fullName = values.fullName;
+      admin.education = values.education;
+      admin.city = values.city;
+      admin.login = values.login;
+      admin.phone = values.phone;
+      admin.permissions = permissions;
+      admin.avatar = values.avatar;
+      await admin.hashPassword(values.password);
+      this.connection.transaction(async (manager: EntityManager) => {
+        await manager.save(admin);
+      });
+      return admin;
+    } catch (err) {
+      if (err?.errno === 1062) {
+        throw new Error("This admin already exists.");
+      }
+      throw err;
+    }
   }
 
   async update(values: UpdateAdminDto, id: string): Promise<Admin> {

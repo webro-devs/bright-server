@@ -1,5 +1,15 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString, isArray } from "class-validator";
+import { Transform } from "class-transformer";
 
+function parseTextToArray(name: string, value?: string) {
+  console.log(value);
+
+  const arr = value ? JSON.parse(value) : "";
+  if (!isArray(arr)) {
+    throw new Error(`${name} should be array.`);
+  }
+  return arr;
+}
 class CreateAdminDto {
   @IsNotEmpty()
   @IsString()
@@ -27,7 +37,10 @@ class CreateAdminDto {
 
   @IsNotEmpty()
   @IsArray()
-  permissions: string;
+  @Transform(({ value }: { value: string }) =>
+    parseTextToArray("permissions", value),
+  )
+  permissions: string[];
 }
 
 export default CreateAdminDto;
