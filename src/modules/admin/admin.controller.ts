@@ -16,19 +16,27 @@ export async function getById(req: Request, res: Response) {
   res.send(response);
 }
 
-export async function create(req: Request, res: Response) {
-  const createData: CreateAdminDto = req.body;
-  const avatar = await fileService.uploadImage((req as Upload).files.avatar);
-  if (avatar.error) {
-    res.sendStatus(500).send("Image upload error");
-    return;
-  }
+export async function create(req: Upload, res: Response) {
+  try {
+    const createData: CreateAdminDto = req.body;
+    let avatar = { url: null, error: null };
 
-  const response = await adminService.create({
-    ...createData,
-    avatar: avatar.url,
-  });
-  res.send(response);
+    if (req?.files?.avatar) {
+      avatar = await fileService.uploadImage(req.files.avatar);
+      if (avatar.error) {
+        res.sendStatus(500).send("Image upload error");
+        return;
+      }
+    }
+
+    const response = await adminService.create({
+      ...createData,
+      avatar: avatar.url,
+    });
+    res.send(response);
+  } catch (err) {
+    res.send(err);
+  }
 }
 
 export async function deleteData(req: Request, res: Response) {
@@ -37,10 +45,21 @@ export async function deleteData(req: Request, res: Response) {
   res.send(response);
 }
 
-export async function update(req: Request, res: Response) {
+export async function update(req: Upload, res: Response) {
   const { id } = req.params;
   const updateData: UpdateAdminDto = req.body;
-  const response = await adminService.update(updateData, id);
+  let avatar = { url: null, error: null };
+  if (req?.files?.avatar) {
+    avatar = await fileService.uploadImage(req.files.avatar);
+    if (avatar.error) {
+      res.sendStatus(500).send("Image upload error");
+      return;
+    }
+  }
+  const response = await adminService.update(
+    { ...updateData, avatar: avatar.url },
+    id,
+  );
   res.send(response);
 }
 

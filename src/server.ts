@@ -24,7 +24,7 @@ TypeOrmDataSource.initialize()
     app.use(express.json());
     app.use(fileUpload());
     app.use(cookieParser());
-    app.use(AccessTokenMiddleware);
+    // app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,

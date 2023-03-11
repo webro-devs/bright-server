@@ -1,9 +1,14 @@
-import { IsArray, IsNotEmpty, IsString, isArray } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  isArray,
+  IsOptional,
+  IsObject,
+} from "class-validator";
 import { Transform } from "class-transformer";
 
 function parseTextToArray(name: string, value?: string) {
-  console.log(value);
-
   const arr = value ? JSON.parse(value) : "";
   if (!isArray(arr)) {
     throw new Error(`${name} should be array.`);
@@ -34,6 +39,10 @@ class CreateAdminDto {
   @IsNotEmpty()
   @IsString()
   education: string;
+
+  @IsOptional()
+  @IsObject()
+  avatar;
 
   @IsNotEmpty()
   @IsArray()

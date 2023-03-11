@@ -1,4 +1,10 @@
-import { isArray, IsArray, IsOptional, IsString } from "class-validator";
+import {
+  isArray,
+  IsArray,
+  IsObject,
+  IsOptional,
+  IsString,
+} from "class-validator";
 import { Transform } from "class-transformer";
 
 function parseTextToArray(name: string, value?: string) {
@@ -34,6 +40,10 @@ class UpdateAdminDto {
   @IsOptional()
   @IsString()
   education: string;
+
+  @IsOptional()
+  @IsObject()
+  avatar;
 
   @IsOptional()
   @IsArray()
