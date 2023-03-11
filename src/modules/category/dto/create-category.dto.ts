@@ -1,9 +1,25 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { News } from "../../news/news.entity";
 
 class CreateCategoryDto {
   @IsNotEmpty()
   @IsString()
-  title: string;
+  uz: string;
+
+  @IsNotEmpty()
+  @IsString()
+  en: string;
+
+  @IsNotEmpty()
+  @IsString()
+  ru: string;
+
+  @IsNotEmpty()
+  @IsString()
+  уз: string;
+
+  @IsArray()
+  news: News[];
 }
 
 export default CreateCategoryDto;

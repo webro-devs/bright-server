@@ -1,9 +1,25 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
+import { News } from "../../news/news.entity";
 
 class UpdateCategoryDto {
   @IsOptional()
   @IsString()
-  title: string;
+  uz: string;
+
+  @IsOptional()
+  @IsString()
+  en: string;
+
+  @IsOptional()
+  @IsString()
+  ru: string;
+
+  @IsOptional()
+  @IsString()
+  уз: string;
+
+  @IsArray()
+  news: News[];
 }
 
 export default UpdateCategoryDto;

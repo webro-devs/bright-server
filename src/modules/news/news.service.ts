@@ -3,11 +3,14 @@ import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
 import { CategoryService } from "../category/category.service";
+import { AdminService } from "../admin/admin.service";
+import { Admin } from "../admin/admin.entity";
 
 export class NewsService {
   constructor(
     private readonly newsRepository: Repository<News>,
     private readonly newsLanguageService: NewsLanguageService,
+    private readonly adminService: AdminService,
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -38,11 +41,13 @@ export class NewsService {
     return response;
   }
 
-  async create(data: CreateNewsDto): Promise<News> {
+  async create(data: CreateNewsDto, id: string): Promise<News> {
     data.uz = await this.newsLanguageService.create(data.uz);
     data.ru = await this.newsLanguageService.create(data.ru);
     data.en = await this.newsLanguageService.create(data.en);
     data.уз = await this.newsLanguageService.create(data.уз);
+    data.creator = await this.adminService.getById(id);
+
     const categories = await this.categoryService.getManyCategoriesById(
       data.categories,
     );

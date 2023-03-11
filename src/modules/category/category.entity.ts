@@ -7,10 +7,16 @@ export class Category {
   id: string;
 
   @Column({ type: "text" })
-  title: string;
+  uz: string;
 
-  @Column({ type: "varchar" })
-  key: string;
+  @Column({ type: "text" })
+  en: string;
+
+  @Column({ type: "text" })
+  ru: string;
+
+  @Column({ type: "text" })
+  уз: string;
 
   @ManyToMany(() => News, (news) => news.categories)
   news: News[];
