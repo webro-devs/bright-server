@@ -1,7 +1,13 @@
 import { Response, Request } from "express";
+const GetterFileUpload = require('getter-fileupload-client')
 import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 
 import { adminService } from ".";
+
+const fileupload = new GetterFileUpload('https://storage.bright.getter.uz')
+interface Upload extends Request {
+  files: any
+}
 
 export async function getAll(req: Request, res: Response) {
   const categories = await adminService.getAll();
@@ -16,7 +22,16 @@ export async function getById(req: Request, res: Response) {
 
 export async function create(req: Request, res: Response) {
   const createData: CreateAdminDto = req.body;
-  const response = await adminService.create(createData);
+  const avatar = await fileupload.uploadImage((req as Upload).files.avatar)
+  if(avatar.error){
+    res.sendStatus(500).send("Image upload error")
+    return
+  }
+  console.log(avatar)
+  
+  const response = await adminService.create({...createData
+   ,avatar:avatar.url
+  });
   res.send(response);
 }
 

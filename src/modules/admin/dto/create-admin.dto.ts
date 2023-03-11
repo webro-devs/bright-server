@@ -27,7 +27,7 @@ class CreateAdminDto {
 
   @IsNotEmpty()
   @IsArray()
-  permissions: string[];
+  permissions: string;
 }
 
 export default CreateAdminDto;

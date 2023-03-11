@@ -31,9 +31,13 @@ export class AdminService {
     return admin;
   }
 
-  async create(values: CreateAdminDto) {
+  async create(values: CreateAdminDto 
+   & {avatar:string}
+    ) {
+      console.log(values.permissions);
+      
     const permissions = await this.permissionService.getManyPermissionsById(
-      values.permissions,
+      JSON.parse(values.permissions),
     );
     const admin = new Admin();
     admin.fullName = values.fullName;
@@ -42,6 +46,7 @@ export class AdminService {
     admin.login = values.login;
     admin.phone = values.phone;
     admin.permissions = permissions;
+   admin.avatar = values.avatar
     await admin.hashPassword(values.password);
     this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(admin);
