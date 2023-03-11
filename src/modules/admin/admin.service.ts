@@ -1,5 +1,5 @@
 import { DeleteResult, Repository, DataSource, EntityManager } from "typeorm";
-import { hashPassword } from "../../infra/helpers";
+import { fileService, hashPassword } from "../../infra/helpers";
 import { PermissionService } from "../permission/permission.service";
 import { Admin } from "./admin.entity";
 import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
@@ -32,32 +32,30 @@ export class AdminService {
   }
 
   async create(values: CreateAdminDto & { avatar: string }) {
-    try {
-      const permissions = await this.permissionService.getManyPermissionsById(
-        values.permissions,
-      );
-      const admin = new Admin();
-      admin.fullName = values.fullName;
-      admin.education = values.education;
-      admin.city = values.city;
-      admin.login = values.login;
-      admin.phone = values.phone;
-      admin.permissions = permissions;
+    const permissions = await this.permissionService.getManyPermissionsById(
+      values.permissions,
+    );
+    const admin = new Admin();
+    admin.fullName = values.fullName;
+    admin.education = values.education;
+    admin.city = values.city;
+    admin.login = values.login;
+    admin.phone = values.phone;
+    admin.permissions = permissions;
+    if (values.avatar) {
       admin.avatar = values.avatar;
-      await admin.hashPassword(values.password);
-      this.connection.transaction(async (manager: EntityManager) => {
-        await manager.save(admin);
-      });
-      return admin;
-    } catch (err) {
-      if (err?.errno === 1062) {
-        throw new Error("This admin already exists.");
-      }
-      throw err;
     }
+    await admin.hashPassword(values.password);
+    this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(admin).catch((err) => new Error(err));
+    });
+    return admin;
   }
 
-  async update(values: UpdateAdminDto, id: string): Promise<Admin> {
+  async update(
+    values: UpdateAdminDto & { avatar: string },
+    id: string,
+  ): Promise<Admin> {
     let admin = await this.getById(id);
     admin.city = values.city ? values.city : admin.city;
     admin.education = values.education ? values.education : admin.education;
@@ -73,6 +71,12 @@ export class AdminService {
     if (values.password) {
       const password = await hashPassword(values.password);
       admin.password = password;
+    }
+    if (values.avatar) {
+      if (admin.avatar) {
+        await fileService.removeFile(admin.avatar);
+      }
+      admin.avatar = values.avatar;
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(admin);

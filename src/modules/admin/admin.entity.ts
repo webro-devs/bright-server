@@ -33,7 +33,7 @@ export class Admin {
   @Column({ type: "text" })
   education: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   avatar: string;
 
   @Column({ default: true, type: "boolean" })
