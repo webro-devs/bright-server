@@ -1,9 +1,8 @@
 enum State {
   published = "published",
   archive = "archive",
-  saved = "saved",
-  favorite = "favorite",
-  general_access = "access",
+  general_access = "general access",
+  favourities = "favourities",
 }
 
 export default State;

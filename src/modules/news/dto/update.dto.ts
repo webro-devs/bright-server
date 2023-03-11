@@ -2,11 +2,12 @@ import { IsArray, IsObject, IsOptional, IsString } from "class-validator";
 import { Category } from "../../category/category.entity";
 import { Admin } from "../../admin/admin.entity";
 import { State } from "../../../infra/shared/enums";
+import { NewsLanguage } from "../../news-language/news-language.entity";
 
 class UpdateNewsDto {
   @IsOptional()
   @IsArray()
-  state: State[];
+  state: State;
 
   @IsOptional()
   @IsString()
@@ -22,19 +23,19 @@ class UpdateNewsDto {
 
   @IsOptional()
   @IsObject()
-  uz: object;
+  uz: NewsLanguage;
 
   @IsOptional()
   @IsObject()
-  ru: object;
+  ru: NewsLanguage;
 
   @IsOptional()
   @IsObject()
-  en: object;
+  en: NewsLanguage;
 
   @IsOptional()
   @IsObject()
-  уз: object;
+  уз: NewsLanguage;
 }
 
 export default UpdateNewsDto;

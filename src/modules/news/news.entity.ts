@@ -17,8 +17,8 @@ export class News {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "enum", enum: State })
-  state: State[];
+  @Column({ type: "varchar", default: "general access" })
+  state: State;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   publishDate: Date;
