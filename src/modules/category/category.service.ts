@@ -31,9 +31,11 @@ export class CategoryService {
   }
 
   async getManyCategoriesById(ids: string[]): Promise<Category[]> {
-    return this.categoryRepository
-      .createQueryBuilder()
-      .where("id IN(:...ids)", { ids })
-      .getMany();
+    return ids?.length > 0
+      ? this.categoryRepository
+          .createQueryBuilder()
+          .where("id IN(:...ids)", { ids })
+          .getMany()
+      : [];
   }
 }

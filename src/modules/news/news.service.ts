@@ -27,7 +27,16 @@ export class NewsService {
   }
 
   async getById(id: string): Promise<News> {
-    const response = await this.newsRepository.findOne({ where: { id } });
+    const response = await this.newsRepository.findOne({
+      where: { id },
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+      },
+    });
     return response;
   }
 
@@ -42,17 +51,24 @@ export class NewsService {
   }
 
   async create(data: CreateNewsDto, id: string): Promise<News> {
-    data.uz = await this.newsLanguageService.create(data.uz);
-    data.ru = await this.newsLanguageService.create(data.ru);
-    data.en = await this.newsLanguageService.create(data.en);
-    data.уз = await this.newsLanguageService.create(data.уз);
-    data.creator = await this.adminService.getById(id);
+    const newsData = {
+      uz: await this.newsLanguageService.create(data.uz),
+      ru: await this.newsLanguageService.create(data.ru),
+      en: await this.newsLanguageService.create(data.en),
+      уз: await this.newsLanguageService.create(data.уз),
+      creator: await this.adminService.getById(id),
+      state: data.state,
+      categories: null,
+      publishDate: data.publishDate,
+    };
+    if (data?.categories.length > 0) {
+      const categories = await this.categoryService.getManyCategoriesById(
+        data.categories,
+      );
+      newsData.categories = categories;
+    }
 
-    const categories = await this.categoryService.getManyCategoriesById(
-      data.categories,
-    );
-
-    const news = this.newsRepository.create({ ...data, categories });
+    const news = this.newsRepository.create(newsData);
     return await this.newsRepository.save(news);
   }
 }
