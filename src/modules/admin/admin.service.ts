@@ -1,5 +1,6 @@
 import { DeleteResult, Repository, DataSource, EntityManager } from "typeorm";
 import { fileService, hashPassword } from "../../infra/helpers";
+import { HttpException } from "../../infra/validation";
 import { PermissionService } from "../permission/permission.service";
 import { Admin } from "./admin.entity";
 import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
@@ -23,6 +24,9 @@ export class AdminService {
       },
       where: { id },
     });
+    if (!admin) {
+      throw new HttpException(true, 404, "Admin not found");
+    }
     return admin;
   }
 
@@ -32,10 +36,14 @@ export class AdminService {
   }
 
   async create(values: CreateAdminDto & { avatar: string }) {
+    const admin = new Admin();
+    const isLoginExist = await this.getByLogin(values.login);
+    if (isLoginExist) {
+      return new HttpException(true, 400, "This login already exist!");
+    }
     const permissions = await this.permissionService.getManyPermissionsById(
       values.permissions,
     );
-    const admin = new Admin();
     admin.fullName = values.fullName;
     admin.education = values.education;
     admin.city = values.city;
@@ -46,17 +54,22 @@ export class AdminService {
       admin.avatar = values.avatar;
     }
     await admin.hashPassword(values.password);
-    this.connection.transaction(async (manager: EntityManager) => {
+    await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(admin).catch((err) => new Error(err));
     });
     return admin;
   }
 
-  async update(
-    values: UpdateAdminDto & { avatar: string },
-    id: string,
-  ): Promise<Admin> {
+  async update(values: UpdateAdminDto & { avatar: string }, id: string) {
     let admin = await this.getById(id);
+    if (values.login) {
+      const isLoginExist = await this.getByLogin(values.login);
+      if (isLoginExist) {
+        if (isLoginExist.id != id) {
+          return new HttpException(true, 400, "This login already exist!");
+        }
+      }
+    }
     admin.city = values.city ? values.city : admin.city;
     admin.education = values.education ? values.education : admin.education;
     admin.fullName = values.fullName ? values.fullName : admin.fullName;

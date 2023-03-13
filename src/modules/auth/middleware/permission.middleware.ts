@@ -1,5 +1,6 @@
 import { NextFunction, Response } from "express";
 import { PermissionType } from "../../../infra/shared/type";
+import { HttpException } from "../../../infra/validation";
 import { adminService } from "../../admin";
 
 const PermissionMiddleware = (...permissions: PermissionType[]) => {
@@ -27,7 +28,7 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
           .send(`You don't have permission for ` + notPermitted);
       }
     } catch (err) {
-      res.sendStatus(400).send(err.massage);
+      res.send(new HttpException(true, 400, err.message));
     }
   };
 };

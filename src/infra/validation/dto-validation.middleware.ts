@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { plainToClass } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { sanitize } from "class-sanitizer";
-import { HttpExeption } from ".";
+import { HttpException } from ".";
 
 function DtoValidationMiddleware(
   type: any,
@@ -19,7 +19,7 @@ function DtoValidationMiddleware(
             )
             .join(",\n ");
 
-          res.send(new HttpExeption(true, 400, dtoErrors));
+          res.send(new HttpException(true, 400, dtoErrors));
           return;
         } else {
           //sanitize the object and call the next middleware

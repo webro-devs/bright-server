@@ -1,4 +1,4 @@
-class HttpExeption extends Error {
+class HttpException extends Error {
   constructor(
     public error: boolean,
     public status: number,
@@ -8,4 +8,4 @@ class HttpExeption extends Error {
   }
 }
 
-export default HttpExeption;
+export default HttpException;
