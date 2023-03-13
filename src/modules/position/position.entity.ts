@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Admin } from "../admin/admin.entity";
 
 @Entity("position")
 export class Position {
@@ -6,8 +7,8 @@ export class Position {
   id: string;
 
   @Column({ type: "text" })
-  name: string;
+  title: string;
 
-  @Column({ type: "text" })
-  description: string;
+  @OneToMany(() => Admin, (admin) => admin.position)
+  admins: Admin[];
 }

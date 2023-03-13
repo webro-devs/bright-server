@@ -5,10 +5,13 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Permission } from "../permission/permission.entity";
 import { News } from "../news/news.entity";
+import { Position } from "../position/position.entity";
 
 @Entity("admin")
 export class Admin {
@@ -18,7 +21,7 @@ export class Admin {
   @Column({ type: "text", unique: true })
   login: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", select: false })
   password: string;
 
   @Column({ type: "text" })
@@ -47,6 +50,13 @@ export class Admin {
 
   @OneToMany(() => News, (news) => news.creator)
   news: News[];
+
+  @ManyToOne(() => Position, (position) => position.admins, {
+    cascade: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn()
+  position: Position;
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

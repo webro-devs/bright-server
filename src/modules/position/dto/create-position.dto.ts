@@ -1,13 +1,9 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-class CreatPositionDto {
+class CreatePositionDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  description: string;
+  title: string;
 }
 
-export default CreatPositionDto;
+export default CreatePositionDto;

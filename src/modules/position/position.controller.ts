@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreatPositionDto, UpdatePositionDto } from "./dto";
+import { CreatePositionDto, UpdatePositionDto } from "./dto";
 
 import { positionService } from ".";
 
@@ -9,7 +9,7 @@ export async function getAll(req: Request, res: Response) {
 }
 
 export async function create(req: Request, res: Response) {
-  const createData: CreatPositionDto = req.body;
+  const createData: CreatePositionDto = req.body;
   const position = await positionService.create(createData);
   res.send(position);
 }
