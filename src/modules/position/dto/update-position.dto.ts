@@ -3,11 +3,7 @@ import { IsNotEmpty, IsString } from "class-validator";
 class UpdatePositionDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  description: string;
+  title: string;
 }
 
 export default UpdatePositionDto;

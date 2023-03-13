@@ -1,6 +1,6 @@
 import { UpdateResult, DeleteResult, Repository } from "typeorm";
 import { Position } from "./position.entity";
-import { CreatPositionDto, UpdatePositionDto } from "./dto";
+import { CreatePositionDto, UpdatePositionDto } from "./dto";
 
 export class PositionService {
   constructor(private readonly positionRepository: Repository<Position>) {}
@@ -15,7 +15,7 @@ export class PositionService {
     return positions;
   }
 
-  async create(values: CreatPositionDto): Promise<Position> {
+  async create(values: CreatePositionDto): Promise<Position> {
     const response = this.positionRepository.create(values);
     return this.positionRepository.save(response);
   }

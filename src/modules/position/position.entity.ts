@@ -7,10 +7,7 @@ export class Position {
   id: string;
 
   @Column({ type: "text" })
-  name: string;
-
-  @Column({ type: "text" })
-  description: string;
+  title: string;
 
   @OneToMany(() => Admin, (admin) => admin.position)
   admins: Admin[];
