@@ -61,6 +61,7 @@ export class AdminService {
     admin.login = values.login;
     admin.phone = values.phone;
     admin.permissions = permissions;
+    admin.position = position;
     if (values.avatar) {
       admin.avatar = values.avatar;
     }
@@ -81,6 +82,10 @@ export class AdminService {
           return new HttpException(true, 400, "This login already exist!");
         }
       }
+    }
+    if (values.position) {
+      const position = await this.positionService.getById(values.position);
+      admin.position = position;
     }
     admin.city = values.city ? values.city : admin.city;
     admin.education = values.education ? values.education : admin.education;
