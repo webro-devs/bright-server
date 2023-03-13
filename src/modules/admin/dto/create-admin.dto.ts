@@ -50,6 +50,10 @@ class CreateAdminDto {
     parseTextToArray("permissions", value),
   )
   permissions: string[];
+
+  @IsNotEmpty()
+  @IsString()
+  position: string;
 }
 
 export default CreateAdminDto;

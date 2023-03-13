@@ -10,6 +10,11 @@ export class PositionService {
     return positions;
   }
 
+  async getById(id: string): Promise<Position> {
+    const positions = await this.positionRepository.findOne({ where: { id } });
+    return positions;
+  }
+
   async create(values: CreatPositionDto): Promise<Position> {
     const response = this.positionRepository.create(values);
     return this.positionRepository.save(response);
