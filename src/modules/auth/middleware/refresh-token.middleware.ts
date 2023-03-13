@@ -14,7 +14,7 @@ const RefreshTokenMiddleware = async (
     req.user = user;
     next();
   } catch (err) {
-    res.send(new HttpException(true, 400, err.message));
+    res.send(new HttpException(true, 426, err.message));
   }
 };
 

@@ -1,14 +1,14 @@
 import { NextFunction, Response } from "express";
 import { PermissionType } from "../../../infra/shared/type";
 import { HttpException } from "../../../infra/validation";
-import { adminService } from "../../admin";
+import { authService } from "../auth.module";
 
 const PermissionMiddleware = (...permissions: PermissionType[]) => {
   return async (req, res: Response, next: NextFunction) => {
     try {
       let isPermitted = false;
       let notPermitted = "";
-      const user = await adminService.getById(req.user.id);
+      const user = await authService.validateAdminById(req.user.id);
       const adminPermission = user.permissions || [];
       for (let i = 0; i < permissions.length; i++) {
         if (adminPermission.find((ap) => ap.title == permissions[i])) {
