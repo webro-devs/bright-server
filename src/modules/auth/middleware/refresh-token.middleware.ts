@@ -1,4 +1,5 @@
 import { NextFunction, Response } from "express";
+import { HttpException } from "../../../infra/validation";
 import { authService } from "../auth.module";
 import { REFRESH_TOKEN_ADMIN } from "../constanta";
 
@@ -13,7 +14,7 @@ const RefreshTokenMiddleware = async (
     req.user = user;
     next();
   } catch (err) {
-    res.sendStatus(400).send(err.massage);
+    res.send(new HttpException(true, 400, err.message));
   }
 };
 

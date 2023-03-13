@@ -11,6 +11,7 @@ const router = Router();
 
 router
   .get("/admin", adminController.getAll)
+  .get("/admin/me", adminController.getMe)
   .get("/admin/:id", adminController.getById)
   .post(
     "/admin",

@@ -1,4 +1,5 @@
 import { NextFunction, Response } from "express";
+import { HttpException } from "../../../infra/validation";
 import { authService } from "../auth.module";
 import { ACCESS_TOKEN_ADMIN } from "../constanta";
 
@@ -8,7 +9,12 @@ const AccessTokenMiddleware = async (
   next: NextFunction,
 ) => {
   try {
-    if (req.method == "GET") {
+    if (
+      (req.method == "GET" && req.url == "/news") ||
+      req.url == "/auth/login" ||
+      req.url == "/auth/logout" ||
+      req.url == "/auth/refresh"
+    ) {
       next();
       return;
     }
@@ -17,7 +23,7 @@ const AccessTokenMiddleware = async (
     req.user = user;
     next();
   } catch (err) {
-    res.sendStatus(400).send(err.massage);
+    res.send(new HttpException(true, 400, err.message));
   }
 };
 

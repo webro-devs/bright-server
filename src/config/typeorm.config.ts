@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import { DataSource } from "typeorm";
+console.log(process.env.NODE_ENV);
 
 const TypeOrmDataSource = new DataSource({
   type: "postgres",
@@ -10,7 +11,7 @@ const TypeOrmDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   name: "default",
-  entities: ["src/**/*.entity.*"],
+  entities: [process.env.NODE_ENV !== 'production' ? "src/**/*.entity.*" : "dist/**/*.entity.js"],
   logging: true,
   synchronize: true,
 });
