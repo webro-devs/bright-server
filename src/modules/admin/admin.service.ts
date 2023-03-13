@@ -2,6 +2,7 @@ import { DeleteResult, Repository, DataSource, EntityManager } from "typeorm";
 import { fileService, hashPassword } from "../../infra/helpers";
 import { HttpException } from "../../infra/validation";
 import { PermissionService } from "../permission/permission.service";
+import { PositionService } from "../position/position.service";
 import { Admin } from "./admin.entity";
 import { CreateAdminDto, UpdateAdminDto, UpdateAdminProfileDto } from "./dto";
 
@@ -9,11 +10,14 @@ export class AdminService {
   constructor(
     private readonly adminRepository: Repository<Admin>,
     private readonly permissionService: PermissionService,
+    private readonly positionService: PositionService,
     private readonly connection: DataSource,
   ) {}
 
   async getAll(): Promise<Admin[]> {
-    const admins = await this.adminRepository.find();
+    const admins = await this.adminRepository.find({
+      where: { isActive: true },
+    });
     return admins;
   }
 
@@ -31,7 +35,13 @@ export class AdminService {
   }
 
   async getByLogin(login: string) {
-    const admin = await this.adminRepository.findOne({ where: { login } });
+    const admin = await this.adminRepository
+      .createQueryBuilder("admin")
+      .addSelect("admin.password")
+      .where("admin.login = :login", { login })
+      .leftJoinAndSelect("admin.permissions", "permission")
+      .getOne();
+    return admin;
     return admin;
   }
 
@@ -44,6 +54,7 @@ export class AdminService {
     const permissions = await this.permissionService.getManyPermissionsById(
       values.permissions,
     );
+    const position = await this.positionService.getById(values.position);
     admin.fullName = values.fullName;
     admin.education = values.education;
     admin.city = values.city;
@@ -53,6 +64,7 @@ export class AdminService {
     if (values.avatar) {
       admin.avatar = values.avatar;
     }
+
     await admin.hashPassword(values.password);
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(admin).catch((err) => new Error(err));

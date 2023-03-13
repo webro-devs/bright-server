@@ -51,6 +51,10 @@ class UpdateAdminDto {
     parseTextToArray("permissions", value),
   )
   permissions: string[];
+
+  @IsOptional()
+  @IsString()
+  position: string;
 }
 
 export default UpdateAdminDto;
