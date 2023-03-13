@@ -6,6 +6,7 @@ import {
   ManyToMany,
   OneToOne,
   JoinColumn,
+  JoinTable,
 } from "typeorm";
 import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
@@ -24,6 +25,7 @@ export class News {
   publishDate: Date;
 
   @ManyToMany(() => Category, (category) => category.news)
+  @JoinTable()
   categories: Category[];
 
   @ManyToOne(() => Admin, (admin) => admin.news, {
