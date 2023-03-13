@@ -30,19 +30,31 @@ export class NewsLanguage {
   @Column({ type: "varchar", nullable: true })
   tags: string[];
 
-  @OneToOne(() => News, (news) => news.uz, { onDelete: "CASCADE" })
+  @OneToOne(() => News, (news) => news.uz, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   uz: News;
 
-  @OneToOne(() => News, (news) => news.ru, { onDelete: "CASCADE" })
+  @OneToOne(() => News, (news) => news.ru, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   ru: News;
 
-  @OneToOne(() => News, (news) => news.en, { onDelete: "CASCADE" })
+  @OneToOne(() => News, (news) => news.en, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   en: News;
 
-  @OneToOne(() => News, (news) => news.уз, { onDelete: "CASCADE" })
+  @OneToOne(() => News, (news) => news.уз, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   уз: News;
 }

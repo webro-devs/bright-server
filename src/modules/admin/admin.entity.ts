@@ -40,7 +40,7 @@ export class Admin {
   isActive: boolean;
 
   @ManyToMany(() => Permission, (permission) => permission.admins, {
-    onDelete: "CASCADE",
+    onDelete: "SET NULL",
   })
   @JoinTable()
   permissions: Permission[];

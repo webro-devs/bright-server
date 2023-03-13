@@ -40,9 +40,25 @@ export class NewsService {
     return response;
   }
 
-  async update(values: UpdateNewsDto, id: string): Promise<UpdateResult> {
-    const response = await this.newsRepository.update(id, values);
-    return response;
+  async update(values: UpdateNewsDto, id: string) {
+    const languages = ["uz", "ru", "en", "уз"];
+    const arr = [];
+
+    const find = await this.getById(id);
+    await Promise.all(
+      languages?.map(async (key) => {
+        if (values[key]) {
+          if (find[key]) {
+            await this.newsLanguageService.put(
+              { ...values[key] },
+              find[key].id,
+            );
+          }
+        }
+      }),
+    );
+
+    return find;
   }
 
   async remove(id: string): Promise<DeleteResult> {
@@ -61,7 +77,7 @@ export class NewsService {
       categories: null,
       publishDate: data.publishDate,
     };
-    if (data?.categories.length > 0) {
+    if (data?.categories?.length > 0) {
       const categories = await this.categoryService.getManyCategoriesById(
         data.categories,
       );

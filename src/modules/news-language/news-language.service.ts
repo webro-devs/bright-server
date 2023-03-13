@@ -32,4 +32,13 @@ export class NewsLanguageService {
     const response = await this.languageRepository.delete(id);
     return response;
   }
+
+  async put(values: UpdateNewsLanguageDto, id: string) {
+    await this.languageRepository
+      .createQueryBuilder()
+      .update()
+      .set(values)
+      .where("id = :id", { id })
+      .execute();
+  }
 }

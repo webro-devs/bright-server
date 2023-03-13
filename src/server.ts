@@ -1,6 +1,5 @@
 import * as express from "express";
-import * as dotenv from "dotenv";
-dotenv.config();
+require("dotenv").config();
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
 const fileUpload = require("express-fileupload");
@@ -25,7 +24,7 @@ TypeOrmDataSource.initialize()
     app.use(cors());
     app.use(fileUpload());
     app.use(cookieParser());
-    app.use(AccessTokenMiddleware);
+    // app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,
