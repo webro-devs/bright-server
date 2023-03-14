@@ -9,5 +9,5 @@ export const accessTokenOptions: CookieOptions = {
 };
 export const refreshTokenOptions: CookieOptions = {
   ...accessTokenOptions,
-  httpOnly: true,
+  // httpOnly: true,
 };
