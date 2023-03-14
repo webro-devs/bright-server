@@ -3,6 +3,8 @@ import { CreateNewsDto, UpdateNewsDto } from "./dto";
 
 import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
+import { Upload } from "../../infra/shared/interface";
+import { fileService } from "../../infra/helpers";
 
 export async function getAll(__: Request, res: Response) {
   const news = await newsService.getAll();
@@ -20,13 +22,33 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
-export async function create(req: Request, res: Response) {
+export async function create(req: Upload, res: Response) {
   const newsData: CreateNewsDto = req.body;
-  console.log(newsData);
+  const imgData = ["uz", "ru", "en", "уз"];
 
-  const news = await newsService.create(newsData, req["body"]["creator"]["id"]);
+  for (let i = 0; imgData.length > i; i++) {
+    if (newsData[imgData[i]]) {
+      newsData[imgData[i]] = JSON.parse(newsData[imgData[i]]);
+    } else {
+      newsData[imgData[i]] = {};
+    }
 
-  res.send(news);
+    if (req?.files[imgData[i] + "_img"]) {
+      const avatar = await fileService.uploadImage(
+        req.files[imgData[i] + "_img"],
+      );
+
+      if (avatar.error) {
+        res.send(new HttpException(true, 500, "Image upload error"));
+        return;
+      }
+      newsData[imgData[i]]["file"] = avatar.url;
+    }
+  }
+
+  // const news = await newsService.create(newsData, req["body"]["creator"]["id"]);
+
+  res.send("goood");
 }
 
 export async function update(req: Request, res: Response) {
