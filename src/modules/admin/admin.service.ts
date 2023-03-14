@@ -17,6 +17,10 @@ export class AdminService {
   async getAll(): Promise<Admin[]> {
     const admins = await this.adminRepository.find({
       where: { isActive: true },
+      relations: {
+        position: true,
+        permissions: true,
+      },
     });
     return admins;
   }
@@ -25,6 +29,8 @@ export class AdminService {
     const admin = await this.adminRepository.findOne({
       relations: {
         permissions: true,
+        position: true,
+        news: true,
       },
       where: { id },
     });
@@ -41,7 +47,6 @@ export class AdminService {
       .where("admin.login = :login", { login })
       .leftJoinAndSelect("admin.permissions", "permission")
       .getOne();
-    return admin;
     return admin;
   }
 
