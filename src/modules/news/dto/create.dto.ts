@@ -23,34 +23,33 @@ function parseTextToArray(name: string, value?: string) {
 
 class CreateNewsDto {
   @IsOptional()
-  @IsArray()
   state: State;
 
   @IsNotEmpty()
-  @IsArray()
+  // @IsArray()
   creator: Admin;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   publishDate: string;
 
-  @IsNotEmpty()
-  @IsArray()
+  // @IsNotEmpty()
+  // @IsArray()
   @Transform(({ value }: { value: string }) =>
     parseTextToArray("categories", value),
   )
   categories: string[];
 
-  @IsObject()
+  @IsOptional()
   uz: NewsLanguage;
 
-  @IsObject()
+  @IsOptional()
   ru: NewsLanguage;
 
-  @IsObject()
+  @IsOptional()
   en: NewsLanguage;
 
-  @IsObject()
+  @IsOptional()
   уз: NewsLanguage;
 }
 
