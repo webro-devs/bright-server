@@ -6,8 +6,9 @@ export const accessTokenOptions: CookieOptions = {
   // secure: true,
   sameSite: "none",
   maxAge: 31536000000,
+  httpOnly: true
 };
 export const refreshTokenOptions: CookieOptions = {
   ...accessTokenOptions,
-  // httpOnly: true,
+  httpOnly: true,
 };
