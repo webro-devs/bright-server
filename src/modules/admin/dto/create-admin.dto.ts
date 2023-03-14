@@ -41,7 +41,6 @@ class CreateAdminDto {
   education: string;
 
   @IsOptional()
-  @IsObject()
   avatar;
 
   @IsNotEmpty()
