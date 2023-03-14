@@ -8,6 +8,7 @@ import { TypeOrmDataSource } from "./config";
 import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
+app.use(cors({ origin: true, credentials: true }));
 
 TypeOrmDataSource.initialize()
   .then(() => {
@@ -19,12 +20,10 @@ TypeOrmDataSource.initialize()
       newsRouter,
       authRouter,
     } = require("./router");
-
+    
     app.use(express.json());
-    app.use(cors({ origin: true, credentials: true }));
-    app.options('*', cors({ origin: true, credentials: true }))
-    app.use(fileUpload());
     app.use(cookieParser());
+    app.use(fileUpload());
     // app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,

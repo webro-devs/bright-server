@@ -4,6 +4,10 @@ class CreatePositionDto {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 }
 
 export default CreatePositionDto;
