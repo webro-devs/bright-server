@@ -8,11 +8,12 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
     try {
       let isPermitted = false;
       let notPermitted = "";
-      const user = await authService.validateAdminById(req.user.id);
+      const user = await authService.validateAdminById(req.user?.id);
       const adminPermission = user.permissions || [];
       for (let i = 0; i < permissions.length; i++) {
         if (adminPermission.find((ap) => ap.title == permissions[i])) {
           isPermitted = true;
+          req.user = user;
         } else {
           isPermitted = false;
           notPermitted = permissions[i];

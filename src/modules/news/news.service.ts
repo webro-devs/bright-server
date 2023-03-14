@@ -5,6 +5,9 @@ import { NewsLanguageService } from "../news-language/news-language.service";
 import { CategoryService } from "../category/category.service";
 import { AdminService } from "../admin/admin.service";
 import { Admin } from "../admin/admin.entity";
+import { fileService, hashPassword } from "../../infra/helpers";
+import { Upload } from "../../infra/shared/interface";
+import { HttpException } from "../../infra/validation";
 
 export class NewsService {
   constructor(
@@ -40,15 +43,29 @@ export class NewsService {
     return response;
   }
 
-  async update(values: UpdateNewsDto, id: string) {
+  async update(values: UpdateNewsDto, id: string, imgs: Upload) {
     const languages = ["uz", "ru", "en", "уз"];
     const arr = [];
 
     const find = await this.getById(id);
+
     await Promise.all(
       languages?.map(async (key) => {
         if (values[key]) {
+          values[key] = JSON.parse(values[key]);
           if (find[key]) {
+            if (values[key]?.file) {
+              if (find[key]?.file) {
+                await fileService.removeFile(find[key].file);
+              }
+            }
+            const img = await fileService.uploadImage(imgs[key + "_img"]);
+            if (img.error) {
+              return new HttpException(true, 500, "image upload error");
+            }
+            values[key].file = img.url;
+            find[key].file = img.url;
+
             await this.newsLanguageService.put(
               { ...values[key] },
               find[key].id,

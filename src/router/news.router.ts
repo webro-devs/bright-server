@@ -18,7 +18,7 @@ router
   .put(
     "/news/:id",
     DtoValidationMiddleware(UpdateNewsDto, true),
-    PermissionMiddleware("Редактировать новости"),
+    // PermissionMiddleware("Редактировать новости"),
     newsController.update,
   )
   .delete(
