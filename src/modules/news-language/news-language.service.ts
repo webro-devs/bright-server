@@ -15,9 +15,20 @@ export class NewsLanguageService {
     return response;
   }
 
-  async create(values: CreateNewsLanguageDto) {
-    const response = this.languageRepository.create(values);
-    return await this.languageRepository.save(response);
+  // async create(values: CreateNewsLanguageDto) {
+  //   const response = this.languageRepository.create(values);
+  //   return await this.languageRepository.save(response);
+  // }
+
+  async createMany(values: CreateNewsLanguageDto[]) {
+    const response = this.languageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(NewsLanguage)
+      .values(values as unknown as NewsLanguage)
+      .returning("id")
+      .execute();
+    return response;
   }
 
   async update(

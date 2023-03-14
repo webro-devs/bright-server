@@ -20,11 +20,11 @@ TypeOrmDataSource.initialize()
       newsRouter,
       authRouter,
     } = require("./router");
-    
+
     app.use(express.json());
     app.use(cookieParser());
     app.use(fileUpload());
-    // app.use(AccessTokenMiddleware);
+    app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,

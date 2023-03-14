@@ -21,8 +21,8 @@ export class News {
   @Column({ type: "varchar", default: "general access" })
   state: State;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  publishDate: Date;
+  @Column({ type: "timestamp", nullable: true })
+  publishDate: string;
 
   @ManyToMany(() => Category, (category) => category.news)
   @JoinTable()

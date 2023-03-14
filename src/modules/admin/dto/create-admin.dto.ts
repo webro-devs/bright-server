@@ -10,6 +10,7 @@ import { Transform } from "class-transformer";
 
 function parseTextToArray(name: string, value?: string) {
   const arr = value ? JSON.parse(value) : "";
+  console.log(arr);
   if (!isArray(arr)) {
     throw new Error(`${name} should be array.`);
   }

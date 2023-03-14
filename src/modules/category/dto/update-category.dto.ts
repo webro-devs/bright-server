@@ -17,9 +17,6 @@ class UpdateCategoryDto {
   @IsOptional()
   @IsString()
   уз: string;
-
-  @IsArray()
-  news: News[];
 }
 
 export default UpdateCategoryDto;
