@@ -45,6 +45,9 @@ export class Admin {
   @Column({ type: "timestamp with time zone", nullable: true })
   lastSeen: string;
 
+  @Column({ default: true, type: "boolean" })
+  isOnline: boolean;
+
   @ManyToMany(() => Permission, (permission) => permission.admins, {
     onDelete: "SET NULL",
   })

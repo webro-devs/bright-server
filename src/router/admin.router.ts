@@ -17,13 +17,13 @@ router
   .post(
     "/admin",
     DtoValidationMiddleware(CreateAdminDto),
-    // PermissionMiddleware("Создать пользователя"),
+    PermissionMiddleware("Создать пользователя"),
     adminController.create,
   )
   .put(
     "/admin/:id",
     DtoValidationMiddleware(UpdateAdminDto, true),
-    PermissionMiddleware("Создать пользователя", "Удалить"),
+    PermissionMiddleware("Создать пользователя"),
     adminController.update,
   )
   .patch(
