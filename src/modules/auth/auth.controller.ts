@@ -8,7 +8,7 @@ import {
 } from "./constanta";
 import { HttpException } from "../../infra/validation";
 
-export const Login = async (req, res) => {
+export const Login = async (req, res: Response) => {
   const accessToken = authService.getJWT("access", req.user.id);
   const refreshToken = authService.getJWT("refresh", req.user.id);
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
@@ -25,7 +25,7 @@ export const Logout = async (_: Request, res: Response) => {
   res.clearCookie(REFRESH_TOKEN_ADMIN, refreshTokenOptions);
 };
 
-export const Refresh = async (req, res) => {
+export const Refresh = async (req, res: Response) => {
   const accessToken = authService.getJWT("access", req.user.id);
   const refreshToken = authService.getJWT("refresh", req.user.id);
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
