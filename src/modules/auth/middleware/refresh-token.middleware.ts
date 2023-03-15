@@ -12,9 +12,14 @@ const RefreshTokenMiddleware = async (
     const token = req.cookies[REFRESH_TOKEN_ADMIN];
     const user = await authService.validateToken(token, "refresh");
     req.user = user;
+    if (!user.isActive) {
+      return res
+        .status(404)
+        .send(new HttpException(true, 404, "Admin not found!"));
+    }
     next();
   } catch (err) {
-    res.status(426).send(new HttpException(true, 426, err.message));
+    res.status(500).send(new HttpException(true, 426, err.message));
   }
 };
 

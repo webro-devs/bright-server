@@ -20,6 +20,11 @@ const AccessTokenMiddleware = async (
     }
     const token = req.cookies[ACCESS_TOKEN_ADMIN];
     const user = await authService.validateToken(token, "access");
+    if (!user.isActive) {
+      return res
+        .status(404)
+        .send(new HttpException(true, 404, "Admin not found!"));
+    }
     req.user = user;
     next();
   } catch (err) {
