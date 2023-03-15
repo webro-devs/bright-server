@@ -13,7 +13,10 @@ export const Login = async (req, res: Response) => {
   const refreshToken = authService.getJWT("refresh", req.user.id);
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
-  res.send("");
+  res.send({
+    access_token_admin: accessToken,
+    refresh_token_admin: refreshToken,
+  });
   try {
   } catch (err) {
     res.status(400).send(new HttpException(true, 400, err.massage));

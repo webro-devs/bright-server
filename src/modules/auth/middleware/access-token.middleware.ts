@@ -18,7 +18,8 @@ const AccessTokenMiddleware = async (
       next();
       return;
     }
-    const token = req.cookies[ACCESS_TOKEN_ADMIN];
+    const token = req.headers[ACCESS_TOKEN_ADMIN];
+
     const user = await authService.validateToken(token, "access");
     if (!user.isActive) {
       return res
