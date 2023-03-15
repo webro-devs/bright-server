@@ -29,12 +29,7 @@ router
     newsController.deleteData,
   )
   .patch("/news/archive/:id", newsController.updateStateArchive)
-  .patch("/news/general_access/:id", newsController.updateStateGeneral);
-// .patch(
-//   "news/general_access/:id",
-//   // PermissionMiddleware("Общий доступ", "Редактировать новости"),
-//   newsController.updateState,
-// )
-// .patch("news/publish_date/:id", PermissionMiddleware("Изменить дата"));
+  .patch("/news/general_access/:id", newsController.updateStateGeneral)
+  .patch("news/publish_date/:id", newsController.updateDate);
 
 module.exports = router;

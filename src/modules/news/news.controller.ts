@@ -93,6 +93,14 @@ export async function updateStateGeneral(req: Request, res: Response) {
   res.send(updateState);
 }
 
+export async function updateDate(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const updateDate = await newsService.updateDate(id, req.body.date);
+
+  res.send(updateDate);
+}
+
 export async function deleteData(req: Request, res: Response) {
   const { id } = req.params;
 

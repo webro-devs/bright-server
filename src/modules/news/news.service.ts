@@ -54,6 +54,15 @@ export class NewsService {
     return "State successfully changed";
   }
 
+  async updateDate(id: string, date: string) {
+    await this.newsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ publishDate: date })
+      .where("id = :id", { id })
+      .execute();
+  }
+
   async update(values: UpdateNewsDto, id: string, imgs: Upload) {
     const languages = ["uz", "ru", "en", "уз"];
 
