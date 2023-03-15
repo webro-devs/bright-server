@@ -26,15 +26,13 @@ class CreateNewsDto {
   state: State;
 
   @IsNotEmpty()
-  // @IsArray()
   creator: Admin;
 
   @IsOptional()
   @IsString()
   publishDate: string;
 
-  // @IsNotEmpty()
-  // @IsArray()
+  @IsOptional()
   @Transform(({ value }: { value: string }) =>
     parseTextToArray("categories", value),
   )

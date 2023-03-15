@@ -32,7 +32,22 @@ export async function create(req: Upload, res: Response) {
     } else {
       newsData[imgData[i]] = {};
     }
-
+    if (!req?.files?.uz_img) {
+      newsData[imgData[i]]["files"] = null;
+      continue;
+    }
+    if (!req?.files?.ru_img) {
+      newsData[imgData[i]]["files"] = null;
+      continue;
+    }
+    if (!req?.files?.en_img) {
+      newsData[imgData[i]]["files"] = null;
+      continue;
+    }
+    if (!req?.files?.уз_img) {
+      newsData[imgData[i]]["files"] = null;
+      continue;
+    }
     if (req?.files[imgData[i] + "_img"]) {
       const avatar = await fileService.uploadImage(
         req.files[imgData[i] + "_img"],
@@ -56,7 +71,7 @@ export async function update(req: Upload, res: Response) {
   const newsData: UpdateNewsDto = req.body;
   const { id } = req.params;
 
-  const updateNews = await newsService.update(newsData, id, req.files);
+  const updateNews = await newsService.update(newsData, id, req?.files);
 
   res.send(updateNews);
 }
