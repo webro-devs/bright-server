@@ -19,8 +19,9 @@ TypeOrmDataSource.initialize()
       positionRouter,
       newsRouter,
       authRouter,
+      chatRouter,
     } = require("./router");
-    
+
     app.use(express.json());
     app.use(cookieParser());
     app.use(fileUpload());
@@ -32,6 +33,7 @@ TypeOrmDataSource.initialize()
       positionRouter,
       newsRouter,
       authRouter,
+      chatRouter,
     );
 
     console.log("Data Source has been initialized!");
