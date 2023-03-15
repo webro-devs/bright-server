@@ -46,16 +46,17 @@ export async function create(req: Upload, res: Response) {
     }
   }
 
-  // const news = await newsService.create(newsData, req["body"]["creator"]["id"]);
+  const news = await newsService.create(newsData, req["user"]?.id);
+  console.log(req["user"].id);
 
   res.send("goood");
 }
 
-export async function update(req: Request, res: Response) {
+export async function update(req: Upload, res: Response) {
   const newsData: UpdateNewsDto = req.body;
   const { id } = req.params;
 
-  const updateNews = await newsService.update(newsData, id);
+  const updateNews = await newsService.update(newsData, id, req.files);
 
   res.send(updateNews);
 }

@@ -6,6 +6,7 @@ import {
   UpdateAdminDto,
   UpdateAdminProfileDto,
 } from "../modules/admin/dto";
+import { PermissionMiddleware } from "../modules/auth/middleware";
 
 const router = Router();
 
@@ -16,15 +17,25 @@ router
   .post(
     "/admin",
     DtoValidationMiddleware(CreateAdminDto),
+    // PermissionMiddleware("Создать пользователя"),
     adminController.create,
   )
   .put(
     "/admin/:id",
     DtoValidationMiddleware(UpdateAdminDto, true),
+    PermissionMiddleware("Создать пользователя", "Удалить"),
     adminController.update,
   )
-  .patch("/admin/active/:id", adminController.changeActive)
+  .patch(
+    "/admin/active/:id",
+    PermissionMiddleware("Создать пользователя", "Удалить"),
+    adminController.changeActive,
+  )
   .patch("/admin/profile/:id", adminController.changeProfile)
-  .delete("/admin/:id", adminController.deleteData);
+  .delete(
+    "/admin/:id",
+    PermissionMiddleware("Удалить"),
+    adminController.deleteData,
+  );
 
 module.exports = router;

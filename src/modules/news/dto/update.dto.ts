@@ -22,19 +22,19 @@ class UpdateNewsDto {
   creator: Admin;
 
   @IsOptional()
-  @IsObject()
+  // @IsObject()
   uz: NewsLanguage;
 
   @IsOptional()
-  @IsObject()
+  // @IsObject()
   ru: NewsLanguage;
 
   @IsOptional()
-  @IsObject()
+  // @IsObject()
   en: NewsLanguage;
 
   @IsOptional()
-  @IsObject()
+  // @IsObject()
   уз: NewsLanguage;
 }
 
