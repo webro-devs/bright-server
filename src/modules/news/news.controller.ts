@@ -66,5 +66,5 @@ export async function deleteData(req: Request, res: Response) {
 
   const deleteData = await newsService.remove(id);
 
-  return deleteData;
+  res.send(deleteData);
 }

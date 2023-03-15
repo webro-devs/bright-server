@@ -23,7 +23,7 @@ router
   )
   .delete(
     "/news/:id",
-    PermissionMiddleware("Удалить"),
+    // PermissionMiddleware("Удалить"),
     newsController.deleteData,
   );
 
