@@ -50,7 +50,7 @@ export class AdminService {
     return admin;
   }
 
-  async create(values: CreateAdminDto & { avatar: string }) {
+  async create(values: CreateAdminDto) {
     const admin = new Admin();
     const isLoginExist = await this.getByLogin(values.login);
     if (isLoginExist) {
@@ -78,7 +78,7 @@ export class AdminService {
     return admin;
   }
 
-  async update(values: UpdateAdminDto & { avatar: string }, id: string) {
+  async update(values: UpdateAdminDto, id: string) {
     let admin = await this.getById(id);
     if (values.login) {
       const isLoginExist = await this.getByLogin(values.login);
@@ -125,15 +125,22 @@ export class AdminService {
   }
 
   async changeProfile(id: string, values: UpdateAdminProfileDto) {
-    let password,
-      admin = await this.getById(id);
-    password = admin.password;
+    let admin = await this.getById(id),
+      password = admin.password,
+      avatar = admin.avatar;
     if (values.password) {
       password = await hashPassword(values.password);
+    }
+    if (values.avatar) {
+      if (admin.avatar) {
+        await fileService.removeFile(admin.avatar);
+      }
+      avatar = values.avatar;
     }
     const response = await this.adminRepository.update(id, {
       ...values,
       password,
+      avatar,
     });
     return response;
   }

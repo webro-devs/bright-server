@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { LoginDto } from "./dto";
 import { authService } from "./auth.module";
 import {
   accessTokenOptions,
@@ -7,6 +6,7 @@ import {
   refreshTokenOptions,
   REFRESH_TOKEN_ADMIN,
 } from "./constanta";
+import { HttpException } from "../../infra/validation";
 
 export const Login = async (req, res: Response) => {
   const accessToken = authService.getJWT("access", req.user.id);
@@ -16,7 +16,7 @@ export const Login = async (req, res: Response) => {
   res.send("");
   try {
   } catch (err) {
-    res.sendStatus(400).send(err.massage);
+    res.status(400).send(new HttpException(true, 400, err.massage));
   }
 };
 
@@ -32,6 +32,6 @@ export const Refresh = async (req, res: Response) => {
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
   try {
   } catch (err) {
-    res.sendStatus(400).send(err.massage);
+    res.status(400).send(new HttpException(true, 400, err.massage));
   }
 };

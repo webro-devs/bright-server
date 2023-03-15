@@ -24,11 +24,11 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
         return;
       } else {
         res
-          .sendStatus(403)
-          .send(`You don't have permission for ` + notPermitted);
+          .status(403)
+          .send(new HttpException(true,403,`You don't have permission for ` + notPermitted));
       }
     } catch (err) {
-      res.send(new HttpException(true, 400, err.message));
+      res.status(400).send(new HttpException(true, 400, err.message));
     }
   };
 };

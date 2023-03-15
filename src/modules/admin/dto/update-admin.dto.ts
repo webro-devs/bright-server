@@ -42,7 +42,6 @@ class UpdateAdminDto {
   education: string;
 
   @IsOptional()
-  @IsObject()
   avatar;
 
   @IsOptional()

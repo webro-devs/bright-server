@@ -26,7 +26,6 @@ class UpdateAdminProfileDto {
   education: string;
 
   @IsOptional()
-  @IsObject()
   avatar;
 }
 

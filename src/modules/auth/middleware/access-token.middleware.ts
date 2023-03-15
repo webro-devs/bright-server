@@ -23,7 +23,7 @@ const AccessTokenMiddleware = async (
     req.user = user;
     next();
   } catch (err) {
-    res.send(new HttpException(true, 400, err.message));
+    res.status(400).send(new HttpException(true, 400, err.message));
   }
 };
 
