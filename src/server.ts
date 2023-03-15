@@ -8,7 +8,7 @@ import { TypeOrmDataSource } from "./config";
 import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
-app.use(cors({ origin: true, optionsSuccessStatus: 200 }));
+app.use(cors({ origin: true, credentials: true }));
 
 TypeOrmDataSource.initialize()
   .then(() => {

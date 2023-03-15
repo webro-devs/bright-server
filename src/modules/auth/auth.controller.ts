@@ -11,12 +11,6 @@ import { HttpException } from "../../infra/validation";
 export const Login = async (req, res) => {
   const accessToken = authService.getJWT("access", req.user.id);
   const refreshToken = authService.getJWT("refresh", req.user.id);
-  res.header("Content-Type", "application/json;charset=UTF-8");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
-  );
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
   res.send("");
@@ -34,12 +28,6 @@ export const Logout = async (_: Request, res: Response) => {
 export const Refresh = async (req, res) => {
   const accessToken = authService.getJWT("access", req.user.id);
   const refreshToken = authService.getJWT("refresh", req.user.id);
-  res.header("Content-Type", "application/json;charset=UTF-8");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
-  );
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
   try {
