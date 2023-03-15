@@ -49,9 +49,7 @@ export class NewsService {
     await Promise.all(
       languages?.map(async (key) => {
         if (values[key]) {
-          console.log(values[key], "1");
           if (imgs && imgs?.[key + "_img"]) {
-            console.log(values[key], "2");
             if (find[key].file) {
               await fileService.removeFile(find[key].file);
             }
@@ -59,8 +57,6 @@ export class NewsService {
             if (img.error) {
               return new HttpException(true, 500, "image upload error");
             }
-            console.log(img);
-
             values[key].file = img.url;
           }
           await this.newsLanguageService.put({ ...values[key] }, find[key].id);
