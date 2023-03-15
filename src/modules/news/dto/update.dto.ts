@@ -24,7 +24,6 @@ function parseTextToObject(name: string, value?: string) {
 
 class UpdateNewsDto {
   @IsOptional()
-  @IsArray()
   state: State;
 
   @IsOptional()

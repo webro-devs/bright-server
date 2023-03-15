@@ -18,8 +18,8 @@ export class News {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar", default: "general access" })
-  state: State;
+  @Column({ type: "varchar" })
+  state: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   publishDate: Date;

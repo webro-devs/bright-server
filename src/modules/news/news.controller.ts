@@ -5,6 +5,7 @@ import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService } from "../../infra/helpers";
+import { State } from "../../infra/shared/enums";
 
 export async function getAll(__: Request, res: Response) {
   const news = await newsService.getAll();
@@ -74,6 +75,22 @@ export async function update(req: Upload, res: Response) {
   const updateNews = await newsService.update(newsData, id, req?.files);
 
   res.send(updateNews);
+}
+
+export async function updateStateArchive(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const updateState = await newsService.updateState(id, "archive");
+
+  res.send(updateState);
+}
+
+export async function updateStateGeneral(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const updateState = await newsService.updateState(id, "general access");
+
+  res.send(updateState);
 }
 
 export async function deleteData(req: Request, res: Response) {

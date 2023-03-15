@@ -7,6 +7,7 @@ import { AdminService } from "../admin/admin.service";
 import { fileService } from "../../infra/helpers";
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
+import { State } from "../../infra/shared/enums";
 
 export class NewsService {
   constructor(
@@ -40,6 +41,17 @@ export class NewsService {
       },
     });
     return response;
+  }
+
+  async updateState(id: string, state: string) {
+    await this.newsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ state })
+      .where("id = :id", { id })
+      .execute();
+
+    return "State successfully changed";
   }
 
   async update(values: UpdateNewsDto, id: string, imgs: Upload) {
