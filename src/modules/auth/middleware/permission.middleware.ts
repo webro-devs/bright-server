@@ -13,7 +13,6 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
       for (let i = 0; i < permissions.length; i++) {
         if (adminPermission.find((ap) => ap.title == permissions[i])) {
           isPermitted = true;
-          req.user = user;
         } else {
           isPermitted = false;
           notPermitted = permissions[i];
@@ -26,7 +25,13 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
       } else {
         res
           .status(403)
-          .send(new HttpException(true,403,`You don't have permission for ` + notPermitted));
+          .send(
+            new HttpException(
+              true,
+              403,
+              `You don't have permission for ` + notPermitted,
+            ),
+          );
       }
     } catch (err) {
       res.status(400).send(new HttpException(true, 400, err.message));
