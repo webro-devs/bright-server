@@ -7,6 +7,7 @@ import { Upload } from "../../infra/shared/interface";
 import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
 import CImage from "../../infra/helpers/image";
+import { State } from "../../infra/shared/enums";
 
 export async function getAll(__: Request, res: Response) {
   const news = await newsService.getAll();
@@ -21,6 +22,53 @@ export const getById = async (req: Request, res: Response) => {
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByCreatorId = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const news = await newsService.getByCreatorId(id);
+
+    return res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getMyNews = async (req: Request, res: Response) => {
+  try {
+    const news = await newsService.getByCreatorId(req["user"].id);
+    return res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message))
+  }
+}
+
+export const getByStateGeneral = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.general_access);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByStatePublished = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.published);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByStateArchive = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.archive);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
   }
 };
 

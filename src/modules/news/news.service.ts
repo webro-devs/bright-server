@@ -24,9 +24,29 @@ export class NewsService {
         ru: true,
         en: true,
         уз: true,
+        categories: true,
+        creator: true,
+      },
+      order: {
+        created_at: "DESC",
       },
     });
     return response;
+  }
+
+  async getByState(state: State) {
+    const data = await this.newsRepository.find({
+      relations: {
+        creator: true,
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+      },
+      where: { state },
+    });
+    return data;
   }
 
   async getById(id: string): Promise<News> {
@@ -38,6 +58,22 @@ export class NewsService {
         en: true,
         уз: true,
         categories: true,
+        creator: true,
+      },
+    });
+    return response;
+  }
+
+  async getByCreatorId(id: string): Promise<News[]> {
+    const response = await this.newsRepository.find({
+      where: { creator: { id } },
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+        creator: true,
       },
     });
     return response;
@@ -112,5 +148,10 @@ export class NewsService {
 
     const news = this.newsRepository.create(newsData);
     return await this.newsRepository.save(news);
+  }
+  async getByCategory(key: string, category: string) {
+    try {
+      const data = await this.newsRepository.find();
+    } catch (err) {}
   }
 }
