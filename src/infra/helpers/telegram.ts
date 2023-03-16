@@ -10,9 +10,7 @@ const telegram = async ({ title, desc, link }) => {
   await app.telegram.sendPhoto(
     "-1001601225733",
     {
-      source: fs.readFileSync(
-        path.resolve(__dirname, "../uploads/output/output.png"),
-      ),
+      source: fs.readFileSync(path.resolve(__dirname, "./output/output.png")),
     },
     {
       caption: text,

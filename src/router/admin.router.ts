@@ -17,7 +17,7 @@ router
   .post(
     "/admin",
     DtoValidationMiddleware(CreateAdminDto),
-    PermissionMiddleware("Создать пользователя"),
+    // PermissionMiddleware("Создать пользователя"),
     adminController.create,
   )
   .put(

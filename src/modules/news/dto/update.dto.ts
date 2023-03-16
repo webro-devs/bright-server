@@ -35,10 +35,6 @@ class UpdateNewsDto {
   categories: Category[];
 
   @IsOptional()
-  @IsString()
-  creator: Admin;
-
-  @IsOptional()
   @IsObject()
   @Transform(({ value }: { value: string }) => parseTextToObject("uz", value))
   uz: NewsLanguage;

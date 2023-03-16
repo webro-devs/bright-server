@@ -17,9 +17,6 @@ class CreateCategoryDto {
   @IsNotEmpty()
   @IsString()
   уз: string;
-
-  @IsArray()
-  news: News[];
 }
 
 export default CreateCategoryDto;

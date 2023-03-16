@@ -253,7 +253,7 @@ const CImage = async ({ txt, ctgs = [], imgPath }) => {
     const bottomMask = await Jimp.read(
       path.resolve(__dirname, "./uploads/mask/bottom.png"),
     );
-    const url = `http://127.0.0.1:${process.env.PORT || 8080}${imgPath}`;
+    const url = `${imgPath}`;
     const image = await Jimp.read(url);
     const imageWidth = image.bitmap.width;
     const imageHeight = image.bitmap.height;

@@ -30,30 +30,43 @@ export async function create(req: Upload, res: Response) {
 
   for (let i = 0; imgData.length > i; i++) {
     if (newsData[imgData[i]]) {
-      newsData[imgData[i]] = JSON.parse(newsData[imgData[i]]);
+      // console.log(newsData[imgData[i]]);
+      // newsData[imgData[i]] = JSON.parse(
+      //   newsData[imgData[i]] || JSON.stringify(""),
+      // );
     } else {
       newsData[imgData[i]] = {};
     }
+
     if (!req?.files?.uz_img) {
-      newsData[imgData[i]]["files"] = null;
+      console.log("uz img");
+
+      newsData[imgData[i]]["file"] = null;
       continue;
     }
     if (!req?.files?.ru_img) {
-      newsData[imgData[i]]["files"] = null;
+      console.log("ru img");
+
+      newsData[imgData[i]]["file"] = null;
       continue;
     }
     if (!req?.files?.en_img) {
-      newsData[imgData[i]]["files"] = null;
+      console.log("en img");
+
+      newsData[imgData[i]]["file"] = null;
       continue;
     }
     if (!req?.files?.уз_img) {
-      newsData[imgData[i]]["files"] = null;
+      console.log("uzzz img");
+
+      newsData[imgData[i]]["file"] = null;
       continue;
     }
     if (req?.files[imgData[i] + "_img"]) {
       const avatar = await fileService.uploadImage(
         req.files[imgData[i] + "_img"],
       );
+      console.log(avatar);
 
       if (avatar.error) {
         res.send(new HttpException(true, 500, "Image upload error"));
@@ -75,7 +88,7 @@ export async function create(req: Upload, res: Response) {
   const news = await newsService.create(newsData, req["user"]?.id);
   let ok = "!";
 
-  if (news.ru) {
+  if (news.ru && news.ru.file) {
     await CImage({
       imgPath: news.ru.file,
       txt: news.ru.title,
