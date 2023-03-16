@@ -26,6 +26,9 @@ export class NewsService {
         уз: true,
         categories: true,
       },
+      order: {
+        created_at: "DESC",
+      },
     });
     return response;
   }
@@ -128,5 +131,10 @@ export class NewsService {
 
     const news = this.newsRepository.create(newsData);
     return await this.newsRepository.save(news);
+  }
+  async getByCategory(key: string, category: string) {
+    try {
+      const data = await this.newsRepository.find();
+    } catch (err) {}
   }
 }

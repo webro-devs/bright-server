@@ -20,6 +20,7 @@ router
     newsController.getByStateGeneral,
   )
   .get("/news/published", newsController.getByStatePublished)
+  .get("/news/:key/:category")
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),
