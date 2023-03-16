@@ -35,6 +35,7 @@ export class AdminService {
       where: { id },
     });
     if (!admin) {
+      console.log(admin);
       throw new HttpException(true, 404, "Admin not found");
     }
     return admin;

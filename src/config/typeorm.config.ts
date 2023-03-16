@@ -12,10 +12,10 @@ const TypeOrmDataSource = new DataSource({
   name: "default",
   entities: [
     process.env.NODE_ENV !== "production"
-      ? "src/**/*.entity.*"
-      : "dist/**/*.entity.js",
+      ? "src/**/*.entity.{js,ts}"
+      : "dist/**/*.entity.{js,ts}",
   ],
-  logging: true,
+  logging: false   ,
   synchronize: true,
 });
 

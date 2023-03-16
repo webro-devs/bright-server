@@ -2,7 +2,7 @@ import * as jwt from "jsonwebtoken";
 
 export class JWTService {
   getJwt(sub: string, type: "access" | "refresh") {
-    const payload = { sub };
+    const payload = { sub };    
     if (type === "access") {
       return jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
@@ -13,7 +13,8 @@ export class JWTService {
     });
   }
 
-  verifyToken(token: string, type: "access" | "refresh") {
+  verifyToken(token: string, type: "access" | "refresh") {  
+
     let decode;
     if (type == "access") {
       decode = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET) as {

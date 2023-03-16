@@ -9,6 +9,7 @@ export class AuthService {
   ) {}
 
   async validateAdminByLoginPassword(login: string, password: string) {
+    
     const user = await this.adminService.getByLogin(login);
 
     if (!user) {
@@ -35,9 +36,15 @@ export class AuthService {
   async validateToken(token: string, type: "access" | "refresh") {
     try {
       const sub = this.jwtService.verifyToken(token, type);
+      console.log('sub');
+      
+      console.log(sub);
+      
       const admin = await this.adminService.getById(sub);
       return admin;
     } catch (err) {
+      console.log(err);
+      
       throw new HttpException(true, 400, "Invalid token");
     }
   }
