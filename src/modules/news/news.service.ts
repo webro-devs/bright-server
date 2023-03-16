@@ -25,6 +25,7 @@ export class NewsService {
         en: true,
         уз: true,
         categories: true,
+        creator: true,
       },
       order: {
         created_at: "DESC",
@@ -35,7 +36,6 @@ export class NewsService {
 
   async getByState(state: State) {
     const data = await this.newsRepository.find({
-      where: { state },
       relations: {
         creator: true,
         uz: true,
@@ -44,6 +44,7 @@ export class NewsService {
         уз: true,
         categories: true,
       },
+      where: { state },
     });
     return data;
   }
@@ -57,6 +58,7 @@ export class NewsService {
         en: true,
         уз: true,
         categories: true,
+        creator: true,
       },
     });
     return response;
@@ -71,6 +73,7 @@ export class NewsService {
         en: true,
         уз: true,
         categories: true,
+        creator: true,
       },
     });
     return response;
