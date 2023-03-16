@@ -10,11 +10,11 @@ const AccessTokenMiddleware = async (
 ) => {
   try {
     if (
-      (req.method == "GET" && req.url == "/news") ||
+      (req.method == "GET" && req.url.includes("/news")) ||
       req.url == "/auth/login" ||
       req.url == "/auth/logout" ||
       req.url == "/auth/refresh" ||
-      req.url == '/category'
+      req.url == "/category"
     ) {
       next();
       return;
