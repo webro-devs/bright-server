@@ -1,4 +1,10 @@
-import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
+import {
+  Between,
+  DataSource,
+  DeleteResult,
+  EntityManager,
+  Repository,
+} from "typeorm";
 import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
@@ -18,7 +24,7 @@ export class NewsService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll(): Promise<News[]> {
+  async getAll(where): Promise<News[]> {
     const response = await this.newsRepository.find({
       relations: {
         uz: true,
@@ -31,6 +37,7 @@ export class NewsService {
       order: {
         created_at: "DESC",
       },
+      where,
     });
     return response;
   }

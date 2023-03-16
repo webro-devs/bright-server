@@ -8,9 +8,28 @@ import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
 import CImage from "../../infra/helpers/image";
 import { State } from "../../infra/shared/enums";
+import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { DateRangeDto } from "../../infra/shared/dto";
 
-export async function getAll(__: Request, res: Response) {
-  const news = await newsService.getAll();
+export async function getAll(req, res: Response) {
+  const query: DateRangeDto = req.query;
+  let where = {};
+  if (query.startDate && query.endDate) {
+    where = {
+      created_at: Between(new Date(query.startDate), new Date(query.endDate)),
+    };
+  } else if (query.startDate) {
+    where = {
+      created_at: MoreThanOrEqual(new Date(query.startDate)),
+    };
+  } else if (query.endDate) {
+    where = {
+      created_at: LessThanOrEqual(new Date(query.startDate)),
+    };
+  } else {
+    where = {};
+  }
+  const news = await newsService.getAll(where);
   res.send(news);
 }
 
