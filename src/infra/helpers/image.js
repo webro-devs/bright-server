@@ -277,7 +277,7 @@ const CImage = async ({ txt, ctgs = [], imgPath }) => {
         opacityDest: 1,
       })
       .composite(logo, 60, 61, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
-      .print(oldStandart, 60, 742, txt, 800, 216);
+      .print(oldStandart, 60, 742, txt, 800, 250);
 
     lines.forEach((line) => drawLine({ image, ...line }));
     const year = textWrapper({
