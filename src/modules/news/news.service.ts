@@ -43,6 +43,20 @@ export class NewsService {
     return response;
   }
 
+  async getByCreatorId(id: string): Promise<News[]> {
+    const response = await this.newsRepository.find({
+      where: { creator: { id } },
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+      },
+    });
+    return response;
+  }
+
   async updateState(id: string, state: string) {
     await this.newsRepository
       .createQueryBuilder()
