@@ -29,12 +29,7 @@ export async function create(req: Upload, res: Response) {
   const imgData = ["uz", "ru", "en", "уз"];
 
   for (let i = 0; imgData.length > i; i++) {
-    if (newsData[imgData[i]]) {
-      // console.log(newsData[imgData[i]]);
-      // newsData[imgData[i]] = JSON.parse(
-      //   newsData[imgData[i]] || JSON.stringify(""),
-      // );
-    } else {
+    if (!newsData[imgData[i]]) {
       newsData[imgData[i]] = {};
     }
 
@@ -42,25 +37,21 @@ export async function create(req: Upload, res: Response) {
       console.log("uz img");
 
       newsData[imgData[i]]["file"] = null;
-      continue;
     }
     if (!req?.files?.ru_img) {
       console.log("ru img");
 
       newsData[imgData[i]]["file"] = null;
-      continue;
     }
     if (!req?.files?.en_img) {
       console.log("en img");
 
       newsData[imgData[i]]["file"] = null;
-      continue;
     }
     if (!req?.files?.уз_img) {
       console.log("uzzz img");
 
       newsData[imgData[i]]["file"] = null;
-      continue;
     }
     if (req?.files[imgData[i] + "_img"]) {
       const avatar = await fileService.uploadImage(
@@ -75,14 +66,17 @@ export async function create(req: Upload, res: Response) {
       newsData[imgData[i]]["file"] = avatar.url;
     }
 
-    newsData[imgData[i]].shortLink = slugify(newsData[imgData[i]].shortLink, {
-      replacement: "-",
-      remove: /[*+~.()'"!:@]/g,
-      lower: false,
-      strict: false,
-      locale: "vi",
-      trim: true,
-    });
+    newsData[imgData[i]].shortLink = slugify(
+      newsData[imgData[i]].shortLink || "",
+      {
+        replacement: "-",
+        remove: /[*+~.()'"!:@]/g,
+        lower: false,
+        strict: false,
+        locale: "vi",
+        trim: true,
+      },
+    );
   }
 
   const news = await newsService.create(newsData, req["user"]?.id);
@@ -91,8 +85,11 @@ export async function create(req: Upload, res: Response) {
   if (news.ru && news.ru.file) {
     await CImage({
       imgPath: news.ru.file,
-      txt: news.ru.title,
-      ctgs: news.categories?.["ru"],
+      txt:
+        news.ru.title.length > 102
+          ? news.ru.title.slice(0, 99) + "..."
+          : news.ru.title,
+      ctgs: news.categories?.map((ctg) => ctg.ru),
     });
 
     await telegram({
