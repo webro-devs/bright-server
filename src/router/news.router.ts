@@ -9,6 +9,8 @@ const router = Router();
 router
   .get("/news", newsController.getAll)
   .get("/news/:id", newsController.getById)
+  .get("/news/archives", PermissionMiddleware("Доступ к архивам"))
+  .get("/news/general_access", PermissionMiddleware("Общий доступ"))
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),
@@ -23,8 +25,11 @@ router
   )
   .delete(
     "/news/:id",
-    PermissionMiddleware("Удалить"),
+    // PermissionMiddleware("Удалить"),
     newsController.deleteData,
-  );
+  )
+  .patch("/news/archive/:id", newsController.updateStateArchive)
+  .patch("/news/general_access/:id", newsController.updateStateGeneral)
+  .patch("/news/publish_date/:id", newsController.updateDate);
 
 module.exports = router;

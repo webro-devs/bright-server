@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  IsObject,
-  IsOptional,
-  isArray,
-} from "class-validator";
+import { IsNotEmpty, IsString, IsOptional, isArray } from "class-validator";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 import { Admin } from "../../admin/admin.entity";
@@ -26,15 +19,13 @@ class CreateNewsDto {
   state: State;
 
   @IsNotEmpty()
-  // @IsArray()
   creator: Admin;
 
   @IsOptional()
   @IsString()
   publishDate: string;
 
-  // @IsNotEmpty()
-  // @IsArray()
+  @IsOptional()
   @Transform(({ value }: { value: string }) =>
     parseTextToArray("categories", value),
   )
