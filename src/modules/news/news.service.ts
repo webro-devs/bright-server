@@ -24,6 +24,7 @@ export class NewsService {
         ru: true,
         en: true,
         уз: true,
+        categories: true,
       },
     });
     return response;
