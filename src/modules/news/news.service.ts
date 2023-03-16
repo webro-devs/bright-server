@@ -1,4 +1,4 @@
-import { DeleteResult, Repository } from "typeorm";
+import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
 import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
@@ -15,6 +15,7 @@ export class NewsService {
     private readonly newsLanguageService: NewsLanguageService,
     private readonly adminService: AdminService,
     private readonly categoryService: CategoryService,
+    private readonly connection: DataSource,
   ) {}
 
   async getAll(): Promise<News[]> {
@@ -122,21 +123,37 @@ export class NewsService {
     const find = await this.getById(id);
     await Promise.all(
       languages?.map(async (key) => {
-        if (values[key]) {
-          if (imgs && imgs?.[key + "_img"]) {
-            if (find[key].file) {
-              await fileService.removeFile(find[key].file);
-            }
-            const img = await fileService.uploadImage(imgs[key + "_img"]);
-            if (img.error) {
-              return new HttpException(true, 500, "image upload error");
-            }
-            values[key].file = img.url;
+        if (values[key] && !imgs?.[key + "_img"]) {
+          await this.newsLanguageService.put({ ...values[key] }, find[key].id);
+        }
+        if (imgs && imgs?.[key + "_img"]) {
+          if (find[key].file) {
+            await fileService.removeFile(find[key].file);
           }
+          const img = await fileService.uploadImage(imgs[key + "_img"]);
+          if (img.error) {
+            return new HttpException(true, 500, "image upload error");
+          }
+          values[key] = values[key] ? values[key] : {};
+          values[key].file = img.url;
           await this.newsLanguageService.put({ ...values[key] }, find[key].id);
         }
       }),
     );
+    if (values.categories.length > 0) {
+      const categories = await this.categoryService.getManyCategoriesById(
+        values.categories,
+      );
+      const oldNews = await this.newsRepository.findOne({
+        where: { id },
+        relations: { categories: true },
+      });
+      oldNews.categories = categories;
+
+      await this.connection.transaction(async (manager: EntityManager) => {
+        await manager.save(oldNews);
+      });
+    }
     return "succesfully edited";
   }
 

@@ -13,4 +13,5 @@ export const newsService = new NewsService(
   newsLanguageService,
   adminService,
   categoryService,
+  TypeOrmDataSource,
 );
