@@ -13,7 +13,8 @@ const AccessTokenMiddleware = async (
       (req.method == "GET" && req.url == "/news") ||
       req.url == "/auth/login" ||
       req.url == "/auth/logout" ||
-      req.url == "/auth/refresh"
+      req.url == "/auth/refresh" ||
+      req.url == '/category'
     ) {
       next();
       return;

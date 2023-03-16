@@ -19,7 +19,7 @@ export class News {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: 'general access' })
   state: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

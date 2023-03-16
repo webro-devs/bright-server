@@ -24,9 +24,25 @@ export class NewsService {
         ru: true,
         en: true,
         уз: true,
+        categories: true,
       },
     });
     return response;
+  }
+
+  async getByState(state: State) {
+    const data = await this.newsRepository.find({
+      where: { state },
+      relations: {
+        creator: true,
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+      },
+    });
+    return data;
   }
 
   async getById(id: string): Promise<News> {
