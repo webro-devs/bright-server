@@ -8,28 +8,8 @@ import {
 } from "class-validator";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
-import { Admin } from "../../admin/admin.entity";
 import { Transform } from "class-transformer";
-
-function parseTextToArray(name: string, value?: string) {
-  console.log(value);
-
-  const arr = value ? JSON.parse(value) : "";
-  if (!isArray(arr)) {
-    throw new Error(`${name} should be array.`);
-  }
-  return arr;
-}
-
-function parseTextToObject(name: string, value?: string) {
-  console.log(value);
-
-  const obj = value ? JSON.parse(value) : "";
-  if (!isObject(obj)) {
-    throw new Error(`${name} should be Object.`);
-  }
-  return obj;
-}
+import { parseTextToArray,parseTextToObject } from "../../../infra/helpers";
 
 class CreateNewsDto {
   @IsOptional()

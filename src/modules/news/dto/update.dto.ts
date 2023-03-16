@@ -7,20 +7,10 @@ import {
   isObject,
 } from "class-validator";
 import { Category } from "../../category/category.entity";
-import { Admin } from "../../admin/admin.entity";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 import { Transform } from "class-transformer";
-
-function parseTextToObject(name: string, value?: string) {
-  console.log(value);
-
-  const obj = value ? JSON.parse(value) : "";
-  if (!isObject(obj)) {
-    throw new Error(`${name} should be Object.`);
-  }
-  return obj;
-}
+import { parseTextToArray, parseTextToObject } from "../../../infra/helpers";
 
 class UpdateNewsDto {
   @IsOptional()
@@ -32,7 +22,10 @@ class UpdateNewsDto {
 
   @IsOptional()
   @IsArray()
-  categories: Category[];
+  @Transform(({ value }: { value: string }) =>
+    parseTextToArray("categories", value),
+  )
+  categories: string[];
 
   @IsOptional()
   @IsObject()

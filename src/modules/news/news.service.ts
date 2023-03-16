@@ -79,6 +79,23 @@ export class NewsService {
     return response;
   }
 
+  async getByCategoryId(id: string) {
+    const data = await this.newsRepository.find({
+      where: {
+        categories: { id },
+      },
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+        creator: true,
+      },
+    });
+    return data;
+  }
+
   async updateState(id: string, state: string) {
     await this.newsRepository
       .createQueryBuilder()

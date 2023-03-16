@@ -1,21 +1,6 @@
-import {
-  isArray,
-  IsArray,
-  IsObject,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
 import { Transform } from "class-transformer";
-
-function parseTextToArray(name: string, value?: string) {
-  console.log(value);
-
-  const arr = value ? JSON.parse(value) : "";
-  if (!isArray(arr)) {
-    throw new Error(`${name} should be array.`);
-  }
-  return arr;
-}
+import { parseTextToArray } from "../../../infra/helpers";
 class UpdateAdminDto {
   @IsOptional()
   @IsString()

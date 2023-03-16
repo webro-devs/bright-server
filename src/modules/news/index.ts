@@ -8,4 +8,9 @@ import { categoryService } from "../category";
 
 export const repository = TypeOrmDataSource.getRepository(News);
 
-export const newsService = new NewsService(repository, newsLanguageService, adminService, categoryService);
+export const newsService = new NewsService(
+  repository,
+  newsLanguageService,
+  adminService,
+  categoryService,
+);

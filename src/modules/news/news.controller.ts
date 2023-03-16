@@ -41,9 +41,9 @@ export const getMyNews = async (req: Request, res: Response) => {
     const news = await newsService.getByCreatorId(req["user"].id);
     return res.send(news);
   } catch (err) {
-    res.send(new HttpException(true, 500, err.message))
+    res.send(new HttpException(true, 500, err.message));
   }
-}
+};
 
 export const getByStateGeneral = async (req: Request, res: Response) => {
   try {
@@ -66,6 +66,16 @@ export const getByStatePublished = async (req: Request, res: Response) => {
 export const getByStateArchive = async (req: Request, res: Response) => {
   try {
     const data = await newsService.getByState(State.archive);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByCategoryId = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const data = await newsService.getByCategoryId(id);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
