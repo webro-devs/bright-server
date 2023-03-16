@@ -4,8 +4,9 @@ import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
-import { fileService } from "../../infra/helpers";
-import { State } from "../../infra/shared/enums";
+import { fileService, telegram } from "../../infra/helpers";
+import slugify from "slugify";
+import CImage from "../../infra/helpers/image";
 
 export async function getAll(__: Request, res: Response) {
   const news = await newsService.getAll();
@@ -60,12 +61,36 @@ export async function create(req: Upload, res: Response) {
       }
       newsData[imgData[i]]["file"] = avatar.url;
     }
+
+    newsData[imgData[i]].shortLink = slugify(newsData[imgData[i]].shortLink, {
+      replacement: "-",
+      remove: /[*+~.()'"!:@]/g,
+      lower: false,
+      strict: false,
+      locale: "vi",
+      trim: true,
+    });
   }
 
   const news = await newsService.create(newsData, req["user"]?.id);
-  console.log(req["user"].id);
+  let ok = "!";
 
-  res.send("goood");
+  if (news.ru) {
+    await CImage({
+      imgPath: news.ru.file,
+      txt: news.ru.title,
+      ctgs: news.categories?.["ru"],
+    });
+
+    await telegram({
+      title: news.ru.title,
+      desc: news.ru.shortDescription,
+      link: "http://bright.getter.uz/news/" + news.id,
+    });
+    ok = " and sended telegram!";
+  }
+
+  res.send("News succesfully created" + ok);
 }
 
 export async function update(req: Upload, res: Response) {
@@ -96,7 +121,7 @@ export async function updateStateGeneral(req: Request, res: Response) {
 export async function updateDate(req: Request, res: Response) {
   const { id } = req.params;
 
-  const updateDate = await newsService.updateDate(id, req.body.date);
+  const updateDate = await newsService.updateDate(id, req?.body?.date);
 
   res.send(updateDate);
 }

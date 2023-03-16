@@ -7,6 +7,7 @@ import {
   OneToOne,
   JoinColumn,
   JoinTable,
+  CreateDateColumn,
 } from "typeorm";
 import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
@@ -46,4 +47,10 @@ export class News {
 
   @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en)
   en: NewsLanguage;
+
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  public created_at: Date;
 }
