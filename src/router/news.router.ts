@@ -9,8 +9,17 @@ const router = Router();
 router
   .get("/news", newsController.getAll)
   .get("/news/:id", newsController.getById)
-  .get("/news/archives", PermissionMiddleware("Доступ к архивам"))
-  .get("/news/general_access", PermissionMiddleware("Общий доступ"))
+  .get(
+    "/news/archives",
+    PermissionMiddleware("Доступ к архивам"),
+    newsController.getByStateArchive,
+  )
+  .get(
+    "/news/general_access",
+    PermissionMiddleware("Общий доступ"),
+    newsController.getByStateGeneral,
+  )
+  .get("/news/published", newsController.getByStatePublished)
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),
