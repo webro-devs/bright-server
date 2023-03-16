@@ -11,7 +11,12 @@ export class PositionService {
   }
 
   async getById(id: string): Promise<Position> {
-    const positions = await this.positionRepository.findOne({ where: { id } });
+    const positions = await this.positionRepository.findOne({
+      where: { id },
+      relations: {
+        admins: true,
+      },
+    });
     return positions;
   }
 

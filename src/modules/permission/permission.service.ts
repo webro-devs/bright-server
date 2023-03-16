@@ -11,7 +11,14 @@ export class PermissionService {
   }
 
   async getById(id: string): Promise<Permission> {
-    const category = await this.permissionRepository.findOne({ where: { id } });
+    const category = await this.permissionRepository.findOne({
+      where: { id },
+      relations: {
+        admins: {
+          position: true,
+        },
+      },
+    });
     return category;
   }
 
