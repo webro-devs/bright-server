@@ -66,9 +66,11 @@ export class NewsService {
     return response;
   }
 
-  async getByCreatorId(id: string): Promise<News[]> {
+  async getByCreatorId(where): Promise<News[]> {
+    console.log(where);
+
     const response = await this.newsRepository.find({
-      where: { creator: { id } },
+      where,
       relations: {
         uz: true,
         ru: true,
@@ -130,10 +132,10 @@ export class NewsService {
       relations: { creator: true },
     });
     if (news.creator.id != creator) {
-      return new HttpException(true,403,"You can't make it your favorite")
+      return new HttpException(true, 403, "You can't make it your favorite");
     }
-    await this.newsRepository.update(id,{state})
-    return "State successfully changed"
+    await this.newsRepository.update(id, { state });
+    return "State successfully changed";
   }
 
   async updateDate(id: string, date: string) {

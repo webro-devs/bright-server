@@ -61,7 +61,19 @@ export const getByCreatorId = async (req: Request, res: Response) => {
 
 export const getMyNews = async (req: Request, res: Response) => {
   try {
-    const news = await newsService.getByCreatorId(req["user"].id);
+    let where = {};
+    const { categoryId } = req.query;
+    if (categoryId) {
+      where = {
+        categories: { id: categoryId },
+        creator: { id: req["user"].id },
+      };
+    } else {
+      where = {
+        creator: { id: req["user"].id },
+      };
+    }
+    const news = await newsService.getByCreatorId(where);
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
