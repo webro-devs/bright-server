@@ -1,10 +1,4 @@
-import {
-  Between,
-  DataSource,
-  DeleteResult,
-  EntityManager,
-  Repository,
-} from "typeorm";
+import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
 import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
@@ -189,10 +183,5 @@ export class NewsService {
 
     const news = this.newsRepository.create(newsData);
     return await this.newsRepository.save(news);
-  }
-  async getByCategory(key: string, category: string) {
-    try {
-      const data = await this.newsRepository.find();
-    } catch (err) {}
   }
 }

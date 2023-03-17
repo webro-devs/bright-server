@@ -109,33 +109,10 @@ export async function create(req: Upload, res: Response) {
     if (!newsData[imgData[i]]) {
       newsData[imgData[i]] = {};
     }
-
-    if (!req?.files?.uz_img) {
-      console.log("uz img");
-
-      newsData[imgData[i]]["file"] = null;
-    }
-    if (!req?.files?.ru_img) {
-      console.log("ru img");
-
-      newsData[imgData[i]]["file"] = null;
-    }
-    if (!req?.files?.en_img) {
-      console.log("en img");
-
-      newsData[imgData[i]]["file"] = null;
-    }
-    if (!req?.files?.уз_img) {
-      console.log("uzzz img");
-
-      newsData[imgData[i]]["file"] = null;
-    }
-    if (req?.files[imgData[i] + "_img"]) {
+    if (req?.files?.[imgData[i] + "_img"]) {
       const avatar = await fileService.uploadImage(
         req.files[imgData[i] + "_img"],
       );
-      console.log(avatar);
-
       if (avatar.error) {
         res.send(new HttpException(true, 500, "Image upload error"));
         return;
