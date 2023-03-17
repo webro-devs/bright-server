@@ -21,6 +21,7 @@ router
     newsController.getByStateGeneral,
   )
   .get("/news/published", newsController.getByStatePublished)
+  .get("/news/checking", newsController.getByStateChecking)
   .get("/news/favorites", newsController.getBySavedCreator)
   .get("/single-news/:id", newsController.getById)
   .post(
@@ -43,6 +44,7 @@ router
   .patch("/news/archive/:id", newsController.updateStateArchive)
   .patch("/news/general_access/:id", newsController.updateStateGeneral)
   .patch("/news/favorite/:id", newsController.updateStateFavorite)
+  .patch("/news/checking/:id", newsController.updateStateChecking)
   .patch("/news/publish_date/:id", newsController.updateDate);
 
 module.exports = router;

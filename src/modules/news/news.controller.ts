@@ -79,6 +79,15 @@ export const getByStateArchive = async (req: Request, res: Response) => {
   }
 };
 
+export const getByStateChecking = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.checking);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
 export const getBySavedCreator = async (req: Request, res: Response) => {
   try {
     const data = await newsService.getBySavedCreator(
@@ -182,6 +191,16 @@ export async function updateStateGeneral(req: Request, res: Response) {
 
     const updateState = await newsService.updateState(id, "general access");
 
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStateChecking(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const updateState = await newsService.updateState(id, State.checking);
     res.send(updateState);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
