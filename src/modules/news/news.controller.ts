@@ -44,6 +44,17 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
+export const getByShortLink = async (req: Request, res: Response) => {
+  try {
+    const { shortLink, key } = req.params;
+    const news = await newsService.getByShortLink(shortLink, key);
+
+    return res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
+};
+
 export const getByCreatorId = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -21,7 +21,7 @@ export class NewsLanguage {
   @Column({ type: "varchar", nullable: true })
   shortDescription: string;
 
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "varchar", nullable: true, unique: true })
   shortLink: string;
 
   @Column({ type: "varchar", nullable: true })

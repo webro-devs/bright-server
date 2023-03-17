@@ -24,6 +24,7 @@ router
   .get("/news/category/:id", newsController.getByCategoryId)
   .get("/single-news/:id", newsController.getById)
   .get("/news/creator/:id", newsController.getByCreatorId)
+  .get("/news/news-slag/:id", newsController.getByShortLink)
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),

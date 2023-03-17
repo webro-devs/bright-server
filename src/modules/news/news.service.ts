@@ -66,6 +66,23 @@ export class NewsService {
     return response;
   }
 
+  async getByShortLink(shortLink: string, key: string): Promise<News> {
+    const where = {};
+    where[key]["shortlink"] = shortLink;
+    const response = await this.newsRepository.findOne({
+      where,
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+        creator: true,
+      },
+    });
+    return response;
+  }
+
   async getByCreatorId(id: string): Promise<News[]> {
     const response = await this.newsRepository.find({
       where: { creator: { id } },
