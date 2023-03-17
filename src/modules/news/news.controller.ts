@@ -101,6 +101,18 @@ export const getByCategoryId = async (req: Request, res: Response) => {
   }
 };
 
+export const getBySavedCreator = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getBySavedCreator(
+      req["user"].id,
+      State.favorites,
+    );
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
 export async function create(req: Upload, res: Response) {
   const newsData: CreateNewsDto = req.body;
   const imgData = ["uz", "ru", "en", "уз"];

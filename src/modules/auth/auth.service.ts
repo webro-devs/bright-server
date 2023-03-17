@@ -37,7 +37,6 @@ export class AuthService {
       const admin = await this.adminService.getById(sub);
       return admin;
     } catch (err) {
-      console.log(err);
       throw new HttpException(true, 400, "Invalid token");
     }
   }

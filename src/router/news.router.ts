@@ -20,8 +20,9 @@ router
     newsController.getByStateGeneral,
   )
   .get("/news/published", newsController.getByStatePublished)
+  .get("/news/favorites", newsController.getBySavedCreator)
   .get("/news/category/:id", newsController.getByCategoryId)
-  .get("/news/:id", newsController.getById)
+  .get("/single-news/:id", newsController.getById)
   .get("/news/creator/:id", newsController.getByCreatorId)
   .post(
     "/news",

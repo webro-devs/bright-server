@@ -11,8 +11,6 @@ import { HttpException } from "../../infra/validation";
 export const Login = async (req, res: Response) => {
   const accessToken = authService.getJWT("access", req.user.id);
   const refreshToken = authService.getJWT("refresh", req.user.id);
-  console.log(accessToken);
-  
   res.cookie(ACCESS_TOKEN_ADMIN, accessToken, accessTokenOptions);
   res.cookie(REFRESH_TOKEN_ADMIN, refreshToken, refreshTokenOptions);
   res.send({

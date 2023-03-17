@@ -81,6 +81,21 @@ export class NewsService {
     return response;
   }
 
+  async getBySavedCreator(id: string, state: string): Promise<News[]> {
+    const response = await this.newsRepository.find({
+      where: { creator: { id }, state },
+      relations: {
+        uz: true,
+        ru: true,
+        en: true,
+        уз: true,
+        categories: true,
+        creator: true,
+      },
+    });
+    return response;
+  }
+
   async getByCategoryId(id: string) {
     const data = await this.newsRepository.find({
       where: {
