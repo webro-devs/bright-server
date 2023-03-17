@@ -43,6 +43,7 @@ router
   )
   .patch("/news/archive/:id", newsController.updateStateArchive)
   .patch("/news/general_access/:id", newsController.updateStateGeneral)
+  .patch("/news/favorite/:id", newsController.updateStateFavorite)
   .patch("/news/publish_date/:id", newsController.updateDate);
 
 module.exports = router;

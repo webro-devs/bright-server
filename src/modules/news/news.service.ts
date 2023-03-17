@@ -124,6 +124,18 @@ export class NewsService {
     return "State successfully changed";
   }
 
+  async updateFavorite(id: string, state: State.favorites, creator: string) {
+    const news = await this.newsRepository.findOne({
+      where: { id },
+      relations: { creator: true },
+    });
+    if (news.creator.id != creator) {
+      return new HttpException(true,403,"You can't make it your favorite")
+    }
+    await this.newsRepository.update(id,{state})
+    return "State successfully changed"
+  }
+
   async updateDate(id: string, date: string) {
     await this.newsRepository
       .createQueryBuilder()
