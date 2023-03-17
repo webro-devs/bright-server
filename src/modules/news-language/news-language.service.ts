@@ -1,6 +1,7 @@
 import { UpdateResult, DeleteResult, Repository } from "typeorm";
 import { NewsLanguage } from "./news-language.entity";
 import { CreateNewsLanguageDto, UpdateNewsLanguageDto } from "./dto";
+import { HttpException } from "../../infra/validation";
 
 export class NewsLanguageService {
   constructor(private readonly languageRepository: Repository<NewsLanguage>) {}
@@ -20,25 +21,34 @@ export class NewsLanguageService {
     return await this.languageRepository.save(response);
   }
 
-  async update(
-    values: UpdateNewsLanguageDto,
-    id: string,
-  ): Promise<UpdateResult> {
-    const response = await this.languageRepository.update(id, values);
-    return response;
+  async update(values: UpdateNewsLanguageDto, id: string) {
+    try {
+      const response = await this.languageRepository.update(id, values);
+      return response;
+    } catch (err) {
+      return new HttpException(true, 500, err.message);
+    }
   }
 
-  async remove(id: string): Promise<DeleteResult> {
-    const response = await this.languageRepository.delete(id);
-    return response;
+  async remove(id: string) {
+    try {
+      const response = await this.languageRepository.delete(id);
+      return response;
+    } catch (err) {
+      return new HttpException(true, 500, err.message);
+    }
   }
 
   async put(values: UpdateNewsLanguageDto, id: string) {
-    await this.languageRepository
-      .createQueryBuilder()
-      .update()
-      .set(values)
-      .where("id = :id", { id })
-      .execute();
+    try {
+      await this.languageRepository
+        .createQueryBuilder()
+        .update()
+        .set(values)
+        .where("id = :id", { id })
+        .execute();
+    } catch (err) {
+      return new HttpException(true, 500, err.message);
+    }
   }
 }

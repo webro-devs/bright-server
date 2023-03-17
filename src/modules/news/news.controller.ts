@@ -12,25 +12,29 @@ import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { DateRangeDto } from "../../infra/shared/dto";
 
 export async function getAll(req, res: Response) {
-  const query: DateRangeDto = req.query;
-  let where = {};
-  if (query.startDate && query.endDate) {
-    where = {
-      created_at: Between(new Date(query.startDate), new Date(query.endDate)),
-    };
-  } else if (query.startDate) {
-    where = {
-      created_at: MoreThanOrEqual(new Date(query.startDate)),
-    };
-  } else if (query.endDate) {
-    where = {
-      created_at: LessThanOrEqual(new Date(query.startDate)),
-    };
-  } else {
-    where = {};
+  try {
+    const query: DateRangeDto = req.query;
+    let where = {};
+    if (query.startDate && query.endDate) {
+      where = {
+        created_at: Between(new Date(query.startDate), new Date(query.endDate)),
+      };
+    } else if (query.startDate) {
+      where = {
+        created_at: MoreThanOrEqual(new Date(query.startDate)),
+      };
+    } else if (query.endDate) {
+      where = {
+        created_at: LessThanOrEqual(new Date(query.startDate)),
+      };
+    } else {
+      where = {};
+    }
+    const news = await newsService.getAll(where);
+    res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
   }
-  const news = await newsService.getAll(where);
-  res.send(news);
 }
 
 export const getById = async (req: Request, res: Response) => {

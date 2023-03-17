@@ -16,8 +16,12 @@ export async function getMe(req: Request, res: Response) {
 }
 
 export async function getAll(req: Request, res: Response) {
-  const categories = await adminService.getAll();
-  res.send(categories);
+  try {
+    const categories = await adminService.getAll();
+    res.send(categories);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function getById(req: Request, res: Response) {
