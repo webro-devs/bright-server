@@ -13,24 +13,7 @@ import { DateRangeDto } from "../../infra/shared/dto";
 
 export async function getAll(req, res: Response) {
   try {
-    const query: DateRangeDto = req.query;
-    let where = {};
-    if (query.startDate && query.endDate) {
-      where = {
-        created_at: Between(new Date(query.startDate), new Date(query.endDate)),
-      };
-    } else if (query.startDate) {
-      where = {
-        created_at: MoreThanOrEqual(new Date(query.startDate)),
-      };
-    } else if (query.endDate) {
-      where = {
-        created_at: LessThanOrEqual(new Date(query.startDate)),
-      };
-    } else {
-      where = {};
-    }
-    const news = await newsService.getAll(where);
+    const news = await newsService.getAll({ where: req.where });
     res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -41,17 +24,6 @@ export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const news = await newsService.getById(id);
-
-    return res.send(news);
-  } catch (err) {
-    res.send(new HttpException(true, 500, err.message));
-  }
-};
-
-export const getByCreatorId = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const news = await newsService.getByCreatorId(id);
 
     return res.send(news);
   } catch (err) {
@@ -101,16 +73,6 @@ export const getByStatePublished = async (req: Request, res: Response) => {
 export const getByStateArchive = async (req: Request, res: Response) => {
   try {
     const data = await newsService.getByState(State.archive);
-    return res.send(data);
-  } catch (err) {
-    res.status(500).send(new HttpException(true, 500, err.message));
-  }
-};
-
-export const getByCategoryId = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const data = await newsService.getByCategoryId(id);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

@@ -18,7 +18,7 @@ export class NewsService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll(where): Promise<News[]> {
+  async getAll({ where }): Promise<News[]> {
     const response = await this.newsRepository.find({
       relations: {
         uz: true,
@@ -67,8 +67,6 @@ export class NewsService {
   }
 
   async getByCreatorId(where): Promise<News[]> {
-    console.log(where);
-
     const response = await this.newsRepository.find({
       where,
       relations: {
@@ -96,23 +94,6 @@ export class NewsService {
       },
     });
     return response;
-  }
-
-  async getByCategoryId(id: string) {
-    const data = await this.newsRepository.find({
-      where: {
-        categories: { id },
-      },
-      relations: {
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-        creator: true,
-      },
-    });
-    return data;
   }
 
   async updateState(id: string, state: string) {

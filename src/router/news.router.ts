@@ -3,11 +3,12 @@ import * as newsController from "../modules/news/news.controller";
 import { DtoValidationMiddleware } from "../infra/validation";
 import { CreateNewsDto, UpdateNewsDto } from "../modules/news/dto";
 import { PermissionMiddleware } from "../modules/auth/middleware";
+import { NewsQueryParserMiddleware } from "../infra/validation";
 
 const router = Router();
 
 router
-  .get("/news", newsController.getAll)
+  .get("/news", NewsQueryParserMiddleware, newsController.getAll)
   .get("/news/my-news", newsController.getMyNews)
   .get(
     "/news/archives",
@@ -21,9 +22,7 @@ router
   )
   .get("/news/published", newsController.getByStatePublished)
   .get("/news/favorites", newsController.getBySavedCreator)
-  .get("/news/category/:id", newsController.getByCategoryId)
   .get("/single-news/:id", newsController.getById)
-  .get("/news/creator/:id", newsController.getByCreatorId)
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),
