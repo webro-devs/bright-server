@@ -33,18 +33,7 @@ export const getById = async (req: Request, res: Response) => {
 
 export const getMyNews = async (req: Request, res: Response) => {
   try {
-    let where = {};
-    const { categoryId } = req.query;
-    if (categoryId) {
-      where = {
-        categories: { id: categoryId },
-        creator: { id: req["user"].id },
-      };
-    } else {
-      where = {
-        creator: { id: req["user"].id },
-      };
-    }
+    const where = req?.["where"];
     const news = await newsService.getByCreatorId(where);
     return res.send(news);
   } catch (err) {

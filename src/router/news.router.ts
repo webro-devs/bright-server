@@ -9,7 +9,7 @@ const router = Router();
 
 router
   .get("/news", NewsQueryParserMiddleware, newsController.getAll)
-  .get("/news/my-news", newsController.getMyNews)
+  .get("/news/my-news", NewsQueryParserMiddleware, newsController.getMyNews)
   .get(
     "/news/archives",
     PermissionMiddleware("Доступ к архивам"),
