@@ -77,6 +77,9 @@ export class NewsService {
         categories: true,
         creator: true,
       },
+      order: {
+        created_at: "DESC",
+      },
     });
     return response;
   }
@@ -91,6 +94,9 @@ export class NewsService {
         уз: true,
         categories: true,
         creator: true,
+      },
+      order: {
+        created_at: "DESC",
       },
     });
     return response;
