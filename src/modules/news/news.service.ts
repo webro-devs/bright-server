@@ -28,6 +28,7 @@ export class NewsService {
           уз: true,
           categories: true,
           creator: true,
+          mainCategory: true,
         },
         order: {
           created_at: "DESC",
@@ -50,6 +51,7 @@ export class NewsService {
           en: true,
           уз: true,
           categories: true,
+          mainCategory: true,
         },
         where: { state },
       });
@@ -69,6 +71,7 @@ export class NewsService {
           en: true,
           уз: true,
           categories: true,
+          mainCategory: true,
         },
         where,
       });
@@ -89,6 +92,7 @@ export class NewsService {
           уз: true,
           categories: true,
           creator: true,
+          mainCategory: true,
         },
       });
       return response;
@@ -203,7 +207,10 @@ export class NewsService {
   async update(values: UpdateNewsDto, id: string, imgs: Upload) {
     try {
       const languages = ["uz", "ru", "en", "уз"];
-
+      const oldNews = await this.newsRepository.findOne({
+        where: { id },
+        relations: { categories: true, mainCategory: true },
+      });
       const find = await this.getById(id);
       await Promise.all(
         languages?.map(async (key) => {
@@ -230,16 +237,19 @@ export class NewsService {
           }
         }),
       );
-      if (values.categories.length > 0) {
+      if (values?.categories?.length > 0) {
         const categories = await this.categoryService.getManyCategoriesById(
           values.categories,
         );
-        const oldNews = await this.newsRepository.findOne({
-          where: { id },
-          relations: { categories: true },
-        });
         oldNews.categories = categories;
-
+      }
+      if (values?.mainCategory) {
+        const mainCategory = await this.categoryService.getById(
+          values.mainCategory,
+        );
+        oldNews.mainCategory = mainCategory;
+      }
+      if (values?.categories?.length > 0 || values?.mainCategory) {
         await this.connection.transaction(async (manager: EntityManager) => {
           await manager.save(oldNews);
         });
@@ -270,12 +280,19 @@ export class NewsService {
         state: data.state,
         categories: null,
         publishDate: data.publishDate,
+        mainCategory: null,
       };
       if (data?.categories?.length > 0) {
         const categories = await this.categoryService.getManyCategoriesById(
           data.categories,
         );
         newsData.categories = categories;
+      }
+      if (data?.mainCategory) {
+        const mainCategory = await this.categoryService.getById(
+          data.mainCategory,
+        );
+        newsData.mainCategory = mainCategory;
       }
 
       const news = this.newsRepository.create(newsData);
