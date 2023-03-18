@@ -9,7 +9,7 @@ import {
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 import { Transform } from "class-transformer";
-import { parseTextToArray,parseTextToObject } from "../../../infra/helpers";
+import { parseTextToArray, parseTextToObject } from "../../../infra/helpers";
 
 class CreateNewsDto {
   @IsOptional()
@@ -24,6 +24,10 @@ class CreateNewsDto {
     parseTextToArray("categories", value),
   )
   categories: string[];
+
+  @IsOptional()
+  @IsString()
+  mainCategory: string;
 
   @IsOptional()
   @IsObject()

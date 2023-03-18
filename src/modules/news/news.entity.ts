@@ -19,15 +19,24 @@ export class News {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar", default: 'general access' })
+  @Column({ type: "varchar", default: "general access" })
   state: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   publishDate: Date;
 
-  @ManyToMany(() => Category, (category) => category.news)
+  @ManyToMany(() => Category, (category) => category.news, {
+    onDelete: "CASCADE",
+  })
   @JoinTable()
   categories: Category[];
+
+  @ManyToOne(() => Category, (category) => category, {
+    cascade: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn()
+  mainCategory: Category;
 
   @ManyToOne(() => Admin, (admin) => admin.news, {
     cascade: true,

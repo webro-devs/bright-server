@@ -18,6 +18,9 @@ export class Category {
   @Column({ type: "text" })
   уз: string;
 
-  @ManyToMany(() => News, (news) => news.categories)
+  @ManyToMany(() => News, (news) => news.categories, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   news: News[];
 }
