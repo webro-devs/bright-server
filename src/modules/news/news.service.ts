@@ -19,69 +19,85 @@ export class NewsService {
   ) {}
 
   async getAll({ where }): Promise<News[]> {
-    const response = await this.newsRepository.find({
-      relations: {
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-        creator: true,
-      },
-      order: {
-        created_at: "DESC",
-      },
-      where,
-    });
-    return response;
+    try {
+      const response = await this.newsRepository.find({
+        relations: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          creator: true,
+        },
+        order: {
+          created_at: "DESC",
+        },
+        where,
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getByState(state: State) {
-    const data = await this.newsRepository.find({
-      relations: {
-        creator: true,
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-      },
-      where: { state },
-    });
-    return data;
+    try {
+      const data = await this.newsRepository.find({
+        relations: {
+          creator: true,
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+        },
+        where: { state },
+      });
+      return data;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getById(id: string): Promise<News> {
-    const response = await this.newsRepository.findOne({
-      where: { id },
-      relations: {
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-        creator: true,
-      },
-    });
-    return response;
+    try {
+      const response = await this.newsRepository.findOne({
+        where: { id },
+        relations: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          creator: true,
+        },
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getByCreatorId(where): Promise<News[]> {
-    const response = await this.newsRepository.find({
-      where,
-      relations: {
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-        creator: true,
-      },
-      order: {
-        created_at: "DESC",
-      },
-    });
-    return response;
+    try {
+      const response = await this.newsRepository.find({
+        where,
+        relations: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          creator: true,
+        },
+        order: {
+          created_at: "DESC",
+        },
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getBySavedCreator(id: string, state: string): Promise<News[]> {
@@ -135,43 +151,53 @@ export class NewsService {
   }
 
   async update(values: UpdateNewsDto, id: string, imgs: Upload) {
-    const languages = ["uz", "ru", "en", "уз"];
+    try {
+      const languages = ["uz", "ru", "en", "уз"];
 
-    const find = await this.getById(id);
-    await Promise.all(
-      languages?.map(async (key) => {
-        if (values[key] && !imgs?.[key + "_img"]) {
-          await this.newsLanguageService.put({ ...values[key] }, find[key].id);
-        }
-        if (imgs && imgs?.[key + "_img"]) {
-          if (find[key].file) {
-            await fileService.removeFile(find[key].file);
+      const find = await this.getById(id);
+      await Promise.all(
+        languages?.map(async (key) => {
+          if (values[key] && !imgs?.[key + "_img"]) {
+            await this.newsLanguageService.put(
+              { ...values[key] },
+              find[key].id,
+            );
           }
-          const img = await fileService.uploadImage(imgs[key + "_img"]);
-          if (img.error) {
-            return new HttpException(true, 500, "image upload error");
+          if (imgs && imgs?.[key + "_img"]) {
+            if (find[key].file) {
+              await fileService.removeFile(find[key].file);
+            }
+            const img = await fileService.uploadImage(imgs[key + "_img"]);
+            if (img.error) {
+              return new HttpException(true, 500, "image upload error");
+            }
+            values[key] = values[key] ? values[key] : {};
+            values[key].file = img.url;
+            await this.newsLanguageService.put(
+              { ...values[key] },
+              find[key].id,
+            );
           }
-          values[key] = values[key] ? values[key] : {};
-          values[key].file = img.url;
-          await this.newsLanguageService.put({ ...values[key] }, find[key].id);
-        }
-      }),
-    );
-    if (values.categories.length > 0) {
-      const categories = await this.categoryService.getManyCategoriesById(
-        values.categories,
+        }),
       );
-      const oldNews = await this.newsRepository.findOne({
-        where: { id },
-        relations: { categories: true },
-      });
-      oldNews.categories = categories;
+      if (values.categories.length > 0) {
+        const categories = await this.categoryService.getManyCategoriesById(
+          values.categories,
+        );
+        const oldNews = await this.newsRepository.findOne({
+          where: { id },
+          relations: { categories: true },
+        });
+        oldNews.categories = categories;
 
-      await this.connection.transaction(async (manager: EntityManager) => {
-        await manager.save(oldNews);
-      });
+        await this.connection.transaction(async (manager: EntityManager) => {
+          await manager.save(oldNews);
+        });
+      }
+      return "succesfully edited";
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
     }
-    return "succesfully edited";
   }
 
   async remove(id: string): Promise<DeleteResult> {
@@ -180,24 +206,28 @@ export class NewsService {
   }
 
   async create(data: CreateNewsDto, id: string): Promise<News> {
-    const newsData = {
-      uz: await this.newsLanguageService.create(data.uz),
-      ru: await this.newsLanguageService.create(data.ru),
-      en: await this.newsLanguageService.create(data.en),
-      уз: await this.newsLanguageService.create(data.уз),
-      creator: await this.adminService.getById(id),
-      state: data.state,
-      categories: null,
-      publishDate: data.publishDate,
-    };
-    if (data?.categories?.length > 0) {
-      const categories = await this.categoryService.getManyCategoriesById(
-        data.categories,
-      );
-      newsData.categories = categories;
-    }
+    try {
+      const newsData = {
+        uz: await this.newsLanguageService.create(data.uz),
+        ru: await this.newsLanguageService.create(data.ru),
+        en: await this.newsLanguageService.create(data.en),
+        уз: await this.newsLanguageService.create(data.уз),
+        creator: await this.adminService.getById(id),
+        state: data.state,
+        categories: null,
+        publishDate: data.publishDate,
+      };
+      if (data?.categories?.length > 0) {
+        const categories = await this.categoryService.getManyCategoriesById(
+          data.categories,
+        );
+        newsData.categories = categories;
+      }
 
-    const news = this.newsRepository.create(newsData);
-    return await this.newsRepository.save(news);
+      const news = this.newsRepository.create(newsData);
+      return await this.newsRepository.save(news);
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 }
