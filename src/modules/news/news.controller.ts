@@ -51,7 +51,9 @@ export const getByStateGeneral = async (req: Request, res: Response) => {
 
 export const getByStatePublished = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.published);
+    let where = req["where"] || {};
+    where.state = State.published;
+    const data = await newsService.getByStatePublished(where);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -229,6 +231,19 @@ export async function deleteData(req: Request, res: Response) {
     const deleteData = await newsService.remove(id);
 
     res.send(deleteData);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStatePublished(req: Request, res: Response) {
+  try {
+    const { newsIds } = req.body;
+    const updateState = await newsService.updateStatePublished(
+      newsIds,
+      State.published,
+    );
+    res.send(updateState);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }

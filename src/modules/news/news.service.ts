@@ -59,6 +59,25 @@ export class NewsService {
     }
   }
 
+  async getByStatePublished(where) {
+    try {
+      const data = await this.newsRepository.find({
+        relations: {
+          creator: true,
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+        },
+        where,
+      });
+      return data;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
   async getById(id: string): Promise<News> {
     try {
       const response = await this.newsRepository.findOne({
@@ -124,6 +143,17 @@ export class NewsService {
       .update()
       .set({ state })
       .where("id = :id", { id })
+      .execute();
+
+    return "State successfully changed";
+  }
+
+  async updateStatePublished(ids: string[], state: string) {
+    await this.newsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ state })
+      .where("id IN(:...ids)", { ids })
       .execute();
 
     return "State successfully changed";

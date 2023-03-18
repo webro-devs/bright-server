@@ -20,7 +20,11 @@ router
     PermissionMiddleware("Общий доступ"),
     newsController.getByStateGeneral,
   )
-  .get("/news/published", newsController.getByStatePublished)
+  .get(
+    "/news/published",
+    NewsQueryParserMiddleware,
+    newsController.getByStatePublished,
+  )
   .get("/news/checking", newsController.getByStateChecking)
   .get("/news/favorites", newsController.getBySavedCreator)
   .get("/single-news/:id", newsController.getById)
@@ -41,6 +45,7 @@ router
     // PermissionMiddleware("Удалить"),
     newsController.deleteData,
   )
+  .patch("/news/published", newsController.updateStatePublished)
   .patch("/news/archive/:id", newsController.updateStateArchive)
   .patch("/news/general_access/:id", newsController.updateStateGeneral)
   .patch("/news/favorite/:id", newsController.updateStateFavorite)
