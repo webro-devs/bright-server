@@ -120,64 +120,84 @@ export class NewsService {
   }
 
   async getBySavedCreator(id: string, state: string): Promise<News[]> {
-    const response = await this.newsRepository.find({
-      where: { creator: { id }, state },
-      relations: {
-        uz: true,
-        ru: true,
-        en: true,
-        уз: true,
-        categories: true,
-        creator: true,
-      },
-      order: {
-        created_at: "DESC",
-      },
-    });
-    return response;
+    try {
+      const response = await this.newsRepository.find({
+        where: { creator: { id }, state },
+        relations: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          creator: true,
+        },
+        order: {
+          created_at: "DESC",
+        },
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async updateState(id: string, state: string) {
-    await this.newsRepository
-      .createQueryBuilder()
-      .update()
-      .set({ state })
-      .where("id = :id", { id })
-      .execute();
+    try {
+      await this.newsRepository
+        .createQueryBuilder()
+        .update()
+        .set({ state })
+        .where("id = :id", { id })
+        .execute();
 
-    return "State successfully changed";
+      return new HttpException(false, 203, "State successfully changed");
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async updateStatePublished(ids: string[], state: string) {
-    await this.newsRepository
-      .createQueryBuilder()
-      .update()
-      .set({ state })
-      .where("id IN(:...ids)", { ids })
-      .execute();
+    try {
+      await this.newsRepository
+        .createQueryBuilder()
+        .update()
+        .set({ state })
+        .where("id IN(:...ids)", { ids })
+        .execute();
 
-    return "State successfully changed";
+      return new HttpException(false, 203, "State successfully changed");
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async updateFavorite(id: string, state: State.favorites, creator: string) {
-    const news = await this.newsRepository.findOne({
-      where: { id },
-      relations: { creator: true },
-    });
-    if (news.creator.id != creator) {
-      return new HttpException(true, 403, "You can't make it your favorite");
+    try {
+      const news = await this.newsRepository.findOne({
+        where: { id },
+        relations: { creator: true },
+      });
+      if (news.creator.id != creator) {
+        return new HttpException(true, 403, "You can't make it your favorite");
+      }
+      await this.newsRepository.update(id, { state });
+      return new HttpException(true, 203, "State successfully changed");
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
     }
-    await this.newsRepository.update(id, { state });
-    return "State successfully changed";
   }
 
   async updateDate(id: string, date: string) {
-    await this.newsRepository
-      .createQueryBuilder()
-      .update()
-      .set({ publishDate: date })
-      .where("id = :id", { id })
-      .execute();
+    try {
+      await this.newsRepository
+        .createQueryBuilder()
+        .update()
+        .set({ publishDate: date })
+        .where("id = :id", { id })
+        .execute();
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async update(values: UpdateNewsDto, id: string, imgs: Upload) {
@@ -224,15 +244,19 @@ export class NewsService {
           await manager.save(oldNews);
         });
       }
-      return "succesfully edited";
+      return new HttpException(true, 203, "succesfully edited");
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
   }
 
-  async remove(id: string): Promise<DeleteResult> {
-    const response = await this.newsRepository.delete(id);
-    return response;
+  async remove(id: string): Promise<DeleteResult | HttpException> {
+    try {
+      const response = await this.newsRepository.delete(id);
+      return new HttpException(false, 204, "Deleted succesfully");
+    } catch (err) {
+      throw new HttpException(true, 204, err.message);
+    }
   }
 
   async create(data: CreateNewsDto, id: string): Promise<News> {
