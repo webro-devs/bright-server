@@ -34,6 +34,7 @@ export const getById = async (req: Request, res: Response) => {
 export const getMyNews = async (req: Request, res: Response) => {
   try {
     const where = req?.["where"];
+    where.creator = req["user"].id;
     const news = await newsService.getByCreatorId(where);
     return res.send(news);
   } catch (err) {
