@@ -8,8 +8,6 @@ import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
 import CImage from "../../infra/helpers/image";
 import { State } from "../../infra/shared/enums";
-import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
-import { DateRangeDto } from "../../infra/shared/dto";
 
 export async function getAll(req, res: Response) {
   try {
@@ -34,7 +32,7 @@ export const getById = async (req: Request, res: Response) => {
 export const getMyNews = async (req: Request, res: Response) => {
   try {
     const where = req?.["where"];
-    where.creator = req["user"].id;
+    where.creator = { id: req["user"].id };
     const news = await newsService.getByCreatorId(where);
     return res.send(news);
   } catch (err) {
