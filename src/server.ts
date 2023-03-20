@@ -10,16 +10,17 @@ import { AccessTokenMiddleware } from "./modules/auth/middleware";
 const app: express.Application = express();
 
 TypeOrmDataSource.initialize()
-.then(() => {
-  const {
+  .then(() => {
+    const {
       adminRouter,
       categoryRouter,
       permissionRouter,
       positionRouter,
       newsRouter,
       authRouter,
+      notificationRouter,
     } = require("./router");
-    
+
     app.use(cors({ origin: true, credentials: true }));
     app.use(express.json());
     app.use(cookieParser());
@@ -32,6 +33,7 @@ TypeOrmDataSource.initialize()
       positionRouter,
       newsRouter,
       authRouter,
+      notificationRouter,
     );
 
     console.log("Data Source has been initialized!");
