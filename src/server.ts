@@ -2,6 +2,7 @@ import * as express from "express";
 require("dotenv").config();
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
+import zip from "express-zip";
 const fileUpload = require("express-fileupload");
 import { TypeOrmDataSource } from "./config";
 
@@ -10,8 +11,8 @@ import { AccessTokenMiddleware } from "./modules/auth/middleware";
 const app: express.Application = express();
 
 TypeOrmDataSource.initialize()
-.then(() => {
-  const {
+  .then(() => {
+    const {
       adminRouter,
       categoryRouter,
       permissionRouter,
@@ -19,7 +20,7 @@ TypeOrmDataSource.initialize()
       newsRouter,
       authRouter,
     } = require("./router");
-    
+
     app.use(cors({ origin: true, credentials: true }));
     app.use(express.json());
     app.use(cookieParser());
