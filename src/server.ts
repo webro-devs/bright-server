@@ -19,6 +19,7 @@ TypeOrmDataSource.initialize()
       positionRouter,
       newsRouter,
       authRouter,
+      notificationRouter,
     } = require("./router");
 
     app.use(cors({ origin: true, credentials: true }));
@@ -33,6 +34,7 @@ TypeOrmDataSource.initialize()
       positionRouter,
       newsRouter,
       authRouter,
+      notificationRouter,
     );
 
     console.log("Data Source has been initialized!");
