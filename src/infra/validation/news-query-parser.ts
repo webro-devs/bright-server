@@ -2,7 +2,7 @@ import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 
 const NewsQueryParserMiddleware = (req, res, next) => {
   let where: any = {};
-  const { startDate, endDate, creatorId, categoryId, mainCategoryId } =
+  const { startDate, endDate, creatorId, categoryId, mainCategoryId, state } =
     req.query;
 
   if (startDate && endDate) {
@@ -33,6 +33,10 @@ const NewsQueryParserMiddleware = (req, res, next) => {
       id: mainCategoryId,
     };
   }
+  if (state) {
+    where.state = state;
+  }
+  console.log(where);
 
   req.where = where;
   next();
