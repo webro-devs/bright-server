@@ -4,12 +4,15 @@ import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
 import { CategoryService } from "../category/category.service";
 import { AdminService } from "../admin/admin.service";
-import { fileService, images, telegram } from "../../infra/helpers";
+import {
+  fileService,
+  images,
+  telegram,
+  SocialMediaService,
+} from "../../infra/helpers";
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
-import path = require("path");
-
 const { CImage, CImage3 } = images;
 
 export class NewsService {
@@ -297,60 +300,40 @@ export class NewsService {
     inst: boolean,
   ) {
     try {
-      const imageDatas = [];
+      const languages = ["ru", "uz", "en", "уз"];
       for (let i = 0; i < ids.length; i++) {
-        const id = ids[i];
-        const news = await this.getById(id);
-        const check = news?.ru ? true : false;
-        const check2 = news?.ru.descImg ? true : false;
-
-        if (tg) {
-          if (check && news?.ru?.file) {
-            await CImage({
-              imgPath: news.ru.file,
-              imgName: news.ru.file.split("/").at(-1),
-              txt:
-                news.ru.title.length > 102
-                  ? news.ru.title.slice(0, 99) + "..."
-                  : news.ru.title,
-              ctgs: news.categories?.map((ctg) => ctg.ru),
-            });
-
-            imageDatas.push({
-              name: "tg-image",
-              path: path.resolve(
-                __dirname,
-                "../../infra/helpers/output",
-                news.ru.file.split("/").at(-1),
-              ),
-            });
-
-            await telegram({
-              title: news.ru.title,
-              desc: news.ru.shortDescription,
-              link: "http://bright.getter.uz/news/" + news.id,
-              imgDir: news.ru.file.split("/").at(-1),
-            });
-          }
-        }
-        if (inst) {
-          if (check && check2) {
-            const descImgs = news.ru?.descImg;
-            if (descImgs.length > 0) {
-              for (let i = 0; i < descImgs.length; i++) {
-                const element = descImgs[i];
-                CImage3({
-                  imgName: element.split("/").at(-1),
-                  imgPath: element,
+        const news = await this.getById(ids[i]);
+        for (const lang of languages) {
+          if (lang == "ru") {
+            if (news?.[lang] && news?.[lang]?.file && (tg || inst)) {
+              const imgDir = await SocialMediaService(
+                news,
+                `news_${i + 1}`,
+                lang,
+                true,
+              );
+              if (tg) {
+                await telegram({
+                  title: news[lang].title,
+                  desc: news[lang].shortDescription,
+                  link: "http://bright.getter.uz/news/" + news.id,
+                  imgDir,
                 });
-                imageDatas.push({
-                  name: element.split("/").at(-1),
-                  path: path.resolve(
-                    __dirname,
-                    "../../infra/helpers/output",
-                    element.split("/").at(-1),
-                  ),
-                });
+              }
+              if (inst) {
+                const descImgs = news[lang]?.descImg;
+                if (descImgs?.length > 0) {
+                  for (let j = 0; j < descImgs.length; j++) {
+                    const element = descImgs[j];
+                    await SocialMediaService(
+                      news,
+                      `news_${i + 1}`,
+                      lang,
+                      false,
+                      element,
+                    );
+                  }
+                }
               }
             }
           }
@@ -363,8 +346,6 @@ export class NewsService {
         .set({ state })
         .where("id IN(:...ids)", { ids })
         .execute();
-
-      return imageDatas;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
