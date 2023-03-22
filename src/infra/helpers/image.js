@@ -216,7 +216,7 @@ const lines = [
   },
 ];
 
-export const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
+const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
   ctgs = ctgs.slice(0, 3);
   const Ddate = new Date();
   const months = [
@@ -317,7 +317,7 @@ export const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
   }
 };
 
-export const CImage3 = async ({ imgPath, imgName }) => {
+const CImage3 = async ({ imgPath, imgName }) => {
   try {
     const logo = await Jimp.read(path.resolve(__dirname, "./uploads/logo.png"));
     const topMask = await Jimp.read(
@@ -353,3 +353,5 @@ export const CImage3 = async ({ imgPath, imgName }) => {
     console.log(error);
   }
 };
+
+export default { CImage, CImage3 };

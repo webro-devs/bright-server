@@ -6,7 +6,7 @@ import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
-import { CImage, CImage3 } from "../../infra/helpers/image";
+import * as image from "../../infra/helpers/image";
 import { State } from "../../infra/shared/enums";
 
 export async function getAll(req, res: Response) {
@@ -243,6 +243,8 @@ export async function updateStatePublished(req: Request, res: Response) {
       tg,
       inst,
     );
+
+    // res.zip(images);
     res.send("");
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
