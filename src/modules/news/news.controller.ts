@@ -6,8 +6,8 @@ import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
-import * as image from "../../infra/helpers/image";
 import { State } from "../../infra/shared/enums";
+import { ZipMaker } from "../../infra/helpers";
 
 export async function getAll(req, res: Response) {
   try {
@@ -123,25 +123,6 @@ export async function create(req: Upload, res: Response) {
     }
 
     const news = await newsService.create(newsData, req["user"]?.id);
-
-    // if (news.ru && news.ru.file) {
-    //   await CImage({
-    //     imgPath: news.ru.file,
-    //     txt:
-    //       news.ru.title.length > 102
-    //         ? news.ru.title.slice(0, 99) + "..."
-    //         : news.ru.title,
-    //     ctgs: news.categories?.map((ctg) => ctg.ru),
-    //     imgName: "output",
-    //   });
-
-    //   await telegram({
-    //     title: news.ru.title,
-    //     desc: news.ru.shortDescription,
-    //     link: "http://bright.getter.uz/news/" + news.id,
-    //   });
-    // }
-
     res.send(new HttpException(false, 200, "News succesfully created"));
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -237,15 +218,21 @@ export async function deleteData(req: Request, res: Response) {
 export async function updateStatePublished(req: Request, res: Response) {
   try {
     const { newsIds, tg, inst } = req.body;
-    const images = await newsService.updateStatePublished(
-      newsIds,
-      State.published,
-      tg,
-      inst,
-    );
+    await newsService.updateStatePublished(newsIds, State.published, tg, inst);
+    if (inst) {
+      const zip = await ZipMaker();
+      const fileName = "instagram.zip";
+      const fileType = "application/zip";
 
-    // res.zip(images);
-    res.send("");
+      res.writeHead(200, {
+        "Content-Disposition": `attachment; filename="${fileName}`,
+        "Content-Type": fileType,
+      });
+
+      return res.end(zip);
+    } else {
+      return res.end("");
+    }
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }

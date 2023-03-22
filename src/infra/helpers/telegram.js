@@ -8,12 +8,12 @@ const telegram = async ({ title, desc, link, imgDir }) => {
   const text = `<b>${title || ""}</b>
 
 	${desc || ""}
-  
+
 	<b>Batafsil: </b>${String(link) || ""}`;
   await app.telegram.sendPhoto(
     "-1001601225733",
     {
-      source: fs.readFileSync(path.resolve(__dirname, `./output/${imgDir}`)),
+      source: fs.readFileSync(path.resolve(__dirname, `./output/uploads/${imgDir}`)),
     },
     {
       caption: text,
