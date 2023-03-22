@@ -21,6 +21,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
+    "express-zip": "^3.0.0",
     "getter-fileupload-client": "^1.0.9",
     "jimp": "^0.22.7",
     "jsonwebtoken": "^9.0.0",

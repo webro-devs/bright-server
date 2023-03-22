@@ -216,7 +216,7 @@ const lines = [
   },
 ];
 
-const CImage = async ({ txt, ctgs = [], imgPath }) => {
+const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
   ctgs = ctgs.slice(0, 3);
   const Ddate = new Date();
   const months = [
@@ -311,10 +311,47 @@ const CImage = async ({ txt, ctgs = [], imgPath }) => {
       });
 
     await image.normalize();
-    await image.writeAsync(path.resolve(__dirname, "./output/output.png"));
+    await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
   } catch (error) {
     console.log(error);
   }
 };
 
-export default CImage;
+const CImage3 = async ({ imgPath, imgName }) => {
+  try {
+    const logo = await Jimp.read(path.resolve(__dirname, "./uploads/logo.png"));
+    const topMask = await Jimp.read(
+      path.resolve(__dirname, "./uploads/mask/top.png"),
+    );
+    const url = `${imgPath}`;
+    const image = await Jimp.read(url);
+    const imageWidth = image.bitmap.width;
+    const imageHeight = image.bitmap.height;
+
+    if (imageWidth > imageHeight) {
+      const diff = (imageWidth - imageHeight) / 2;
+      await image.crop(diff, 0, imageHeight, imageHeight);
+    } else {
+      const diff = (imageHeight - imageWidth) / 2;
+      await image.crop(0, diff, imageWidth, imageWidth);
+    }
+
+    await image
+      .resize(1000, 1000)
+      .composite(topMask, 0, 0, {
+        mode: Jimp.BLEND_SOURCE_OVER,
+        opacityDest: 1,
+      })
+      .composite(logo, 60, 61, {
+        mode: Jimp.BLEND_SOURCE_OVER,
+        opacityDest: 1,
+      });
+
+    await image.normalize();
+    await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default { CImage, CImage3 };

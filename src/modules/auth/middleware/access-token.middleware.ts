@@ -11,7 +11,7 @@ const AccessTokenMiddleware = async (
   try {
     if (
       (req.method == "GET" && req.url.includes("/single-news")) ||
-      (req.method == "GET" && req.url == "/news") ||
+      (req.method == "GET" && req.url.includes("/news/published")) ||
       req.url == "/auth/login" ||
       req.url == "/auth/logout" ||
       req.url == "/auth/refresh" ||
@@ -21,7 +21,15 @@ const AccessTokenMiddleware = async (
       return;
     }
 
-    const token = req.cookies[ACCESS_TOKEN_ADMIN];
+    const cookies = req?.headers?.cookie?.split(';')?.reduce((acc, curr: string) => {
+      const [key, value] = curr?.split('=')
+      acc[key?.trim()] = value
+      return acc
+    }, {})
+    
+    console.log(cookies);
+    
+    const token = cookies[ACCESS_TOKEN_ADMIN];
 
     const user = await authService.validateToken(token, "access");
     if (!user.isActive) {

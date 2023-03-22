@@ -4,7 +4,7 @@ import * as fs from "fs";
 
 const app = new Telegraf("6245586674:AAFXgjqXWjOJ3JDMMjd9iwYs6gSVqPYMmdo");
 
-const telegram = async ({ title, desc, link }) => {
+const telegram = async ({ title, desc, link, imgDir }) => {
   const text = `<b>${title || ""}</b>
 
 	${desc || ""}
@@ -13,7 +13,7 @@ const telegram = async ({ title, desc, link }) => {
   await app.telegram.sendPhoto(
     "-1001601225733",
     {
-      source: fs.readFileSync(path.resolve(__dirname, "./output/output.png")),
+      source: fs.readFileSync(path.resolve(__dirname, `./output/${imgDir}`)),
     },
     {
       caption: text,

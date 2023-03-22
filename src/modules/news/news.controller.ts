@@ -6,31 +6,16 @@ import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService, telegram } from "../../infra/helpers";
 import slugify from "slugify";
-import CImage from "../../infra/helpers/image";
+import * as image from "../../infra/helpers/image";
 import { State } from "../../infra/shared/enums";
-import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
-import { DateRangeDto } from "../../infra/shared/dto";
 
 export async function getAll(req, res: Response) {
-  const query: DateRangeDto = req.query;
-  let where = {};
-  if (query.startDate && query.endDate) {
-    where = {
-      created_at: Between(new Date(query.startDate), new Date(query.endDate)),
-    };
-  } else if (query.startDate) {
-    where = {
-      created_at: MoreThanOrEqual(new Date(query.startDate)),
-    };
-  } else if (query.endDate) {
-    where = {
-      created_at: LessThanOrEqual(new Date(query.startDate)),
-    };
-  } else {
-    where = {};
+  try {
+    const news = await newsService.getAll({ where: req.where });
+    res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
   }
-  const news = await newsService.getAll(where);
-  res.send(news);
 }
 
 export const getById = async (req: Request, res: Response) => {
@@ -44,31 +29,11 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
-export const getByShortLink = async (req: Request, res: Response) => {
-  try {
-    const { shortLink, key } = req.params;
-    const news = await newsService.getByShortLink(shortLink, key);
-
-    return res.send(news);
-  } catch (err) {
-    res.send(new HttpException(true, 500, err.message));
-  }
-};
-
-export const getByCreatorId = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const news = await newsService.getByCreatorId(id);
-
-    return res.send(news);
-  } catch (err) {
-    res.send(new HttpException(true, 500, err.message));
-  }
-};
-
 export const getMyNews = async (req: Request, res: Response) => {
   try {
-    const news = await newsService.getByCreatorId(req["user"].id);
+    const where = req?.["where"];
+    where.creator = { id: req["user"].id };
+    const news = await newsService.getByCreatorId(where);
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -86,7 +51,9 @@ export const getByStateGeneral = async (req: Request, res: Response) => {
 
 export const getByStatePublished = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.published);
+    let where = req["where"] || {};
+    where.state = State.published;
+    const data = await newsService.getByStatePublished(where);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -102,10 +69,9 @@ export const getByStateArchive = async (req: Request, res: Response) => {
   }
 };
 
-export const getByCategoryId = async (req: Request, res: Response) => {
+export const getByStateChecking = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const data = await newsService.getByCategoryId(id);
+    const data = await newsService.getByState(State.checking);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -125,98 +91,162 @@ export const getBySavedCreator = async (req: Request, res: Response) => {
 };
 
 export async function create(req: Upload, res: Response) {
-  const newsData: CreateNewsDto = req.body;
-  const imgData = ["uz", "ru", "en", "уз"];
+  try {
+    const newsData: CreateNewsDto = req.body;
+    const imgData = ["uz", "ru", "en", "уз"];
 
-  for (let i = 0; imgData.length > i; i++) {
-    if (!newsData[imgData[i]]) {
-      newsData[imgData[i]] = {};
-    }
-    if (req?.files?.[imgData[i] + "_img"]) {
-      const avatar = await fileService.uploadImage(
-        req.files[imgData[i] + "_img"],
-      );
-      if (avatar.error) {
-        res.send(new HttpException(true, 500, "Image upload error"));
-        return;
+    for (let i = 0; imgData.length > i; i++) {
+      if (!newsData[imgData[i]]) {
+        newsData[imgData[i]] = {};
       }
-      newsData[imgData[i]]["file"] = avatar.url;
+      if (req?.files?.[imgData[i] + "_img"]) {
+        const avatar = await fileService.uploadImage(
+          req.files[imgData[i] + "_img"],
+        );
+        if (avatar.error) {
+          res.send(new HttpException(true, 500, "Image upload error"));
+          return;
+        }
+      }
+
+      newsData[imgData[i]].shortLink = slugify(
+        newsData[imgData[i]].shortLink || "",
+        {
+          replacement: "-",
+          remove: /[*+~.()'"!:@]/g,
+          lower: false,
+          strict: false,
+          locale: "vi",
+          trim: true,
+        },
+      );
     }
 
-    newsData[imgData[i]].shortLink = slugify(
-      newsData[imgData[i]].shortLink || "",
-      {
-        replacement: "-",
-        remove: /[*+~.()'"!:@]/g,
-        lower: false,
-        strict: false,
-        locale: "vi",
-        trim: true,
-      },
-    );
+    const news = await newsService.create(newsData, req["user"]?.id);
+
+    // if (news.ru && news.ru.file) {
+    //   await CImage({
+    //     imgPath: news.ru.file,
+    //     txt:
+    //       news.ru.title.length > 102
+    //         ? news.ru.title.slice(0, 99) + "..."
+    //         : news.ru.title,
+    //     ctgs: news.categories?.map((ctg) => ctg.ru),
+    //     imgName: "output",
+    //   });
+
+    //   await telegram({
+    //     title: news.ru.title,
+    //     desc: news.ru.shortDescription,
+    //     link: "http://bright.getter.uz/news/" + news.id,
+    //   });
+    // }
+
+    res.send(new HttpException(false, 200, "News succesfully created"));
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
   }
-
-  const news = await newsService.create(newsData, req["user"]?.id);
-  let ok = "!";
-
-  if (news.ru && news.ru.file) {
-    await CImage({
-      imgPath: news.ru.file,
-      txt:
-        news.ru.title.length > 102
-          ? news.ru.title.slice(0, 99) + "..."
-          : news.ru.title,
-      ctgs: news.categories?.map((ctg) => ctg.ru),
-    });
-
-    await telegram({
-      title: news.ru.title,
-      desc: news.ru.shortDescription,
-      link: "http://bright.getter.uz/news/" + news.id,
-    });
-    ok = " and sended telegram!";
-  }
-
-  res.send("News succesfully created" + ok);
 }
 
 export async function update(req: Upload, res: Response) {
-  const newsData: UpdateNewsDto = req.body;
-  const { id } = req.params;
+  try {
+    const newsData: UpdateNewsDto = req.body;
+    const { id } = req.params;
 
-  const updateNews = await newsService.update(newsData, id, req?.files);
+    const updateNews = await newsService.update(newsData, id, req?.files);
 
-  res.send(updateNews);
+    res.send(updateNews);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateStateArchive(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const updateState = await newsService.updateState(id, "archive");
+    const updateState = await newsService.updateState(id, "archive");
 
-  res.send(updateState);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateStateGeneral(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const updateState = await newsService.updateState(id, "general access");
+    const updateState = await newsService.updateState(id, "general access");
 
-  res.send(updateState);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStateChecking(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const updateState = await newsService.updateState(id, State.checking);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStateFavorite(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const updateState = await newsService.updateFavorite(
+      id,
+      State.favorites,
+      req["user"].id,
+    );
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateDate(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const updateDate = await newsService.updateDate(id, req?.body?.date);
+    const updateDate = await newsService.updateDate(id, req?.body?.date);
 
-  res.send(updateDate);
+    res.send(updateDate);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function deleteData(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const deleteData = await newsService.remove(id);
+    const deleteData = await newsService.remove(id);
 
-  res.send(deleteData);
+    res.send(deleteData);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStatePublished(req: Request, res: Response) {
+  try {
+    const { newsIds, tg, inst } = req.body;
+    const images = await newsService.updateStatePublished(
+      newsIds,
+      State.published,
+      tg,
+      inst,
+    );
+
+    // res.zip(images);
+    res.send("");
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }

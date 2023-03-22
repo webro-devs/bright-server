@@ -1,49 +1,74 @@
 import { UpdateResult, DeleteResult, Repository } from "typeorm";
 import { Permission } from "./permission.entity";
 import { CreatPermissionDto, UpUpdatePermissionDto } from "./dto";
+import { HttpException } from "../../infra/validation";
 
 export class PermissionService {
   constructor(private readonly permissionRepository: Repository<Permission>) {}
 
   async getAll(): Promise<Permission[]> {
-    const categories = await this.permissionRepository.find();
-    return categories;
+    try {
+      const categories = await this.permissionRepository.find();
+      return categories;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getById(id: string): Promise<Permission> {
-    const category = await this.permissionRepository.findOne({
-      where: { id },
-      relations: {
-        admins: {
-          position: true,
+    try {
+      const category = await this.permissionRepository.findOne({
+        where: { id },
+        relations: {
+          admins: {
+            position: true,
+          },
         },
-      },
-    });
-    return category;
+      });
+      return category;
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
   }
 
   async getManyPermissionsById(ids: string[]) {
-    return this.permissionRepository
-      .createQueryBuilder()
-      .where("id IN(:...ids)", { ids })
-      .getMany();
+    try {
+      return this.permissionRepository
+        .createQueryBuilder()
+        .where("id IN(:...ids)", { ids })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
   }
 
   async create(values: CreatPermissionDto): Promise<Permission> {
-    const response = this.permissionRepository.create(values);
-    return this.permissionRepository.save(response);
+    try {
+      const response = this.permissionRepository.create(values);
+      return this.permissionRepository.save(response);
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
   }
 
   async update(
     values: UpUpdatePermissionDto,
     id: string,
   ): Promise<UpdateResult> {
-    const response = await this.permissionRepository.update(id, values);
-    return response;
+    try {
+      const response = await this.permissionRepository.update(id, values);
+      return response;
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
   }
 
-  async remove(id: string): Promise<DeleteResult> {
-    const response = await this.permissionRepository.delete(id);
-    return response;
+  async remove(id: string): Promise<DeleteResult | HttpException> {
+    try {
+      const response = await this.permissionRepository.delete(id);
+      return new HttpException(false, 204, "goooood ...");
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
   }
 }

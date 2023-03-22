@@ -21,6 +21,9 @@ export class NewsLanguage {
   @Column({ type: "varchar", nullable: true })
   shortDescription: string;
 
+  @Column({ type: "text", nullable: true, array: true })
+  descImg: string[];
+
   @Column({ type: "varchar", nullable: true, unique: true })
   shortLink: string;
 
