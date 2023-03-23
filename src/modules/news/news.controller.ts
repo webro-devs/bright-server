@@ -207,9 +207,13 @@ export async function deleteData(req: Request, res: Response) {
   try {
     const { ids } = req.body;
 
-    await newsService.remove(ids);
+    await Promise.all(
+      ids.map(async (id) => {
+        await newsService.remove(id);
+      }),
+    );
 
-    res.send(deleteData);
+    res.send({ Data: "ok", error: false });
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }
