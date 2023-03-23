@@ -61,6 +61,9 @@ export class NewsService {
           mainCategory: true,
         },
         where: { state },
+        order: {
+          created_at: "DESC",
+        },
       });
       return data;
     } catch (err) {
@@ -81,6 +84,9 @@ export class NewsService {
           mainCategory: true,
         },
         where,
+        order: {
+          created_at: "DESC",
+        },
       });
       return data;
     } catch (err) {
