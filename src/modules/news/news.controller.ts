@@ -205,9 +205,11 @@ export async function updateDate(req: Request, res: Response) {
 
 export async function deleteData(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { ids } = req.body;
 
-    const deleteData = await newsService.remove(id);
+    ids.forEach(async (element) => {
+      await newsService.remove(element);
+    });
 
     res.send(deleteData);
   } catch (err) {

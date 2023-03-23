@@ -41,7 +41,7 @@ router
     newsController.update,
   )
   .delete(
-    "/news/:id",
+    "/news",
     // PermissionMiddleware("Удалить"),
     newsController.deleteData,
   )
