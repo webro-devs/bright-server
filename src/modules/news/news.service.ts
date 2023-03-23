@@ -258,9 +258,14 @@ export class NewsService {
     }
   }
 
-  async remove(id: string): Promise<DeleteResult | HttpException> {
+  async remove(ids: string): Promise<DeleteResult | HttpException> {
     try {
-      const response = await this.newsRepository.delete(id);
+      const response = await this.newsRepository
+        .createQueryBuilder()
+        .delete()
+        .from(News)
+        .where("id IN (:...id)", { id: ids })
+        .execute();
       return new HttpException(false, 204, "Deleted succesfully");
     } catch (err) {
       throw new HttpException(true, 204, err.message);

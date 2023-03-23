@@ -207,9 +207,7 @@ export async function deleteData(req: Request, res: Response) {
   try {
     const { ids } = req.body;
 
-    ids?.forEach(async (element) => {
-      await newsService.remove(element);
-    });
+    await newsService.remove(ids);
 
     res.send(deleteData);
   } catch (err) {
