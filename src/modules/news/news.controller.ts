@@ -221,26 +221,21 @@ export async function deleteData(req: Request, res: Response) {
 
 export async function updateStatePublished(req: Request, res: Response) {
   try {
-    const { newsIds, tg, inst } = req.body;
+    const { newsIds, tg, inst = false } = req.body;
     await newsService.updateStatePublished(newsIds, State.published, tg, inst);
-    if (inst) {
-      const { data, isNaN } = await ZipMaker();
-      if (isNaN) {
-        return res.send("");
-      } else {
-        const fileName = "instagram.zip";
-        const fileType = "application/zip";
+    if (inst == true) {
+      const { data } = await ZipMaker();
+      const fileName = "instagram.zip";
+      const fileType = "application/zip";
 
-        res.writeHead(200, {
-          "Content-Disposition": `attachment; filename="${fileName}`,
-          "Content-Type": fileType,
-        });
+      res.writeHead(200, {
+        "Content-Disposition": `attachment; filename="${fileName}`,
+        "Content-Type": fileType,
+      });
 
-        return res.end(data);
-      }
-    } else {
-      return res.end("");
+      return res.end(data);
     }
+    return res.send("News published succesfully");
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }

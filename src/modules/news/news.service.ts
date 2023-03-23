@@ -322,17 +322,17 @@ export class NewsService {
               );
               if (tg) {
                 await telegram({
-                  title: news[lang].title,
-                  desc: news[lang].shortDescription,
-                  link: "http://bright.getter.uz/news/" + news.id,
+                  title: news[lang]?.title,
+                  desc: news[lang]?.shortDescription,
+                  link: "http://bright.getter.uz/news/" + news?.id,
                   imgDir,
                 });
               }
               if (inst) {
                 const descImgs = news[lang]?.descImg;
                 if (descImgs?.length > 0) {
-                  for (let j = 0; j < descImgs.length; j++) {
-                    const element = descImgs[j];
+                  for (let j = 0; j < descImgs?.length; j++) {
+                    const element = descImgs?.[j];
                     await SocialMediaService(
                       news,
                       `news_${i + 1}`,
