@@ -28,6 +28,7 @@ const AccessTokenMiddleware = async (
         acc[key?.trim()] = value;
         return acc;
       }, {});
+console.log(req?.headers);
 
     const token = cookies[ACCESS_TOKEN_ADMIN];
 
