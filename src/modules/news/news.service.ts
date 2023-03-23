@@ -9,6 +9,7 @@ import {
   images,
   telegram,
   SocialMediaService,
+  deleteDirectory,
 } from "../../infra/helpers";
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
@@ -300,6 +301,7 @@ export class NewsService {
     inst: boolean,
   ) {
     try {
+      deleteDirectory();
       const languages = ["ru", "uz", "en", "уз"];
       for (let i = 0; i < ids.length; i++) {
         const news = await this.getById(ids[i]);
