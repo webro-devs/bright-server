@@ -348,14 +348,15 @@ export class NewsService {
         }
       }
 
-      await this.newsRepository
+      const response = await this.newsRepository
         .createQueryBuilder()
         .update()
         .set({ state })
         .where("id IN(:...ids)", { ids })
         .execute();
+      return response;
     } catch (err) {
-      throw new HttpException(true, 500, err.message);
+      return new HttpException(true, 500, err.message);
     }
   }
 }
