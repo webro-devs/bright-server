@@ -30,9 +30,16 @@ export class AdminService {
       relations: {
         permissions: true,
         position: true,
-        news: true,
+        news: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          mainCategory: true,
+        },
       },
-      where: { id },
+      where: { id, news: { state: "published" } },
     });
     if (!admin) {
       console.log(admin);
