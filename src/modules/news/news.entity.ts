@@ -11,7 +11,6 @@ import {
   OneToMany,
   UpdateDateColumn,
 } from "typeorm";
-import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
 import { Category } from "../category/category.entity";
 import { NewsLanguage } from "../news-language/news-language.entity";

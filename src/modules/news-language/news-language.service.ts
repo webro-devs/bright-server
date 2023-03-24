@@ -1,4 +1,4 @@
-import { UpdateResult, DeleteResult, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { NewsLanguage } from "./news-language.entity";
 import { CreateNewsLanguageDto, UpdateNewsLanguageDto } from "./dto";
 import { HttpException } from "../../infra/validation";

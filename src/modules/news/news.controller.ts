@@ -4,7 +4,7 @@ import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
-import { fileService, telegram } from "../../infra/helpers";
+import { fileService } from "../../infra/helpers";
 import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
 import { ZipMaker } from "../../infra/helpers";
@@ -146,9 +146,9 @@ export async function update(req: Upload, res: Response) {
 
 export async function updateStateArchive(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { ids } = req.body;
 
-    const updateState = await newsService.updateState(id, "archive");
+    const updateState = await newsService.updateState(ids, "archive");
 
     res.send(updateState);
   } catch (err) {
@@ -158,9 +158,9 @@ export async function updateStateArchive(req: Request, res: Response) {
 
 export async function updateStateGeneral(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { ids } = req.body;
 
-    const updateState = await newsService.updateState(id, "general access");
+    const updateState = await newsService.updateState(ids, "general access");
 
     res.send(updateState);
   } catch (err) {
@@ -170,8 +170,8 @@ export async function updateStateGeneral(req: Request, res: Response) {
 
 export async function updateStateChecking(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    const updateState = await newsService.updateState(id, State.checking);
+    const { ids } = req.body;
+    const updateState = await newsService.updateState(ids, State.checking);
     res.send(updateState);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

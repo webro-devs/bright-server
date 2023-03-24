@@ -2,7 +2,6 @@ import * as express from "express";
 require("dotenv").config();
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
-import zip from "express-zip";
 const fileUpload = require("express-fileupload");
 import { TypeOrmDataSource } from "./config";
 
