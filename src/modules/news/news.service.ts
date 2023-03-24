@@ -6,7 +6,6 @@ import { CategoryService } from "../category/category.service";
 import { AdminService } from "../admin/admin.service";
 import {
   fileService,
-  images,
   telegram,
   SocialMediaService,
   deleteDirectory,
@@ -15,7 +14,6 @@ import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
 import slugify from "slugify";
-const { CImage, CImage3 } = images;
 
 export class NewsService {
   constructor(

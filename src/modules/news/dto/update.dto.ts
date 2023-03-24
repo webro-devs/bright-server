@@ -3,10 +3,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  isArray,
-  isObject,
 } from "class-validator";
-import { Category } from "../../category/category.entity";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 import { Transform } from "class-transformer";

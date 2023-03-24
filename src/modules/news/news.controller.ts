@@ -4,7 +4,7 @@ import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
-import { fileService, telegram } from "../../infra/helpers";
+import { fileService } from "../../infra/helpers";
 import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
 import { ZipMaker } from "../../infra/helpers";

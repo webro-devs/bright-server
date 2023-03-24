@@ -1,5 +1,4 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
-import { News } from "../../news/news.entity";
+import { IsNotEmpty, IsString } from "class-validator";
 
 class CreateCategoryDto {
   @IsNotEmpty()
