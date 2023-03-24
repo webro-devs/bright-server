@@ -9,6 +9,7 @@ import {
   JoinTable,
   CreateDateColumn,
   OneToMany,
+  UpdateDateColumn,
 } from "typeorm";
 import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
@@ -67,4 +68,11 @@ export class News {
     default: () => "CURRENT_TIMESTAMP",
   })
   public created_at: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+  public updated_at: Date;
 }
