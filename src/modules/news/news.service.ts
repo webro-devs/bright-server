@@ -39,7 +39,7 @@ export class NewsService {
           mainCategory: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
         where,
       });
@@ -63,7 +63,7 @@ export class NewsService {
         },
         where: { state },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -86,7 +86,7 @@ export class NewsService {
         },
         where,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -128,7 +128,7 @@ export class NewsService {
           creator: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
@@ -150,7 +150,7 @@ export class NewsService {
           creator: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
