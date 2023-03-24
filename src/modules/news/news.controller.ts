@@ -101,12 +101,13 @@ export async function create(req: Upload, res: Response) {
       }
       if (req?.files?.[imgData[i] + "_img"]) {
         const avatar = await fileService.uploadImage(
-          req.files[imgData[i] + "_img"],
+          req?.files?.[imgData[i] + "_img"],
         );
         if (avatar.error) {
           res.send(new HttpException(true, 500, "Image upload error"));
           return;
         }
+        newsData[imgData[i]]["file"] = avatar.url;
       }
 
       newsData[imgData[i]].shortLink = slugify(
@@ -223,7 +224,7 @@ export async function updateStatePublished(req: Request, res: Response) {
   try {
     const { newsIds, tg, inst = false } = req.body;
     await newsService.updateStatePublished(newsIds, State.published, tg, inst);
-    if (inst == true) {
+    if (inst) {
       const { data } = await ZipMaker();
       const fileName = "instagram.zip";
       const fileType = "application/zip";

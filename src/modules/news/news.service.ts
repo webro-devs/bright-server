@@ -14,6 +14,7 @@ import {
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
+import slugify from "slugify";
 const { CImage, CImage3 } = images;
 
 export class NewsService {
@@ -228,6 +229,16 @@ export class NewsService {
             }
             values[key] = values[key] ? values[key] : {};
             values[key].file = img.url;
+            values[key].shortLink = values[key].shortLink
+              ? slugify(values[key].shortLink, {
+                  replacement: "-",
+                  remove: /[*+~.()'"!:@]/g,
+                  lower: false,
+                  strict: false,
+                  locale: "vi",
+                  trim: true,
+                })
+              : find[key].shortLink;
             await this.newsLanguageService.put(
               { ...values[key] },
               find[key].id,
