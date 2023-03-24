@@ -117,6 +117,8 @@ export class NewsService {
 
   async getByCreatorId(where): Promise<News[]> {
     try {
+      console.log(where);
+
       const response = await this.newsRepository.find({
         where,
         relations: {
@@ -285,7 +287,7 @@ export class NewsService {
         ru: await this.newsLanguageService.create(data.ru),
         en: await this.newsLanguageService.create(data.en),
         уз: await this.newsLanguageService.create(data.уз),
-        creator: await this.adminService.getById(id),
+        creator: await this.adminService.getOne(id),
         state: data.state,
         categories: null,
         publishDate: data.publishDate,

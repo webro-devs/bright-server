@@ -49,6 +49,29 @@ export class AdminService {
     return admin;
   }
 
+  async getOne(id: string): Promise<Admin> {
+    const admin = await this.adminRepository.findOne({
+      relations: {
+        permissions: true,
+        position: true,
+        news: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          mainCategory: true,
+        },
+      },
+      where: { id },
+    });
+    if (!admin) {
+      console.log(admin);
+      throw new HttpException(true, 404, "Admin not found");
+    }
+    return admin;
+  }
+
   async getByLogin(login: string) {
     const admin = await this.adminRepository
       .createQueryBuilder("admin")
