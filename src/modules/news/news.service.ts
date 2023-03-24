@@ -159,13 +159,13 @@ export class NewsService {
     }
   }
 
-  async updateState(id: string, state: string) {
+  async updateState(ids: string, state: string) {
     try {
       await this.newsRepository
         .createQueryBuilder()
         .update()
         .set({ state })
-        .where("id = :id", { id })
+        .where("id IN(:...ids)", { ids })
         .execute();
 
       return new HttpException(false, 203, "State successfully changed");
