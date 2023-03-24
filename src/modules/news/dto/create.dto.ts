@@ -1,9 +1,6 @@
 import {
-  IsNotEmpty,
   IsString,
   IsOptional,
-  isArray,
-  isObject,
   IsObject,
 } from "class-validator";
 import { State } from "../../../infra/shared/enums";

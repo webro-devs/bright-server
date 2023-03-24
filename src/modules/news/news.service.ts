@@ -6,7 +6,6 @@ import { CategoryService } from "../category/category.service";
 import { AdminService } from "../admin/admin.service";
 import {
   fileService,
-  images,
   telegram,
   SocialMediaService,
   deleteDirectory,
@@ -15,7 +14,6 @@ import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
 import slugify from "slugify";
-const { CImage, CImage3 } = images;
 
 export class NewsService {
   constructor(
@@ -39,7 +37,7 @@ export class NewsService {
           mainCategory: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
         where,
       });
@@ -63,7 +61,7 @@ export class NewsService {
         },
         where: { state },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -86,7 +84,7 @@ export class NewsService {
         },
         where,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -128,7 +126,7 @@ export class NewsService {
           creator: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
@@ -150,7 +148,7 @@ export class NewsService {
           creator: true,
         },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
@@ -159,13 +157,13 @@ export class NewsService {
     }
   }
 
-  async updateState(id: string, state: string) {
+  async updateState(ids: string, state: string) {
     try {
       await this.newsRepository
         .createQueryBuilder()
         .update()
         .set({ state })
-        .where("id = :id", { id })
+        .where("id IN(:...ids)", { ids })
         .execute();
 
       return new HttpException(false, 203, "State successfully changed");

@@ -1,4 +1,4 @@
-import { UpdateResult, DeleteResult, Repository } from "typeorm";
+import {  DeleteResult, Repository } from "typeorm";
 import { Notification } from "./notification.entity";
 import { CreateNotificationDto, InsertNotificationDto } from "./dto";
 import { HttpException } from "../../infra/validation";
