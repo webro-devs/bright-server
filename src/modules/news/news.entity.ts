@@ -66,12 +66,12 @@ export class News {
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
-  public created_at: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
     onUpdate: "CURRENT_TIMESTAMP",
   })
-  public updated_at: Date;
+  updated_at: Date;
 }

@@ -8,7 +8,7 @@ import { HttpException } from "../../infra/validation";
 
 export async function getMe(req: Request, res: Response) {
   try {
-    const categories = await adminService.getById(req["user"].id);
+    const categories = await adminService.getOne(req["user"].id);
     res.send(categories);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -104,7 +104,6 @@ export async function changeActive(req: Request, res: Response) {
 
 export async function changeProfile(req: Upload, res: Response) {
   try {
-    const { id } = req.params;
     const updateData: UpdateAdminProfileDto = req.body;
     let avatar = { url: null, error: null };
     if (req?.files?.avatar) {
@@ -114,7 +113,7 @@ export async function changeProfile(req: Upload, res: Response) {
         return;
       }
     }
-    const response = await adminService.changeProfile(id, {
+    const response = await adminService.changeProfile(req["user"].id, {
       ...updateData,
       avatar: avatar.url,
     });

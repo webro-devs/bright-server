@@ -7,3 +7,4 @@ export { default as parseTextToObject } from "./json-parser";
 export { default as ZipMaker } from "./zip-service";
 export { default as SocialMediaService } from "./social-media-service/file-upload";
 export { default as deleteDirectory } from "./remove-dir";
+export { default as CronJob } from "./cron";
