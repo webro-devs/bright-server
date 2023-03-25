@@ -8,6 +8,7 @@ import { fileService } from "../../infra/helpers";
 import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
 import { ZipMaker } from "../../infra/helpers";
+import { NewsLanguage } from "../editors/editors.entity";
 
 export async function getAll(req, res: Response) {
   try {
@@ -94,6 +95,17 @@ export async function create(req: Upload, res: Response) {
   try {
     const newsData: CreateNewsDto = req.body;
     const imgData = ["uz", "ru", "en", "уз"];
+
+    if (newsData?.["Ñ\x83Ð·"]) {
+      if (newsData?.["Ñ\x83Ð·"] !== "уз") {
+        Object.defineProperty(
+          newsData,
+          "уз",
+          Object.getOwnPropertyDescriptor(newsData, "Ñ\x83Ð·"),
+        );
+        delete newsData["Ñ\x83Ð·"];
+      }
+    }
 
     for (let i = 0; imgData.length > i; i++) {
       if (!newsData[imgData[i]]) {
