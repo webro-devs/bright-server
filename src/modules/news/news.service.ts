@@ -1,4 +1,5 @@
 import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
+import slugify from "slugify";
 import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
@@ -9,11 +10,11 @@ import {
   telegram,
   SocialMediaService,
   deleteDirectory,
+  CronJob,
 } from "../../infra/helpers";
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
-import slugify from "slugify";
 
 export class NewsService {
   constructor(
@@ -263,7 +264,7 @@ export class NewsService {
           await manager.save(oldNews);
         });
       }
-      return new HttpException(true, 203, "succesfully edited");
+      return new HttpException(true, 203, "successfully edited");
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
@@ -322,6 +323,14 @@ export class NewsService {
       const languages = ["ru", "uz", "en", "уз"];
       for (let i = 0; i < ids.length; i++) {
         const news = await this.getById(ids[i]);
+        let publishDate = new Date(news.publishDate);
+        let date = new Date();
+        let diffTime = publishDate.getTime() - date.getTime();
+        if (diffTime > 1000) {
+          date = publishDate;
+        } else {
+          date.setSeconds(date.getSeconds() + 5);
+        }
         for (const lang of languages) {
           if (lang == "ru") {
             if (news?.[lang] && news?.[lang]?.file && (tg || inst)) {
@@ -332,11 +341,13 @@ export class NewsService {
                 true,
               );
               if (tg) {
-                await telegram({
-                  title: news[lang]?.title,
-                  desc: news[lang]?.shortDescription,
-                  link: "http://bright.getter.uz/news/" + news?.id,
-                  imgDir,
+                CronJob(date, async () => {
+                  await telegram({
+                    title: news[lang]?.title,
+                    desc: news[lang]?.shortDescription,
+                    link: "http://bright.getter.uz/news/" + news?.id,
+                    imgDir,
+                  });
                 });
               }
               if (inst) {
@@ -357,15 +368,17 @@ export class NewsService {
             }
           }
         }
+        CronJob(date, async () => {
+          await this.newsRepository
+            .createQueryBuilder()
+            .update()
+            .set({ state })
+            .where("id = :id", { id: news.id })
+            .execute();
+        });
       }
 
-      const response = await this.newsRepository
-        .createQueryBuilder()
-        .update()
-        .set({ state })
-        .where("id IN(:...ids)", { ids })
-        .execute();
-      return response;
+      return new HttpException(true, 203, "successfully edited");
     } catch (err) {
       return new HttpException(true, 500, err.message);
     }
