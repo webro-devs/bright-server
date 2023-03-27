@@ -34,6 +34,7 @@ TypeOrmDataSource.initialize()
       newsRouter,
       authRouter,
       notificationRouter,
+      chatRouter,
     );
 
     console.log("Data Source has been initialized!");
