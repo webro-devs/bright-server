@@ -1,4 +1,5 @@
 import { DeleteResult, Repository } from "typeorm";
+import { HttpException } from "../../infra/validation";
 import { Chat } from "./chat.entity";
 import { CreateChatDto } from "./dto";
 
@@ -6,42 +7,58 @@ export class ChatService {
   constructor(private readonly chatRepository: Repository<Chat>) {}
 
   async getAll(): Promise<Chat[]> {
-    const getAll = await this.chatRepository.find({
-      relations: {
-        messages: {
-          user: {
-            position: true,
+    try {
+      const getAll = await this.chatRepository.find({
+        relations: {
+          messages: {
+            user: {
+              position: true,
+            },
           },
         },
-      },
-    });
-    return getAll;
+      });
+      return getAll;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async getById(id: string): Promise<Chat> {
-    const response = await this.chatRepository.findOne({
-      where: { news: { id } },
-      relations: {
-        messages: {
-          user: true,
+    try {
+      const response = await this.chatRepository.findOne({
+        where: { news: { id } },
+        relations: {
+          messages: {
+            user: true,
+          },
         },
-      },
-    });
-    return response;
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async create(values: CreateChatDto) {
-    const response = this.chatRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Chat)
-      .values(values as unknown as Chat)
-      .execute();
-    return response;
+    try {
+      const response = this.chatRepository
+        .createQueryBuilder()
+        .insert()
+        .into(Chat)
+        .values(values as unknown as Chat)
+        .execute();
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 
   async remove(id: string): Promise<DeleteResult> {
-    const response = await this.chatRepository.delete(id);
-    return response;
+    try {
+      const response = await this.chatRepository.delete(id);
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
   }
 }
