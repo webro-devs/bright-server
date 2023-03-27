@@ -8,7 +8,6 @@ import { fileService } from "../../infra/helpers";
 import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
 import { ZipMaker } from "../../infra/helpers";
-import { NewsLanguage } from "../editors/editors.entity";
 
 export async function getAll(req, res: Response) {
   try {
@@ -22,7 +21,9 @@ export async function getAll(req, res: Response) {
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const news = await newsService.getOne(id, req["relations"]);
+    const relations = req?.["relations"];
+    relations.editors = { editor: true };
+    const news = await newsService.getOne(id, relations);
 
     return res.send(news);
   } catch (err) {
