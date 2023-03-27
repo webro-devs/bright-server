@@ -9,10 +9,11 @@ import {
   JoinTable,
   CreateDateColumn,
   OneToMany,
+  UpdateDateColumn,
 } from "typeorm";
-import { State } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
 import { Category } from "../category/category.entity";
+import { NewsEditor } from "../editors/editors.entity";
 import { NewsLanguage } from "../news-language/news-language.entity";
 import { Notification } from "../notification/notification.entity";
 
@@ -62,9 +63,19 @@ export class News {
   @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en)
   en: NewsLanguage;
 
+  @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.news)
+  editors: NewsEditor[];
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
-  public created_at: Date;
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+  updated_at: Date;
 }

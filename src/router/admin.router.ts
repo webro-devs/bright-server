@@ -31,7 +31,11 @@ router
     PermissionMiddleware("Создать пользователя", "Удалить"),
     adminController.changeActive,
   )
-  .patch("/admin/profile/:id", adminController.changeProfile)
+  .patch(
+    "/admin/profile/my",
+    DtoValidationMiddleware(UpdateAdminProfileDto, true),
+    adminController.changeProfile,
+  )
   .delete(
     "/admin/:id",
     PermissionMiddleware("Удалить"),

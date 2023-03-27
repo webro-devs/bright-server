@@ -1,4 +1,5 @@
 import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
+import slugify from "slugify";
 import { News } from "./news.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
@@ -6,15 +7,14 @@ import { CategoryService } from "../category/category.service";
 import { AdminService } from "../admin/admin.service";
 import {
   fileService,
-  images,
   telegram,
   SocialMediaService,
   deleteDirectory,
+  CronJob,
 } from "../../infra/helpers";
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
-const { CImage, CImage3 } = images;
 
 export class NewsService {
   constructor(
@@ -25,20 +25,12 @@ export class NewsService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll({ where }): Promise<News[]> {
+  async getAll(where, relations): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-          mainCategory: true,
-        },
+        relations,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
         where,
       });
@@ -48,21 +40,13 @@ export class NewsService {
     }
   }
 
-  async getByState(state: State) {
+  async getByState(state: State, relations) {
     try {
       const data = await this.newsRepository.find({
-        relations: {
-          creator: true,
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          mainCategory: true,
-        },
+        relations,
         where: { state },
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -71,21 +55,13 @@ export class NewsService {
     }
   }
 
-  async getByStatePublished(where) {
+  async getByStatePublished(where, relations) {
     try {
       const data = await this.newsRepository.find({
-        relations: {
-          creator: true,
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          mainCategory: true,
-        },
+        relations,
         where,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return data;
@@ -114,20 +90,25 @@ export class NewsService {
     }
   }
 
-  async getByCreatorId(where): Promise<News[]> {
+  async getOne(id: string, relations): Promise<News> {
+    try {
+      const response = await this.newsRepository.findOne({
+        where: { id },
+        relations,
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
+  async getByCreatorId(where, relations): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where,
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-        },
+        relations,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
@@ -136,20 +117,17 @@ export class NewsService {
     }
   }
 
-  async getBySavedCreator(id: string, state: string): Promise<News[]> {
+  async getBySavedCreator(
+    id: string,
+    state: string,
+    relations,
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where: { creator: { id }, state },
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-        },
+        relations,
         order: {
-          created_at: "DESC",
+          updated_at: "DESC",
         },
       });
       return response;
@@ -158,13 +136,13 @@ export class NewsService {
     }
   }
 
-  async updateState(id: string, state: string) {
+  async updateState(ids: string, state: string) {
     try {
       await this.newsRepository
         .createQueryBuilder()
         .update()
         .set({ state })
-        .where("id = :id", { id })
+        .where("id IN(:...ids)", { ids })
         .execute();
 
       return new HttpException(false, 203, "State successfully changed");
@@ -228,6 +206,16 @@ export class NewsService {
             }
             values[key] = values[key] ? values[key] : {};
             values[key].file = img.url;
+            values[key].shortLink = values[key].shortLink
+              ? slugify(values[key].shortLink, {
+                  replacement: "-",
+                  remove: /[*+~.()'"!:@]/g,
+                  lower: false,
+                  strict: false,
+                  locale: "vi",
+                  trim: true,
+                })
+              : find[key].shortLink;
             await this.newsLanguageService.put(
               { ...values[key] },
               find[key].id,
@@ -252,7 +240,7 @@ export class NewsService {
           await manager.save(oldNews);
         });
       }
-      return new HttpException(true, 203, "succesfully edited");
+      return new HttpException(true, 203, "successfully edited");
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
@@ -274,7 +262,7 @@ export class NewsService {
         ru: await this.newsLanguageService.create(data.ru),
         en: await this.newsLanguageService.create(data.en),
         уз: await this.newsLanguageService.create(data.уз),
-        creator: await this.adminService.getById(id),
+        creator: await this.adminService.getOne(id),
         state: data.state,
         categories: null,
         publishDate: data.publishDate,
@@ -311,6 +299,14 @@ export class NewsService {
       const languages = ["ru", "uz", "en", "уз"];
       for (let i = 0; i < ids.length; i++) {
         const news = await this.getById(ids[i]);
+        let publishDate = new Date(news.publishDate);
+        let date = new Date();
+        let diffTime = publishDate.getTime() - date.getTime();
+        if (diffTime > 1000) {
+          date = publishDate;
+        } else {
+          date.setSeconds(date.getSeconds() + 5);
+        }
         for (const lang of languages) {
           if (lang == "ru") {
             if (news?.[lang] && news?.[lang]?.file && (tg || inst)) {
@@ -321,18 +317,20 @@ export class NewsService {
                 true,
               );
               if (tg) {
-                await telegram({
-                  title: news[lang].title,
-                  desc: news[lang].shortDescription,
-                  link: "http://bright.getter.uz/news/" + news.id,
-                  imgDir,
+                CronJob(date, async () => {
+                  await telegram({
+                    title: news[lang]?.title,
+                    desc: news[lang]?.shortDescription,
+                    link: "http://bright.getter.uz/news/" + news?.id,
+                    imgDir,
+                  });
                 });
               }
               if (inst) {
                 const descImgs = news[lang]?.descImg;
                 if (descImgs?.length > 0) {
-                  for (let j = 0; j < descImgs.length; j++) {
-                    const element = descImgs[j];
+                  for (let j = 0; j < descImgs?.length; j++) {
+                    const element = descImgs?.[j];
                     await SocialMediaService(
                       news,
                       `news_${i + 1}`,
@@ -346,15 +344,17 @@ export class NewsService {
             }
           }
         }
+        CronJob(date, async () => {
+          await this.newsRepository
+            .createQueryBuilder()
+            .update()
+            .set({ state })
+            .where("id = :id", { id: news.id })
+            .execute();
+        });
       }
 
-      const response = await this.newsRepository
-        .createQueryBuilder()
-        .update()
-        .set({ state })
-        .where("id IN(:...ids)", { ids })
-        .execute();
-      return response;
+      return new HttpException(true, 203, "successfully edited");
     } catch (err) {
       return new HttpException(true, 500, err.message);
     }

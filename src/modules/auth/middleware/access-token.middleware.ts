@@ -30,7 +30,6 @@ const AccessTokenMiddleware = async (
       }, {});
 
     const token = cookies[ACCESS_TOKEN_ADMIN];
-    console.log(token);
 
     const user = await authService.validateToken(token, "access");
     if (!user.isActive) {
