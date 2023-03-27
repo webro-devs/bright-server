@@ -1,23 +1,32 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  OneToOne,
-  ManyToMany,
-  JoinTable,
+  Column,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { Admin } from "../admin/admin.entity";
 import { News } from "../news/news.entity";
 
-@Entity("editor")
-export class NewsLanguage {
+@Entity("news_editor")
+export class NewsEditor {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToMany(() => Admin)
-  editors: Admin;
+  @ManyToOne(() => Admin, (admin) => admin.editors, {
+    cascade: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn()
+  editor: Admin;
 
-  @OneToOne(() => News)
+  @ManyToOne(() => News, (news) => news.editors, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn()
   news: News;
 
-  lastEditDate;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  editedDate: Date;
 }

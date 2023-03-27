@@ -13,6 +13,7 @@ import {
 } from "typeorm";
 import { Admin } from "../admin/admin.entity";
 import { Category } from "../category/category.entity";
+import { NewsEditor } from "../editors/editors.entity";
 import { NewsLanguage } from "../news-language/news-language.entity";
 import { Notification } from "../notification/notification.entity";
 
@@ -61,6 +62,9 @@ export class News {
 
   @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en)
   en: NewsLanguage;
+
+  @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.news)
+  editors: NewsEditor[];
 
   @CreateDateColumn({
     type: "timestamp",

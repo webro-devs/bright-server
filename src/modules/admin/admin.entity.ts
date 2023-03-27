@@ -13,6 +13,7 @@ import { Permission } from "../permission/permission.entity";
 import { News } from "../news/news.entity";
 import { Position } from "../position/position.entity";
 import { Notification } from "../notification/notification.entity";
+import { NewsEditor } from "../editors/editors.entity";
 
 @Entity("admin")
 export class Admin {
@@ -67,6 +68,9 @@ export class Admin {
 
   @OneToMany(() => Notification, (notification) => notification.from)
   notifications: Notification[];
+
+  @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
+  editors: NewsEditor[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);
