@@ -12,6 +12,7 @@ import * as bcrypt from "bcrypt";
 import { Permission } from "../permission/permission.entity";
 import { News } from "../news/news.entity";
 import { Position } from "../position/position.entity";
+import { chatMessage } from "../chat-message/chat-message.entity";
 import { Notification } from "../notification/notification.entity";
 import { chatMessage } from "../chat-message/chat-message.entity";
 import { NewsEditor } from "../editors/editors.entity";
@@ -67,6 +68,9 @@ export class Admin {
   @JoinColumn()
   position: Position;
 
+  @OneToMany(() => chatMessage, (message) => message.user)
+  messages: chatMessage[];
+  
   @OneToMany(() => Notification, (notification) => notification.from)
   notifications: Notification[];
 
