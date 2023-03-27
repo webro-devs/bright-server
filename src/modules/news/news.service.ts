@@ -15,6 +15,7 @@ import {
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
+import { ChatService } from "../chat/chat.service";
 
 export class NewsService {
   constructor(
@@ -23,6 +24,7 @@ export class NewsService {
     private readonly adminService: AdminService,
     private readonly categoryService: CategoryService,
     private readonly connection: DataSource,
+    private readonly chatService: ChatService,
   ) {}
 
   async getAll(where, relations): Promise<News[]> {
@@ -281,7 +283,11 @@ export class NewsService {
         newsData.mainCategory = mainCategory;
       }
 
-      const news = this.newsRepository.create(newsData);
+      const news: News = this.newsRepository.create(newsData);
+      const obj: { news: News } = {
+        news: news,
+      };
+      news.chat = await this.chatService.create(obj);
       return await this.newsRepository.save(news);
     } catch (err) {
       throw new HttpException(true, 500, err.message);

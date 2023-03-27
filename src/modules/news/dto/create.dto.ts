@@ -1,12 +1,9 @@
-import {
-  IsString,
-  IsOptional,
-  IsObject,
-} from "class-validator";
+import { IsString, IsOptional, IsObject } from "class-validator";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
 import { Transform } from "class-transformer";
 import { parseTextToArray, parseTextToObject } from "../../../infra/helpers";
+import { Chat } from "../../chat/chat.entity";
 
 class CreateNewsDto {
   @IsOptional()
@@ -45,6 +42,9 @@ class CreateNewsDto {
   @IsObject()
   @Transform(({ value }: { value: string }) => parseTextToObject("уз", value))
   уз: NewsLanguage;
+
+  @IsOptional()
+  chat: Chat;
 }
 
 export default CreateNewsDto;
