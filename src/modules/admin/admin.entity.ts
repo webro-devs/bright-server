@@ -14,7 +14,6 @@ import { News } from "../news/news.entity";
 import { Position } from "../position/position.entity";
 import { chatMessage } from "../chat-message/chat-message.entity";
 import { Notification } from "../notification/notification.entity";
-import { chatMessage } from "../chat-message/chat-message.entity";
 import { NewsEditor } from "../editors/editors.entity";
 
 @Entity("admin")
@@ -70,12 +69,9 @@ export class Admin {
 
   @OneToMany(() => chatMessage, (message) => message.user)
   messages: chatMessage[];
-  
+
   @OneToMany(() => Notification, (notification) => notification.from)
   notifications: Notification[];
-
-  @OneToMany(() => chatMessage, (messages) => messages.user)
-  messages: chatMessage[];
 
   @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
   editors: NewsEditor[];
