@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 class CreateEditorDto {
   @IsNotEmpty()
@@ -8,6 +8,10 @@ class CreateEditorDto {
   @IsNotEmpty()
   @IsString()
   editor: string;
+
+  @IsOptional()
+  @IsString()
+  editedDate: Date;
 }
 
 export default CreateEditorDto;

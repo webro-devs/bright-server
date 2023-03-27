@@ -2,6 +2,7 @@ import { DeleteResult, Repository } from "typeorm";
 import { NewsEditor } from "./editors.entity";
 import { CreateEditorDto } from "./dto";
 import { HttpException } from "../../infra/validation";
+import { IsSameDate } from "../../infra/helpers";
 
 export class NewsEditorService {
   constructor(private readonly newsEditorRepository: Repository<NewsEditor>) {}
@@ -54,12 +55,22 @@ export class NewsEditorService {
     }
   }
 
-  async updateEditDate(id: string, date: string) {
+  async updateEditDate(id: string, date: Date) {
     try {
-      const response = await this.newsEditorRepository.update(id, {
-        editedDate: date,
-      });
-      return response;
+      const edition = await this.getById(id);
+      if (IsSameDate(date, edition.editedDate)) {
+        const response = await this.newsEditorRepository.update(id, {
+          editedDate: date,
+        });
+        return response;
+      } else {
+        const response = await this.create({
+          editor: edition.editor.id,
+          news: edition.news.id,
+          editedDate: date,
+        });
+        return response;
+      }
     } catch (err) {
       return new HttpException(true, 500, err.message);
     }
