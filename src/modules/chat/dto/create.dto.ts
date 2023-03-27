@@ -1,9 +1,10 @@
-import { IsOptional } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 import { News } from "../../news/news.entity";
 
 class CreateChatDto {
   @IsOptional()
-  news: object;
+  @IsString()
+  news: string;
 }
 
 export default CreateChatDto;

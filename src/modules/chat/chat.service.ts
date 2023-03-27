@@ -23,9 +23,13 @@ export class ChatService {
     return response;
   }
 
-  async create(values: CreateChatDto): Promise<Chat> {
-    const response = this.chatRepository.create(values);
-    return await this.chatRepository.save(response);
+  async create(values: CreateChatDto) {
+    const response = this.chatRepository.createQueryBuilder()
+    .insert()
+    .into(Chat)
+    .values(values as unknown as Chat)
+    .execute()
+    return response
   }
 
   async remove(id: string): Promise<DeleteResult> {

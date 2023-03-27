@@ -283,12 +283,10 @@ export class NewsService {
         newsData.mainCategory = mainCategory;
       }
 
-      const news: News = this.newsRepository.create(newsData);
-      const obj: { news: News } = {
-        news: news,
-      };
-      news.chat = await this.chatService.create(obj);
-      return await this.newsRepository.save(news);
+      const news = this.newsRepository.create(newsData);
+      const result = await this.newsRepository.save(news);
+      await this.chatService.create({ news: result.id });
+      return result;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
