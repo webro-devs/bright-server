@@ -10,7 +10,6 @@ export class AuthService {
 
   async validateAdminByLoginPassword(login: string, password: string) {
     const user = await this.adminService.getByLogin(login);
-
     if (!user) {
       throw new HttpException(true, 400, "Login  not found");
     }

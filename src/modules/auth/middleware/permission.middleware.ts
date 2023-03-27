@@ -8,12 +8,11 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
     try {
       let isPermitted = false;
       let notPermitted = "";
-      const user = await authService.validateAdminById(req.user?.id);
+      const user = await authService.validateAdminById(req.user.id);
       const adminPermission = user.permissions || [];
       for (let i = 0; i < permissions.length; i++) {
         if (adminPermission.find((ap) => ap.title == permissions[i])) {
           isPermitted = true;
-          req.user = user;
         } else {
           isPermitted = false;
           notPermitted = permissions[i];
@@ -25,11 +24,17 @@ const PermissionMiddleware = (...permissions: PermissionType[]) => {
         return;
       } else {
         res
-          .sendStatus(403)
-          .send(`You don't have permission for ` + notPermitted);
+          .status(403)
+          .send(
+            new HttpException(
+              true,
+              403,
+              `You don't have permission for ` + notPermitted,
+            ),
+          );
       }
     } catch (err) {
-      res.send(new HttpException(true, 400, err.message));
+      res.status(400).send(new HttpException(true, 400, err.message));
     }
   };
 };

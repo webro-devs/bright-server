@@ -13,6 +13,8 @@ import { Permission } from "../permission/permission.entity";
 import { News } from "../news/news.entity";
 import { Position } from "../position/position.entity";
 import { chatMessage } from "../chat-message/chat-message.entity";
+import { Notification } from "../notification/notification.entity";
+import { NewsEditor } from "../editors/editors.entity";
 
 @Entity("admin")
 export class Admin {
@@ -43,6 +45,12 @@ export class Admin {
   @Column({ default: true, type: "boolean" })
   isActive: boolean;
 
+  @Column({ type: "timestamp with time zone", nullable: true })
+  lastSeen: string;
+
+  @Column({ default: true, type: "boolean" })
+  isOnline: boolean;
+
   @ManyToMany(() => Permission, (permission) => permission.admins, {
     onDelete: "SET NULL",
   })
@@ -61,6 +69,12 @@ export class Admin {
 
   @OneToMany(() => chatMessage, (message) => message.user)
   messages: chatMessage[];
+  
+  @OneToMany(() => Notification, (notification) => notification.from)
+  notifications: Notification[];
+
+  @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
+  editors: NewsEditor[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

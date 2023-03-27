@@ -30,11 +30,43 @@ export class AdminService {
       relations: {
         permissions: true,
         position: true,
-        news: true,
+        news: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          mainCategory: true,
+        },
+      },
+      where: { id },
+    });
+    admin.news = admin.news.filter((n) => n.state == "published");
+    if (!admin) {
+      console.log(admin);
+      throw new HttpException(true, 404, "Admin not found");
+    }
+    return admin;
+  }
+
+  async getOne(id: string): Promise<Admin> {
+    const admin = await this.adminRepository.findOne({
+      relations: {
+        permissions: true,
+        position: true,
+        news: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          mainCategory: true,
+        },
       },
       where: { id },
     });
     if (!admin) {
+      console.log(admin);
       throw new HttpException(true, 404, "Admin not found");
     }
     return admin;
@@ -50,7 +82,7 @@ export class AdminService {
     return admin;
   }
 
-  async create(values: CreateAdminDto & { avatar: string }) {
+  async create(values: CreateAdminDto) {
     const admin = new Admin();
     const isLoginExist = await this.getByLogin(values.login);
     if (isLoginExist) {
@@ -78,7 +110,7 @@ export class AdminService {
     return admin;
   }
 
-  async update(values: UpdateAdminDto & { avatar: string }, id: string) {
+  async update(values: UpdateAdminDto, id: string) {
     let admin = await this.getById(id);
     if (values.login) {
       const isLoginExist = await this.getByLogin(values.login);
@@ -125,15 +157,22 @@ export class AdminService {
   }
 
   async changeProfile(id: string, values: UpdateAdminProfileDto) {
-    let password,
-      admin = await this.getById(id);
-    password = admin.password;
+    let admin = await this.getById(id),
+      password = admin.password,
+      avatar = admin.avatar;
     if (values.password) {
       password = await hashPassword(values.password);
+    }
+    if (values.avatar) {
+      if (admin.avatar) {
+        await fileService.removeFile(admin.avatar);
+      }
+      avatar = values.avatar;
     }
     const response = await this.adminRepository.update(id, {
       ...values,
       password,
+      avatar,
     });
     return response;
   }

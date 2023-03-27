@@ -1,6 +1,6 @@
 class HttpException extends Error {
   constructor(
-    public error: boolean,
+    public error: boolean = true,
     public status: number,
     public message: string,
   ) {

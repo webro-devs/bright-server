@@ -1,32 +1,16 @@
 import {
-  IsArray,
-  IsNotEmpty,
   IsString,
-  IsObject,
   IsOptional,
-  isArray,
+  IsObject,
 } from "class-validator";
 import { State } from "../../../infra/shared/enums";
 import { NewsLanguage } from "../../news-language/news-language.entity";
-import { Admin } from "../../admin/admin.entity";
 import { Transform } from "class-transformer";
-
-function parseTextToArray(name: string, value?: string) {
-  console.log(value);
-
-  const arr = value ? JSON.parse(value) : "";
-  if (!isArray(arr)) {
-    throw new Error(`${name} should be array.`);
-  }
-  return arr;
-}
+import { parseTextToArray, parseTextToObject } from "../../../infra/helpers";
 
 class CreateNewsDto {
   @IsOptional()
   state: State;
-
-  @IsNotEmpty()
-  creator: Admin;
 
   @IsOptional()
   @IsString()
@@ -39,15 +23,27 @@ class CreateNewsDto {
   categories: string[];
 
   @IsOptional()
+  @IsString()
+  mainCategory: string;
+
+  @IsOptional()
+  @IsObject()
+  @Transform(({ value }: { value: string }) => parseTextToObject("uz", value))
   uz: NewsLanguage;
 
   @IsOptional()
+  @IsObject()
+  @Transform(({ value }: { value: string }) => parseTextToObject("ru", value))
   ru: NewsLanguage;
 
   @IsOptional()
+  @IsObject()
+  @Transform(({ value }: { value: string }) => parseTextToObject("en", value))
   en: NewsLanguage;
 
   @IsOptional()
+  @IsObject()
+  @Transform(({ value }: { value: string }) => parseTextToObject("уз", value))
   уз: NewsLanguage;
 }
 

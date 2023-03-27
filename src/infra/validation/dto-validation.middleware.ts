@@ -19,10 +19,9 @@ function DtoValidationMiddleware(
             )
             .join(",\n ");
 
-          res.send(new HttpException(true, 400, dtoErrors));
+          res.status(400).send(new HttpException(true, 400, dtoErrors));
           return;
         } else {
-          //sanitize the object and call the next middleware
           sanitize(dtoObj);
           req.body = dtoObj;
           next();

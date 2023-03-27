@@ -5,17 +5,24 @@ import { newsService } from ".";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService } from "../../infra/helpers";
+import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
+import { ZipMaker } from "../../infra/helpers";
+import { NewsLanguage } from "../editors/editors.entity";
 
-export async function getAll(__: Request, res: Response) {
-  const news = await newsService.getAll();
-  res.send(news);
+export async function getAll(req, res: Response) {
+  try {
+    const news = await newsService.getAll(req.where, req.relations);
+    res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
 }
 
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const news = await newsService.getById(id);
+    const news = await newsService.getOne(id, req["relations"]);
 
     return res.send(news);
   } catch (err) {
@@ -23,88 +30,231 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
-export async function create(req: Upload, res: Response) {
-  const newsData: CreateNewsDto = req.body;
-  const imgData = ["uz", "ru", "en", "уз"];
-
-  for (let i = 0; imgData.length > i; i++) {
-    if (newsData[imgData[i]]) {
-      newsData[imgData[i]] = JSON.parse(newsData[imgData[i]]);
-    } else {
-      newsData[imgData[i]] = {};
-    }
-    if (!req?.files?.uz_img) {
-      newsData[imgData[i]]["files"] = null;
-      continue;
-    }
-    if (!req?.files?.ru_img) {
-      newsData[imgData[i]]["files"] = null;
-      continue;
-    }
-    if (!req?.files?.en_img) {
-      newsData[imgData[i]]["files"] = null;
-      continue;
-    }
-    if (!req?.files?.уз_img) {
-      newsData[imgData[i]]["files"] = null;
-      continue;
-    }
-    if (req?.files[imgData[i] + "_img"]) {
-      const avatar = await fileService.uploadImage(
-        req.files[imgData[i] + "_img"],
-      );
-
-      if (avatar.error) {
-        res.send(new HttpException(true, 500, "Image upload error"));
-        return;
-      }
-      newsData[imgData[i]]["file"] = avatar.url;
-    }
+export const getMyNews = async (req: Request, res: Response) => {
+  try {
+    const where = req?.["where"];
+    where.creator = { id: req["user"].id };
+    const news = await newsService.getByCreatorId(where, req["relations"]);
+    return res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
   }
+};
 
-  const news = await newsService.create(newsData, req["user"]?.id);
-  console.log(req["user"].id);
+export const getByStateGeneral = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(
+      State.general_access,
+      req["relations"],
+    );
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
 
-  res.send("goood");
+export const getByStatePublished = async (req: Request, res: Response) => {
+  try {
+    let where = req["where"] || {};
+    where.state = State.published;
+    const data = await newsService.getByStatePublished(where, req["relations"]);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByStateArchive = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.archive, req["relations"]);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getByStateChecking = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getByState(State.checking, req["relations"]);
+    return res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export const getBySavedCreator = async (req: Request, res: Response) => {
+  try {
+    const data = await newsService.getBySavedCreator(
+      req["user"].id,
+      State.favorites,
+      req["relations"],
+    );
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+};
+
+export async function create(req: Upload, res: Response) {
+  try {
+    const newsData: CreateNewsDto = req.body;
+
+    const imgData = ["uz", "ru", "en", "уз"];
+
+    if (newsData?.["Ñ\x83Ð·"]) {
+      if (newsData?.["Ñ\x83Ð·"] !== "уз") {
+        Object.defineProperty(
+          newsData,
+          "уз",
+          Object.getOwnPropertyDescriptor(newsData, "Ñ\x83Ð·"),
+        );
+        delete newsData["Ñ\x83Ð·"];
+      }
+    }
+
+    for (let i = 0; imgData.length > i; i++) {
+      if (!newsData[imgData[i]]) {
+        newsData[imgData[i]] = {};
+      }
+      if (req?.files?.[imgData[i] + "_img"]) {
+        const avatar = await fileService.uploadImage(
+          req?.files?.[imgData[i] + "_img"],
+        );
+        if (avatar.error) {
+          res.send(new HttpException(true, 500, "Image upload error"));
+          return;
+        }
+        newsData[imgData[i]]["file"] = avatar.url;
+      }
+
+      newsData[imgData[i]].shortLink = slugify(
+        newsData[imgData[i]].shortLink || "",
+        {
+          replacement: "-",
+          remove: /[*+~.()'"!:@]/g,
+          lower: false,
+          strict: false,
+          locale: "vi",
+          trim: true,
+        },
+      );
+    }
+
+    const news = await newsService.create(newsData, req["user"]?.id);
+    res.send(new HttpException(false, 200, "News succesfully created"));
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function update(req: Upload, res: Response) {
-  const newsData: UpdateNewsDto = req.body;
-  const { id } = req.params;
+  try {
+    const newsData: UpdateNewsDto = req.body;
+    const { id } = req.params;
 
-  const updateNews = await newsService.update(newsData, id, req?.files);
+    const updateNews = await newsService.update(newsData, id, req?.files);
 
-  res.send(updateNews);
+    res.send(updateNews);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateStateArchive(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { ids } = req.body;
 
-  const updateState = await newsService.updateState(id, "archive");
+    const updateState = await newsService.updateState(ids, "archive");
 
-  res.send(updateState);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateStateGeneral(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { ids } = req.body;
 
-  const updateState = await newsService.updateState(id, "general access");
+    const updateState = await newsService.updateState(ids, "general access");
 
-  res.send(updateState);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStateChecking(req: Request, res: Response) {
+  try {
+    const { ids } = req.body;
+    const updateState = await newsService.updateState(ids, State.checking);
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStateFavorite(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const updateState = await newsService.updateFavorite(
+      id,
+      State.favorites,
+      req["user"].id,
+    );
+    res.send(updateState);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function updateDate(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const updateDate = await newsService.updateDate(id, req.body.date);
+    const updateDate = await newsService.updateDate(id, req?.body?.date);
 
-  res.send(updateDate);
+    res.send(updateDate);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
 
 export async function deleteData(req: Request, res: Response) {
-  const { id } = req.params;
+  try {
+    const { ids } = req.body;
 
-  const deleteData = await newsService.remove(id);
+    await Promise.all(
+      ids.map(async (id) => {
+        await newsService.remove(id);
+      }),
+    );
 
-  res.send(deleteData);
+    res.send({ Data: "ok", error: false });
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateStatePublished(req: Request, res: Response) {
+  try {
+    const { newsIds, tg, inst = false } = req.body;
+    await newsService.updateStatePublished(newsIds, State.published, tg, inst);
+    if (inst) {
+      const { data } = await ZipMaker();
+      const fileName = "instagram.zip";
+      const fileType = "application/zip";
+
+      res.writeHead(200, {
+        "Content-Disposition": `attachment; filename="${fileName}`,
+        "Content-Type": fileType,
+      });
+
+      return res.end(data);
+    }
+    return res.send("News published succesfully");
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
 }
