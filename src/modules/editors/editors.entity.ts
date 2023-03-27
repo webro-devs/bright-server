@@ -14,9 +14,10 @@ export class NewsLanguage {
   id: string;
 
   @ManyToMany(() => Admin)
-  @JoinTable()
-  editors: Admin[];
+  editors: Admin;
 
   @OneToOne(() => News)
   news: News;
+
+  lastEditDate;
 }

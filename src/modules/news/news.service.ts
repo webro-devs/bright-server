@@ -25,18 +25,10 @@ export class NewsService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll({ where }): Promise<News[]> {
+  async getAll(where, relations): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-          mainCategory: true,
-        },
+        relations,
         order: {
           updated_at: "DESC",
         },
@@ -48,18 +40,10 @@ export class NewsService {
     }
   }
 
-  async getByState(state: State) {
+  async getByState(state: State, relations) {
     try {
       const data = await this.newsRepository.find({
-        relations: {
-          creator: true,
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          mainCategory: true,
-        },
+        relations,
         where: { state },
         order: {
           updated_at: "DESC",
@@ -71,18 +55,10 @@ export class NewsService {
     }
   }
 
-  async getByStatePublished(where) {
+  async getByStatePublished(where, relations) {
     try {
       const data = await this.newsRepository.find({
-        relations: {
-          creator: true,
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          mainCategory: true,
-        },
+        relations,
         where,
         order: {
           updated_at: "DESC",
@@ -114,20 +90,23 @@ export class NewsService {
     }
   }
 
-  async getByCreatorId(where): Promise<News[]> {
+  async getOne(id: string, relations): Promise<News> {
     try {
-      console.log(where);
+      const response = await this.newsRepository.findOne({
+        where: { id },
+        relations,
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
 
+  async getByCreatorId(where, relations): Promise<News[]> {
+    try {
       const response = await this.newsRepository.find({
         where,
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-        },
+        relations,
         order: {
           updated_at: "DESC",
         },
@@ -138,18 +117,15 @@ export class NewsService {
     }
   }
 
-  async getBySavedCreator(id: string, state: string): Promise<News[]> {
+  async getBySavedCreator(
+    id: string,
+    state: string,
+    relations,
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where: { creator: { id }, state },
-        relations: {
-          uz: true,
-          ru: true,
-          en: true,
-          уз: true,
-          categories: true,
-          creator: true,
-        },
+        relations,
         order: {
           updated_at: "DESC",
         },

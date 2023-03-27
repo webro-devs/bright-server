@@ -12,7 +12,7 @@ import { NewsLanguage } from "../editors/editors.entity";
 
 export async function getAll(req, res: Response) {
   try {
-    const news = await newsService.getAll({ where: req.where });
+    const news = await newsService.getAll(req.where, req.relations);
     res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -22,7 +22,7 @@ export async function getAll(req, res: Response) {
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const news = await newsService.getById(id);
+    const news = await newsService.getOne(id, req["relations"]);
 
     return res.send(news);
   } catch (err) {
@@ -34,7 +34,7 @@ export const getMyNews = async (req: Request, res: Response) => {
   try {
     const where = req?.["where"];
     where.creator = { id: req["user"].id };
-    const news = await newsService.getByCreatorId(where);
+    const news = await newsService.getByCreatorId(where, req["relations"]);
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -43,7 +43,10 @@ export const getMyNews = async (req: Request, res: Response) => {
 
 export const getByStateGeneral = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.general_access);
+    const data = await newsService.getByState(
+      State.general_access,
+      req["relations"],
+    );
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -54,7 +57,7 @@ export const getByStatePublished = async (req: Request, res: Response) => {
   try {
     let where = req["where"] || {};
     where.state = State.published;
-    const data = await newsService.getByStatePublished(where);
+    const data = await newsService.getByStatePublished(where, req["relations"]);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -63,7 +66,7 @@ export const getByStatePublished = async (req: Request, res: Response) => {
 
 export const getByStateArchive = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.archive);
+    const data = await newsService.getByState(State.archive, req["relations"]);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -72,7 +75,7 @@ export const getByStateArchive = async (req: Request, res: Response) => {
 
 export const getByStateChecking = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.checking);
+    const data = await newsService.getByState(State.checking, req["relations"]);
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -84,6 +87,7 @@ export const getBySavedCreator = async (req: Request, res: Response) => {
     const data = await newsService.getBySavedCreator(
       req["user"].id,
       State.favorites,
+      req["relations"],
     );
     res.send(data);
   } catch (err) {
