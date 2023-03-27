@@ -16,6 +16,7 @@ import { Category } from "../category/category.entity";
 import { NewsEditor } from "../editors/editors.entity";
 import { NewsLanguage } from "../news-language/news-language.entity";
 import { Notification } from "../notification/notification.entity";
+import { Chat } from "../chat/chat.entity";
 
 @Entity("news")
 export class News {
@@ -78,4 +79,7 @@ export class News {
     onUpdate: "CURRENT_TIMESTAMP",
   })
   updated_at: Date;
+
+  @OneToOne(() => Chat, (chat) => chat.news)
+  chat: Chat;
 }

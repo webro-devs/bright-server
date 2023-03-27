@@ -15,6 +15,7 @@ import {
 import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
+import { ChatService } from "../chat/chat.service";
 
 export class NewsService {
   constructor(
@@ -23,12 +24,12 @@ export class NewsService {
     private readonly adminService: AdminService,
     private readonly categoryService: CategoryService,
     private readonly connection: DataSource,
+    private readonly chatService: ChatService,
   ) {}
 
   async getAll(where, relations): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
-        relations,
         order: {
           updated_at: "DESC",
         },
@@ -82,6 +83,11 @@ export class NewsService {
           categories: true,
           creator: true,
           mainCategory: true,
+          chat: {
+            messages: {
+              user: true,
+            },
+          },
         },
       });
       return response;
@@ -282,7 +288,9 @@ export class NewsService {
       }
 
       const news = this.newsRepository.create(newsData);
-      return await this.newsRepository.save(news);
+      const result = await this.newsRepository.save(news);
+      await this.chatService.create({ news: result.id });
+      return result;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }

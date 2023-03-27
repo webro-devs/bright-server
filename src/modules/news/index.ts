@@ -5,6 +5,7 @@ import { News } from "./news.entity";
 import { newsLanguageService } from "../news-language";
 import { adminService } from "../admin";
 import { categoryService } from "../category";
+import { chatService } from "../chat";
 
 export const repository = TypeOrmDataSource.getRepository(News);
 
@@ -14,4 +15,5 @@ export const newsService = new NewsService(
   adminService,
   categoryService,
   TypeOrmDataSource,
+  chatService,
 );

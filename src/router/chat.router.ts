@@ -5,7 +5,7 @@ import * as messageController from "../modules/chat-message/chat-message.control
 const router = Router();
 
 router
-  .get("/chat", chatController.getAll)
+  .get("/chat/:id", chatController.getById)
   .post("/chat", chatController.create)
   .delete("/chat/:id", chatController.deleteData)
   .post("/message", messageController.create);
