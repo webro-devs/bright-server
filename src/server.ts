@@ -19,6 +19,7 @@ TypeOrmDataSource.initialize()
       newsRouter,
       authRouter,
       notificationRouter,
+      chatRouter,
     } = require("./router");
 
     app.use(cors({ origin: true, credentials: true }));

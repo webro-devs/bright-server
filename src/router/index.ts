@@ -15,4 +15,5 @@ module.exports = {
   newsRouter,
   authRouter,
   notificationRouter,
+  chatRouter,
 };
