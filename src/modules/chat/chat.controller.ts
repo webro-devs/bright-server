@@ -3,8 +3,8 @@ import { CreateChatDto } from "./dto";
 
 import { chatService } from ".";
 
-export async function getAll(req: Request, res: Response) {
-  const response = await chatService.getAll();
+export async function getById(req: Request, res: Response) {
+  const response = await chatService.getById(req.params.id);
   res.send(response);
 }
 

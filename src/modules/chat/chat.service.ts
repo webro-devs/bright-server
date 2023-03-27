@@ -19,17 +19,25 @@ export class ChatService {
   }
 
   async getById(id: string): Promise<Chat> {
-    const response = await this.chatRepository.findOne({ where: { id } });
+    const response = await this.chatRepository.findOne({
+      where: { news: { id } },
+      relations: {
+        messages: {
+          user: true,
+        },
+      },
+    });
     return response;
   }
 
   async create(values: CreateChatDto) {
-    const response = this.chatRepository.createQueryBuilder()
-    .insert()
-    .into(Chat)
-    .values(values as unknown as Chat)
-    .execute()
-    return response
+    const response = this.chatRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Chat)
+      .values(values as unknown as Chat)
+      .execute();
+    return response;
   }
 
   async remove(id: string): Promise<DeleteResult> {

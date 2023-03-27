@@ -30,7 +30,6 @@ export class NewsService {
   async getAll(where, relations): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
-        relations,
         order: {
           updated_at: "DESC",
         },
@@ -84,6 +83,11 @@ export class NewsService {
           categories: true,
           creator: true,
           mainCategory: true,
+          chat: {
+            messages: {
+              user: true,
+            },
+          },
         },
       });
       return response;
