@@ -35,25 +35,12 @@ export class SocketService {
     }
   }
 
-  async remove(id: string): Promise<DeleteResult | HttpException> {
+  async removeBySocketId(id: string): Promise<DeleteResult | HttpException> {
     try {
-      const response = await this.socketRepository.delete(id);
+      const response = await this.socketRepository.delete({ socketId: id });
       return new HttpException(false, 204, "Socket id and admin id removed!");
     } catch (error) {
       return new HttpException(true, 500, error.message);
-    }
-  }
-
-  async removeMoreByIds(ids: string): Promise<DeleteResult | HttpException> {
-    try {
-      const response = await this.socketRepository
-        .createQueryBuilder()
-        .delete()
-        .where("id IN(:...ids)", { ids })
-        .execute();
-      return response;
-    } catch (error) {
-      throw new HttpException(true, 500, error.message);
     }
   }
 }
