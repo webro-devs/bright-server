@@ -13,11 +13,13 @@ router
   .get(
     "/news/archives",
     PermissionMiddleware("Доступ к архивам"),
+    NewsQueryParserMiddleware,
     newsController.getByStateArchive,
   )
   .get(
     "/news/general_access",
     PermissionMiddleware("Общий доступ"),
+    NewsQueryParserMiddleware,
     newsController.getByStateGeneral,
   )
   .get(
@@ -25,9 +27,17 @@ router
     NewsQueryParserMiddleware,
     newsController.getByStatePublished,
   )
-  .get("/news/checking", newsController.getByStateChecking)
-  .get("/news/favorites", newsController.getBySavedCreator)
-  .get("/single-news/:id", newsController.getById)
+  .get(
+    "/news/checking",
+    NewsQueryParserMiddleware,
+    newsController.getByStateChecking,
+  )
+  .get(
+    "/news/favorites",
+    NewsQueryParserMiddleware,
+    newsController.getBySavedCreator,
+  )
+  .get("/single-news/:id", NewsQueryParserMiddleware, newsController.getById)
   .post(
     "/news",
     PermissionMiddleware("Добавить новости"),

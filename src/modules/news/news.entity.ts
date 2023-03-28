@@ -13,8 +13,10 @@ import {
 } from "typeorm";
 import { Admin } from "../admin/admin.entity";
 import { Category } from "../category/category.entity";
+import { NewsEditor } from "../editors/editors.entity";
 import { NewsLanguage } from "../news-language/news-language.entity";
 import { Notification } from "../notification/notification.entity";
+import { Chat } from "../chat/chat.entity";
 
 @Entity("news")
 export class News {
@@ -62,16 +64,22 @@ export class News {
   @OneToOne(() => NewsLanguage, (newsLanguage) => newsLanguage.en)
   en: NewsLanguage;
 
+  @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.news)
+  editors: NewsEditor[];
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
-  public created_at: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
     onUpdate: "CURRENT_TIMESTAMP",
   })
-  public updated_at: Date;
+  updated_at: Date;
+
+  @OneToOne(() => Chat, (chat) => chat.news)
+  chat: Chat;
 }

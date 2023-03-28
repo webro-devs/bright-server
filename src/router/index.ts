@@ -4,6 +4,7 @@ const adminRouter = require("./admin.router");
 const positionRouter = require("./position.router");
 const newsRouter = require("./news.router");
 const authRouter = require("./auth.rout");
+const chatRouter = require("./chat.router");
 const notificationRouter = require("./notification.rout");
 
 module.exports = {
@@ -14,4 +15,5 @@ module.exports = {
   newsRouter,
   authRouter,
   notificationRouter,
+  chatRouter,
 };
