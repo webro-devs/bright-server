@@ -12,19 +12,30 @@ function myStopFunction() {
   clearTimeout(myTimeout);
 }
 
-function f(obj: any, room: string, input: string, value: string) {
-  let valueObj = {};
+function j(obj: any, room: string, input: string, value: string) {
   const a = input.split(".");
   if (a.length == 2) {
-    valueObj[a[0]] = {};
-    valueObj[a[0]][a[1]] = value;
+    if (obj?.[room]) {
+      if (obj[room]?.[a[0]]) {
+        obj[room][a[0]][a[1]] = value;
+      } else {
+        obj[room][a[0]] = {};
+        obj[room][a[0]][a[1]] = value;
+      }
+    } else {
+      obj[room] = {};
+      obj[room][a[0]] = {};
+      obj[room][a[0]][a[1]] = value;
+    }
   } else {
-    valueObj[a[0]] = value;
+    if (obj?.[room]) {
+      obj[room][a[0]] = value;
+    } else {
+      obj[room] = {};
+      obj[room][a[0]] = value;
+    }
   }
-  let roomObj = {};
-  roomObj[room] = valueObj;
 
-  obj = { ...obj, [room]: roomObj[room] };
   return obj;
 }
 
@@ -86,7 +97,9 @@ export const OnChange = async (
   io: any,
 ) => {
   try {
-    obj = f(obj, data.roomId, data.inputName, data.value);
+    obj = j(obj, data.roomId, data.inputName, data.value);
+    console.log(obj);
+
     myStopFunction();
     myTimeout = setTimeout(async () => {
       const res = await newsEditorService.updateEditDate(
