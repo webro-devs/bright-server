@@ -1,6 +1,7 @@
+import { connectSocket } from './modules/socket/index';
 import * as express from "express";
 require("dotenv").config();
-import { Server } from "socket.io";
+// import { Server } from "socket.io";
 import * as http from "http";
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
@@ -11,7 +12,7 @@ import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
 const server = http.createServer(app);
-const io = new Server(server);
+// const io = new Server(server);
 
 TypeOrmDataSource.initialize()
   .then(() => {
@@ -25,7 +26,7 @@ TypeOrmDataSource.initialize()
       notificationRouter,
       chatRouter,
     } = require("./router");
-
+    connectSocket(server)
     app.use(cors({ origin: true, credentials: true }));
     app.use(express.json());
     app.use(cookieParser());
@@ -47,11 +48,6 @@ TypeOrmDataSource.initialize()
   .catch((err) => {
     console.error("Error during Data Source initialization:", err);
   });
-
-io.on("connection", (socket) => {
-  console.log(socket.id);
-  console.log("a user connected from Socket.io");
-});
 
 server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
