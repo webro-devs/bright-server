@@ -132,8 +132,8 @@ export async function create(req: Upload, res: Response) {
         {
           replacement: "-",
           remove: /[*+~.()'"!:@]/g,
-          lower: false,
-          strict: false,
+          lower: true,
+          strict: true,
           locale: "vi",
           trim: true,
         },

@@ -1,4 +1,4 @@
-import { connectSocket } from './modules/socket/index';
+import { connectSocket } from "./modules/socket/index";
 import * as express from "express";
 require("dotenv").config();
 // import { Server } from "socket.io";
@@ -25,13 +25,14 @@ TypeOrmDataSource.initialize()
       authRouter,
       notificationRouter,
       chatRouter,
+      currencyRouter,
     } = require("./router");
-    connectSocket(server)
+    connectSocket(server);
     app.use(cors({ origin: true, credentials: true }));
     app.use(express.json());
     app.use(cookieParser());
     app.use(fileUpload());
-    app.use(AccessTokenMiddleware);
+    // app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,
@@ -41,6 +42,7 @@ TypeOrmDataSource.initialize()
       authRouter,
       notificationRouter,
       chatRouter,
+      currencyRouter,
     );
 
     console.log("Data Source has been initialized!");

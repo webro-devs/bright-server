@@ -86,7 +86,7 @@ export class NewsService {
           chat: {
             messages: {
               user: {
-                position: true
+                position: true,
               },
             },
           },
@@ -218,8 +218,8 @@ export class NewsService {
               ? slugify(values[key].shortLink, {
                   replacement: "-",
                   remove: /[*+~.()'"!:@]/g,
-                  lower: false,
-                  strict: false,
+                  lower: true,
+                  strict: true,
                   locale: "vi",
                   trim: true,
                 })
