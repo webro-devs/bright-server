@@ -27,6 +27,19 @@ export class NewsEditorService {
     }
   }
 
+  async getByAdminAndNewsId(editorId: string, newsId: string) {
+    const edition = await this.newsEditorRepository.findOne({
+      where: {
+        editor: { id: editorId },
+        news: { id: newsId },
+      },
+      order: {
+        editedDate: "DESC",
+      },
+    });
+    return edition;
+  }
+
   async getByNewsId(id: string): Promise<NewsEditor> {
     try {
       const category = await this.newsEditorRepository.findOne({
@@ -55,21 +68,31 @@ export class NewsEditorService {
     }
   }
 
-  async updateEditDate(id: string, date: Date) {
+  async updateEditDate(newsId: string, editorId: string) {
     try {
-      const edition = await this.getById(id);
-      if (IsSameDate(date, edition.editedDate)) {
-        const response = await this.newsEditorRepository.update(id, {
+      const edition = await this.getByAdminAndNewsId(newsId, editorId);
+      const date = new Date();
+      if (!edition) {
+        const response = await this.create({
+          editor: editorId,
+          news: newsId,
           editedDate: date,
         });
         return response;
       } else {
-        const response = await this.create({
-          editor: edition.editor.id,
-          news: edition.news.id,
-          editedDate: date,
-        });
-        return response;
+        if (IsSameDate(date, edition.editedDate)) {
+          const response = await this.newsEditorRepository.update(edition.id, {
+            editedDate: date,
+          });
+          return response;
+        } else {
+          const response = await this.create({
+            editor: editorId,
+            news: newsId,
+            editedDate: date,
+          });
+          return response;
+        }
       }
     } catch (err) {
       return new HttpException(true, 500, err.message);

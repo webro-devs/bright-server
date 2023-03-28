@@ -1,7 +1,6 @@
 import { OnJoinType } from "./types/user.types";
 import { socketService } from "./socket.module";
-
-// const Service = new NotificationService()
+import { newsEditorService } from "../editors";
 
 export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   try {
@@ -38,12 +37,13 @@ export const OnLeave = (roomId: string, socket: any) => {
   }
 };
 
-export const OnChange = (
-  data: { roomId: string; inputName: string; value: string },
+export const OnChange = async (
+  data: { roomId: string; inputName: string; value: string; userId: string },
   socket: any,
   io: any,
 ) => {
   try {
+    await newsEditorService.updateEditDate(data.roomId, data.userId);
     io.sockets.in(data.roomId).emit("input_change", data);
   } catch (error) {
     console.log(error);
