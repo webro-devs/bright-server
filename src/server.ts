@@ -1,7 +1,7 @@
 import * as express from "express";
 require("dotenv").config();
 import { Server } from "socket.io";
-const http = require('http')
+import * as http from "http";
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
 const fileUpload = require("express-fileupload");
@@ -10,7 +10,7 @@ import { TypeOrmDataSource } from "./config";
 import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
-const server = http.createServer(app)
+const server = http.createServer(app);
 const io = new Server(server);
 
 TypeOrmDataSource.initialize()
@@ -30,7 +30,7 @@ TypeOrmDataSource.initialize()
     app.use(express.json());
     app.use(cookieParser());
     app.use(fileUpload());
-    app.use(AccessTokenMiddleware);  
+    app.use(AccessTokenMiddleware);
     app.use(
       adminRouter,
       categoryRouter,
@@ -48,13 +48,10 @@ TypeOrmDataSource.initialize()
     console.error("Error during Data Source initialization:", err);
   });
 
-  io.on('connection', (socket) => {
-    console.log(socket.id)
-    console.log('a user connected from Socket.io');
-    socket.on('join', data => {
-      console.log(data);
-    })
-  });
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  console.log("a user connected from Socket.io");
+});
 
 server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
