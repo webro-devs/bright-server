@@ -2,12 +2,16 @@ import * as express from "express";
 require("dotenv").config();
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
+import { Server } from "socket.io";
+import * as http from "http";
 const fileUpload = require("express-fileupload");
 import { TypeOrmDataSource } from "./config";
 
 import { AccessTokenMiddleware } from "./modules/auth/middleware";
 
 const app: express.Application = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 TypeOrmDataSource.initialize()
   .then(() => {
@@ -44,6 +48,11 @@ TypeOrmDataSource.initialize()
     console.error("Error during Data Source initialization:", err);
   });
 
-app.listen(process.env.PORT, () => {
+io.on("connection", (socket) => {
+  console.log(socket);
+  console.log("a user connected successfully");
+});
+
+server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
