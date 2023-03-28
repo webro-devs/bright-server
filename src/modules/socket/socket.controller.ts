@@ -4,6 +4,12 @@ import { newsEditorService } from "../editors";
 import { adminService } from "../admin";
 import { UpdateAdminProfileDto } from "../admin/dto";
 
+let myTimeout = setTimeout(() => {}, 3000);
+
+function myStopFunction() {
+  clearTimeout(myTimeout);
+}
+
 export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   try {
     console.log(`User id: ${data.id} ==== Socket id: ${socket.id}`);
@@ -54,7 +60,10 @@ export const OnChange = async (
   io: any,
 ) => {
   try {
-    await newsEditorService.updateEditDate(data.roomId, data.userId);
+    myStopFunction();
+    myTimeout = setTimeout(async () => {
+      await newsEditorService.updateEditDate(data.roomId, data.userId);
+    }, 3000);
     io.sockets.in(data.roomId).emit("input_change", data);
   } catch (error) {
     console.log(error);
