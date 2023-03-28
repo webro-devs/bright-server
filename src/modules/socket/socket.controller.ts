@@ -39,19 +39,28 @@ export const OnLeave = (roomId: string, socket: any) => {
     }
 }
 
-export const OnChange = (data: {roomId: string, inputName: string, value: string}, socket:any, io:any) => {
+export const OnChange = (data: { roomId: string, inputName: string, value: string, userId: string }, socket: any, io: any) => {
     try {
         io.sockets.in(data.roomId).emit('input_change', data);
     } catch (error) {
-        console.log(error);    
+        console.log(error);
     }
 }
 
-export const OnInputChange = async () => {
+export const OnFocus = async (data: { roomId: string, userId: string, inputName: string }, io: any) => {
     try {
-        
+        io.sockets.in(data.roomId).emit('input_focus', data);
     } catch (error) {
         console.log(error);
-        
+
+    }
+}
+
+export const OnBlur = async (data: { roomId: string, userId: string, inputName: string }, io: any) => {
+    try {
+        io.sockets.in(data.roomId).emit('input_blur', data);
+    } catch (error) {
+        console.log(error);
+
     }
 }
