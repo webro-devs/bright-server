@@ -270,7 +270,7 @@ export class NewsService {
         ru: await this.newsLanguageService.create(data.ru),
         en: await this.newsLanguageService.create(data.en),
         уз: await this.newsLanguageService.create(data.уз),
-        creator: await this.adminService.getOne(id),
+        creator: await this.adminService.getOnlyAdmin(id),
         state: data.state,
         categories: null,
         publishDate: data.publishDate,
