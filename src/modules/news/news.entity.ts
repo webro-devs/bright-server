@@ -29,6 +29,9 @@ export class News {
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   publishDate: Date;
 
+  @Column({ default: false, type: "boolean" })
+  isEditing: boolean;
+
   @ManyToMany(() => Category, (category) => category.news, {
     onDelete: "CASCADE",
   })
