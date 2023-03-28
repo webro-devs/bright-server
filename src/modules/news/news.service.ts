@@ -85,7 +85,9 @@ export class NewsService {
           mainCategory: true,
           chat: {
             messages: {
-              user: true,
+              user: {
+                position: true
+              },
             },
           },
         },

@@ -99,7 +99,6 @@ export const getBySavedCreator = async (req: Request, res: Response) => {
 export async function create(req: Upload, res: Response) {
   try {
     const newsData: CreateNewsDto = req.body;
-
     const imgData = ["uz", "ru", "en", "уз"];
 
     if (newsData?.["Ñ\x83Ð·"]) {

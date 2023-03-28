@@ -47,7 +47,9 @@ const NewsQueryParserMiddleware = (req, res, next) => {
   if (lang) {
     relations = {
       categories: true,
-      creator: true,
+      creator: {
+        position: true
+      },
       mainCategory: true,
     };
     relations[lang] = true;
@@ -58,7 +60,9 @@ const NewsQueryParserMiddleware = (req, res, next) => {
       en: true,
       уз: true,
       categories: true,
-      creator: true,
+      creator: {
+        position: true
+      },
       mainCategory: true,
     };
   }

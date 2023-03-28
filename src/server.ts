@@ -1,9 +1,9 @@
 import * as express from "express";
 require("dotenv").config();
-import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
 import { Server } from "socket.io";
 import * as http from "http";
+import * as cookieParser from "cookie-parser";
+import * as cors from "cors";
 const fileUpload = require("express-fileupload");
 import { TypeOrmDataSource } from "./config";
 
@@ -49,8 +49,8 @@ TypeOrmDataSource.initialize()
   });
 
 io.on("connection", (socket) => {
-  console.log(socket);
-  console.log("a user connected successfully");
+  console.log(socket.id);
+  console.log("a user connected from Socket.io");
 });
 
 server.listen(process.env.PORT, () => {
