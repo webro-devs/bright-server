@@ -51,6 +51,9 @@ TypeOrmDataSource.initialize()
   io.on('connection', (socket) => {
     console.log(socket.id)
     console.log('a user connected from Socket.io');
+    socket.on('join', data => {
+      console.log(data);
+    })
   });
 
 server.listen(process.env.PORT, () => {
