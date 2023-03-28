@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { OnCreate, OnDisconnect, OnJoin } from "./socket.controller";
+import { OnBlur, OnChange, OnCreate, OnDisconnect, OnFocus, OnJoin, OnLeave } from "./socket.controller";
 
 export const connectSocket = (server: any) => {
     const io = new Server(server);
@@ -8,6 +8,10 @@ export const connectSocket = (server: any) => {
         console.log(`a user: ${socket.id} connected from Socket.io`);
         socket.on('join', (data) => OnJoin(data, socket, io))
         socket.on('create', (roomId) => OnCreate(roomId, socket, io))
+        socket.on('leave', (roomId) => OnLeave(roomId, socket))
+        socket.on('change', (data) => OnChange(data, socket, io))
+        socket.on('focus', (data) => OnFocus(data, io))
+        socket.on('blur', (data) => OnBlur(data, io))
         socket.on('disconnect', () => OnDisconnect(socket));
     });
 }

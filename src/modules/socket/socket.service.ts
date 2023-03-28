@@ -9,11 +9,6 @@ export class SocketService {
     try {
       const category = await this.socketRepository.findOne({
         where: { socketId },
-        relations: {
-          admin: {
-            position: true,
-          },
-        },
       });
       return category;
     } catch (error) {
