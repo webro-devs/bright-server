@@ -2,10 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  JoinColumn,
-  OneToOne,
 } from "typeorm";
-import { Admin } from "../admin/admin.entity";
 
 @Entity("socket")
 export class SocketEntity {

@@ -30,6 +30,14 @@ export const OnCreate = (roomId: string, socket: any, io: any) => {
   }
 };
 
+export const OnLeave = (roomId: string, socket: any) => {
+  try {
+    socket.leave(roomId);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const OnChange = (
   data: { roomId: string; inputName: string; value: string },
   socket: any,
