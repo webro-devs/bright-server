@@ -2,10 +2,14 @@ import { OnJoinType } from "./types/user.types";
 import { socketService } from "./socket.module";
 import { newsEditorService } from "../editors";
 import { adminService } from "../admin";
+import { UpdateAdminProfileDto } from "../admin/dto";
 
 export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   try {
     console.log(`User id: ${data.id} ==== Socket id: ${socket.id}`);
+    await adminService.changeProfile(data?.id, {
+      isOnline: true,
+    } as UpdateAdminProfileDto);
     await socketService.create({ socketId: socket.id, admin: data?.id });
   } catch (error) {
     console.log(error);
@@ -14,6 +18,12 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
 
 export const OnDisconnect = async (socket: any) => {
   try {
+    const date = new Date();
+    const userId = await socketService.getBySocketId(socket?.id);
+    await adminService.changeProfile(userId.admin, {
+      isOnline: false,
+      lastSeen: date,
+    } as UpdateAdminProfileDto);
     await socketService.removeBySocketId(socket?.id);
     socket.disconnect(true);
     socket = null;
@@ -44,7 +54,7 @@ export const OnChange = async (
   io: any,
 ) => {
   try {
-    //   await newsEditorService.updateEditDate(data.roomId, data.userId);
+    await newsEditorService.updateEditDate(data.roomId, data.userId);
     io.sockets.in(data.roomId).emit("input_change", data);
   } catch (error) {
     console.log(error);

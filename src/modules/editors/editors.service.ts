@@ -70,7 +70,7 @@ export class NewsEditorService {
 
   async updateEditDate(newsId: string, editorId: string) {
     try {
-      const edition = await this.getByAdminAndNewsId(newsId, editorId);
+      const edition = await this.getByAdminAndNewsId(editorId, newsId);
       const date = new Date();
       if (!edition) {
         const response = await this.create({

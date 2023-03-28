@@ -46,7 +46,7 @@ export class Admin {
   isActive: boolean;
 
   @Column({ type: "timestamp with time zone", nullable: true })
-  lastSeen: string;
+  lastSeen: Date;
 
   @Column({ default: true, type: "boolean" })
   isOnline: boolean;
@@ -75,7 +75,6 @@ export class Admin {
 
   @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
   editors: NewsEditor[];
-
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

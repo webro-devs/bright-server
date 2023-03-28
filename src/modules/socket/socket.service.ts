@@ -7,10 +7,10 @@ export class SocketService {
 
   async getBySocketId(socketId: string): Promise<SocketEntity> {
     try {
-      const category = await this.socketRepository.findOne({
+      const socket = await this.socketRepository.findOne({
         where: { socketId },
       });
-      return category;
+      return socket;
     } catch (error) {
       throw new HttpException(true, 500, error.message);
     }

@@ -1,4 +1,4 @@
-import { IsObject, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsObject, IsOptional, IsString } from "class-validator";
 
 class UpdateAdminProfileDto {
   @IsOptional()
@@ -24,6 +24,14 @@ class UpdateAdminProfileDto {
   @IsOptional()
   @IsString()
   education: string;
+
+  @IsOptional()
+  @IsString()
+  lastSeen: Date;
+
+  @IsOptional()
+  @IsBoolean()
+  isOnline: boolean;
 
   @IsOptional()
   avatar;
