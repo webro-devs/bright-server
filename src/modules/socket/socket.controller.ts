@@ -26,9 +26,16 @@ export const OnDisconnect = async (socket: any) => {
 export const OnCreate = (roomId: string, socket: any, io: any) => {
     try {
         socket.join(roomId);
-        io.sockets.in(roomId).emit('event', 'data');
     } catch (error) {
         console.log(error);
+    }
+}
+
+export const OnChange = (data: {roomId: string, inputName: string, value: string}, socket:any, io:any) => {
+    try {
+        io.sockets.in(data.roomId).emit('input_change', data);
+    } catch (error) {
+        console.log(error);    
     }
 }
 

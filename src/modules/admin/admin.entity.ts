@@ -7,7 +7,6 @@ import {
   JoinTable,
   ManyToOne,
   JoinColumn,
-  OneToOne,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Permission } from "../permission/permission.entity";
@@ -16,7 +15,6 @@ import { Position } from "../position/position.entity";
 import { chatMessage } from "../chat-message/chat-message.entity";
 import { Notification } from "../notification/notification.entity";
 import { NewsEditor } from "../editors/editors.entity";
-import { SocketEntity } from "../socket/socket.entity";
 
 @Entity("admin")
 export class Admin {
@@ -78,10 +76,6 @@ export class Admin {
   @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
   editors: NewsEditor[];
 
-  @OneToOne(() => SocketEntity, (socket) => socket.admin, {
-    onDelete: "SET NULL",
-  })
-  socket: SocketEntity;
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

@@ -15,10 +15,6 @@ export class SocketEntity {
   @Column({ type: "text" })
   socketId: string;
 
-  @OneToOne(() => Admin, (admin) => admin.socket, {
-    cascade: true,
-    onDelete: "SET NULL",
-  })
-  @JoinColumn()
-  admin: Admin;
+  @Column({type: "text"})
+  admin: string;
 }
