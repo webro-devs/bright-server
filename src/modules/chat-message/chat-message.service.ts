@@ -21,7 +21,10 @@ export class MessageService {
 
   async getById(id: string): Promise<chatMessage> {
     try {
-      const response = await this.messageRepository.findOne({ where: { id } });
+      const response = await this.messageRepository.findOne({
+        where: { id },
+        relations: { user: true },
+      });
       return response;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
@@ -37,22 +40,33 @@ export class MessageService {
     }
   }
 
-  async update(body: string, id: string): Promise<UpdateResult> {
+  async update(
+    body: string,
+    id: string,
+    user_id: string,
+  ): Promise<UpdateResult> {
     try {
-      const edit = await this.messageRepository
-        .createQueryBuilder()
-        .update()
-        .set({ body })
-        .where("id = :id", { id })
-        .execute();
-      return edit;
+      const data = await this.getById(id);
+      if (data.user.id == user_id) {
+        const edit = await this.messageRepository
+          .createQueryBuilder()
+          .update()
+          .set({ body })
+          .where("id = :id", { id })
+          .execute();
+        return edit;
+      } else {
+        throw new HttpException(true, 500, "This is not your message");
+      }
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
   }
 
-  async remove(id: string): Promise<DeleteResult> {
+  async remove(id: string, user_id: string): Promise<DeleteResult> {
     try {
+      const data = await this.getById(id);
+      if (data.user.id != user_id) return;
       const response = await this.messageRepository.delete(id);
       return response;
     } catch (err) {
