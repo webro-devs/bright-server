@@ -1,6 +1,7 @@
 import { OnJoinType } from "./types/user.types";
 import { socketService } from "./socket.module";
 import { newsEditorService } from "../editors";
+import { adminService } from "../admin";
 
 export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   try {
@@ -38,32 +39,37 @@ export const OnLeave = (roomId: string, socket: any) => {
 };
 
 export const OnChange = async (
-    data: { roomId: string; inputName: string; value: string; userId: string },
-    socket: any,
-    io: any,
-  ) => {
-    try {
-      await newsEditorService.updateEditDate(data.roomId, data.userId);
-      io.sockets.in(data.roomId).emit("input_change", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  data: { roomId: string; inputName: string; value: string; userId: string },
+  socket: any,
+  io: any,
+) => {
+  try {
+    //   await newsEditorService.updateEditDate(data.roomId, data.userId);
+    io.sockets.in(data.roomId).emit("input_change", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export const OnFocus = async (data: { roomId: string, userId: string, inputName: string }, io: any) => {
-    try {
-        io.sockets.in(data.roomId).emit('input_focus', data);
-    } catch (error) {
-        console.log(error);
+export const OnFocus = async (
+  data: { roomId: string; userId: string; inputName: string },
+  io: any,
+) => {
+  try {
+    const user = await adminService.getOnlyAdmin(data.userId);
+    io.sockets.in(data.roomId).emit("input_focus", { ...data, user });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-    }
-}
-
-export const OnBlur = async (data: { roomId: string, userId: string, inputName: string }, io: any) => {
-    try {
-        io.sockets.in(data.roomId).emit('input_blur', data);
-    } catch (error) {
-        console.log(error);
-
-    }
-}
+export const OnBlur = async (
+  data: { roomId: string; userId: string; inputName: string },
+  io: any,
+) => {
+  try {
+    io.sockets.in(data.roomId).emit("input_blur", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
