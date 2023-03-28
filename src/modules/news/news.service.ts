@@ -369,4 +369,12 @@ export class NewsService {
       return new HttpException(true, 500, err.message);
     }
   }
+
+  async updateIsEditing(id: string, isEditing: boolean) {
+    try {
+      await this.newsRepository.update(id, { isEditing });
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
 }

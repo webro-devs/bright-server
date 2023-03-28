@@ -18,10 +18,15 @@ export class NewsEditorService {
 
   async getById(id: string): Promise<NewsEditor> {
     try {
-      const category = await this.newsEditorRepository.findOne({
+      const edition = await this.newsEditorRepository.findOne({
         where: { id },
+        relations: {
+          editor: {
+            position: true,
+          },
+        },
       });
-      return category;
+      return edition;
     } catch (error) {
       throw new HttpException(true, 500, error.message);
     }
@@ -61,6 +66,7 @@ export class NewsEditorService {
         .insert()
         .into(NewsEditor)
         .values(values as unknown as NewsEditor)
+        .returning("id")
         .execute();
       return response;
     } catch (error) {
@@ -78,20 +84,20 @@ export class NewsEditorService {
           news: newsId,
           editedDate: date,
         });
-        return response;
+        return response.raw[0].id;
       } else {
         if (IsSameDate(date, edition.editedDate)) {
           const response = await this.newsEditorRepository.update(edition.id, {
             editedDate: date,
           });
-          return response;
+          return edition.id;
         } else {
           const response = await this.create({
             editor: editorId,
             news: newsId,
             editedDate: date,
           });
-          return response;
+          return response.raw[0].id;
         }
       }
     } catch (err) {
