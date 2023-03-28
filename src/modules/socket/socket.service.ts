@@ -2,7 +2,7 @@ import { DeleteResult, Repository } from "typeorm";
 import { SocketEntity } from "./socket.entity";
 import { HttpException } from "../../infra/validation";
 
-export class NotificationService {
+export class SocketService {
   constructor(private readonly socketRepository: Repository<SocketEntity>) {}
 
   async getBySocketId(socketId: string): Promise<SocketEntity> {
