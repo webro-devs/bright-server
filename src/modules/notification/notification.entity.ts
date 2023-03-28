@@ -7,7 +7,6 @@ import {
 } from "typeorm";
 import { Admin } from "../admin/admin.entity";
 import { News } from "../news/news.entity";
-import { Position } from "../position/position.entity";
 
 @Entity("notification")
 export class Notification {
