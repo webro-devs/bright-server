@@ -248,7 +248,7 @@ export class NewsService {
           await manager.save(oldNews);
         });
       }
-      return new HttpException(true, 203, "successfully edited");
+      return new HttpException(false, 203, "successfully edited");
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
