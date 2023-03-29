@@ -354,6 +354,7 @@ export class NewsService {
             }
           }
         }
+        date.setSeconds(date.getSeconds() + 5);
         CronJob(date, async () => {
           await this.newsRepository
             .createQueryBuilder()
