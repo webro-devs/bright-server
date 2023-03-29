@@ -27,13 +27,20 @@ export class NewsService {
     private readonly chatService: ChatService,
   ) {}
 
-  async getAll(where, relations): Promise<News[]> {
+  async getAll(
+    where,
+    relations,
+    pagination: { limit: number; offset: number },
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         order: {
           updated_at: "DESC",
         },
         where,
+        relations,
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return response;
     } catch (err) {
@@ -41,7 +48,11 @@ export class NewsService {
     }
   }
 
-  async getByState(state: State, relations) {
+  async getByState(
+    state: State,
+    relations,
+    pagination: { limit: number; offset: number },
+  ) {
     try {
       const data = await this.newsRepository.find({
         relations,
@@ -49,6 +60,8 @@ export class NewsService {
         order: {
           updated_at: "DESC",
         },
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return data;
     } catch (err) {
@@ -56,7 +69,11 @@ export class NewsService {
     }
   }
 
-  async getByStatePublished(where, relations) {
+  async getByStatePublished(
+    where,
+    relations,
+    pagination: { limit: number; offset: number },
+  ) {
     try {
       const data = await this.newsRepository.find({
         relations,
@@ -64,6 +81,8 @@ export class NewsService {
         order: {
           updated_at: "DESC",
         },
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return data;
     } catch (err) {
@@ -110,7 +129,11 @@ export class NewsService {
     }
   }
 
-  async getByCreatorId(where, relations): Promise<News[]> {
+  async getByCreatorId(
+    where,
+    relations,
+    pagination: { limit: number; offset: number },
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where,
@@ -118,6 +141,8 @@ export class NewsService {
         order: {
           updated_at: "DESC",
         },
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return response;
     } catch (err) {
@@ -129,6 +154,7 @@ export class NewsService {
     id: string,
     state: string,
     relations,
+    pagination: { limit: number; offset: number },
   ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
@@ -137,6 +163,8 @@ export class NewsService {
         order: {
           updated_at: "DESC",
         },
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return response;
     } catch (err) {

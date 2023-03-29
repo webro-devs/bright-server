@@ -11,7 +11,11 @@ import { ZipMaker } from "../../infra/helpers";
 
 export async function getAll(req, res: Response) {
   try {
-    const news = await newsService.getAll(req.where, req.relations);
+    const news = await newsService.getAll(
+      req?.where,
+      req.relations,
+      req?.["pagination"],
+    );
     res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -35,7 +39,11 @@ export const getMyNews = async (req: Request, res: Response) => {
   try {
     const where = req?.["where"];
     where.creator = { id: req["user"].id };
-    const news = await newsService.getByCreatorId(where, req["relations"]);
+    const news = await newsService.getByCreatorId(
+      where,
+      req["relations"],
+      req?.["pagination"],
+    );
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
@@ -47,6 +55,7 @@ export const getByStateGeneral = async (req: Request, res: Response) => {
     const data = await newsService.getByState(
       State.general_access,
       req["relations"],
+      req?.["pagination"],
     );
     return res.send(data);
   } catch (err) {
@@ -58,7 +67,11 @@ export const getByStatePublished = async (req: Request, res: Response) => {
   try {
     let where = req["where"] || {};
     where.state = State.published;
-    const data = await newsService.getByStatePublished(where, req["relations"]);
+    const data = await newsService.getByStatePublished(
+      where,
+      req["relations"],
+      req?.["pagination"],
+    );
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -67,7 +80,11 @@ export const getByStatePublished = async (req: Request, res: Response) => {
 
 export const getByStateArchive = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.archive, req["relations"]);
+    const data = await newsService.getByState(
+      State.archive,
+      req["relations"],
+      req?.["pagination"],
+    );
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -76,7 +93,11 @@ export const getByStateArchive = async (req: Request, res: Response) => {
 
 export const getByStateChecking = async (req: Request, res: Response) => {
   try {
-    const data = await newsService.getByState(State.checking, req["relations"]);
+    const data = await newsService.getByState(
+      State.checking,
+      req["relations"],
+      req?.["pagination"],
+    );
     return res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -89,6 +110,7 @@ export const getBySavedCreator = async (req: Request, res: Response) => {
       req["user"].id,
       State.favorites,
       req["relations"],
+      req?.["pagination"],
     );
     res.send(data);
   } catch (err) {

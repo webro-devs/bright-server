@@ -3,6 +3,7 @@ import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 const NewsQueryParserMiddleware = (req, res, next) => {
   let where: any = {};
   let relations: any = {};
+  let pagination: { limit: number; offset: number } = { limit: 100, offset: 0 };
   const {
     startDate,
     endDate,
@@ -11,6 +12,8 @@ const NewsQueryParserMiddleware = (req, res, next) => {
     mainCategoryId,
     state,
     lang,
+    limit,
+    page,
   } = req.query;
 
   if (startDate && endDate) {
@@ -48,7 +51,7 @@ const NewsQueryParserMiddleware = (req, res, next) => {
     relations = {
       categories: true,
       creator: {
-        position: true
+        position: true,
       },
       mainCategory: true,
     };
@@ -61,14 +64,22 @@ const NewsQueryParserMiddleware = (req, res, next) => {
       уз: true,
       categories: true,
       creator: {
-        position: true
+        position: true,
       },
       mainCategory: true,
     };
   }
+  if (limit && page) {
+    const offset = (+page - 1) * +limit;
+    pagination.limit = +limit;
+    pagination.offset = offset;
+  } else if (limit && !page) {
+    pagination.limit = +limit;
+  }
 
   req.where = where;
   req.relations = relations;
+  req.pagination = pagination;
   next();
 };
 
