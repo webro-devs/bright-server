@@ -16,7 +16,27 @@ const client = new Client({
 });
 
 const index = "news";
-export async function IndexNews(news: News) {
+const fields = [
+  "state",
+  "ru.title",
+  "ru.description",
+  "ru.shortDescription",
+  "ru.tags",
+  "uz.title",
+  "uz.description",
+  "uz.shortDescription",
+  "uz.tags",
+  "en.title",
+  "en.description",
+  "en.shortDescription",
+  "en.tags",
+  "уз.title",
+  "уз.description",
+  "уз.shortDescription",
+  "уз.tags",
+];
+
+export async function ElasticIndexNews(news: News) {
   try {
     return await client.index<INewsSearchResult | INewsSearchBody>({
       index,
@@ -27,7 +47,7 @@ export async function IndexNews(news: News) {
   }
 }
 
-export async function Count(query: string, fields: string[]) {
+export async function ElasticCount(query: string) {
   const body: INewsCountResult = await client.count({
     index,
     body: {
@@ -42,7 +62,7 @@ export async function Count(query: string, fields: string[]) {
   return body.count;
 }
 
-export async function Search(
+export async function ElasticSearch(
   text: string,
   offset?: number,
   limit?: number,
@@ -51,25 +71,7 @@ export async function Search(
 ) {
   let separateCount = 0;
   if (startId) {
-    separateCount = await this.count(text, [
-      "state",
-      "ru.title",
-      "ru.description",
-      "ru.shortDescription",
-      "ru.tags",
-      "uz.title",
-      "uz.description",
-      "uz.shortDescription",
-      "uz.tags",
-      "en.title",
-      "en.description",
-      "en.shortDescription",
-      "en.tags",
-      "уз.title",
-      "уз.description",
-      "уз.shortDescription",
-      "уз.tags",
-    ]);
+    separateCount = await this.count(text, fields);
   }
 
   const body = await client.search<INewsSearchResult>({
@@ -83,25 +85,7 @@ export async function Search(
             {
               multi_match: {
                 query: text,
-                fields: [
-                  "state",
-                  "ru.title",
-                  "ru.description",
-                  "ru.shortDescription",
-                  "ru.tags",
-                  "uz.title",
-                  "uz.description",
-                  "uz.shortDescription",
-                  "uz.tags",
-                  "en.title",
-                  "en.description",
-                  "en.shortDescription",
-                  "en.tags",
-                  "уз.title",
-                  "уз.description",
-                  "уз.shortDescription",
-                  "уз.tags",
-                ],
+                fields,
               },
             },
             {
@@ -123,14 +107,15 @@ export async function Search(
   const count = body.hits.total;
   const hits = body.hits.hits;
   const results = hits.map((item) => item._source);
+
   return {
     count: startId ? separateCount : count["value"],
     results,
   };
 }
 
-export async function Remove(newsId: string) {
-  this.elasticsearchService.deleteByQuery({
+export async function ElasticRemove(newsId: string) {
+  client.deleteByQuery({
     index,
     body: {
       query: {
@@ -142,14 +127,15 @@ export async function Remove(newsId: string) {
   });
 }
 
-export async function Update(news: News) {
+export async function ElasticUpdate(news: News) {
   const newBody: INewsSearchBody = news;
+  console.log(
+    Object.entries(newBody).reduce((result, [key, value]) => {
+      return `${result} ctx._source.${key}='${value}';`;
+    }, ""),
+  );
 
-  const script = Object.entries(newBody).reduce((result, [key, value]) => {
-    return `${result} ctx._source.${key}='${value}';`;
-  }, "");
-
-  return this.elasticsearchService.updateByQuery({
+  return client.updateByQuery({
     index,
     body: {
       query: {
@@ -158,7 +144,9 @@ export async function Update(news: News) {
         },
       },
       script: {
-        inline: script,
+        source: Object.entries(newBody).reduce((result, [key, value]) => {
+          return `${result} ctx._source.${key}='${value}';`;
+        }, ""),
       },
     },
   });

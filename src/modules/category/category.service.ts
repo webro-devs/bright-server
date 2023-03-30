@@ -15,20 +15,10 @@ export class CategoryService {
     }
   }
 
-  async getAllWithFiveNews(): Promise<Category[]> {
+  async getAllWithFiveNews(relations): Promise<Category[]> {
     try {
       const categories = await this.categoryRepository.find({
-        relations: {
-          news: {
-            uz: true,
-            ru: true,
-            en: true,
-            уз: true,
-            categories: true,
-            creator: true,
-            mainCategory: true,
-          },
-        },
+        relations,
       });
       categories.forEach((category) => {
         category.news = category.news.slice(0, 5);

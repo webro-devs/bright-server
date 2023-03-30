@@ -117,6 +117,26 @@ export class NewsService {
     }
   }
 
+  async getByIdForUpdateIndexing(id: string): Promise<News> {
+    try {
+      const response = await this.newsRepository.findOne({
+        where: { id },
+        relations: {
+          uz: true,
+          ru: true,
+          en: true,
+          уз: true,
+          categories: true,
+          creator: true,
+          mainCategory: true,
+        },
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
   async getOne(id: string, relations): Promise<News> {
     try {
       const response = await this.newsRepository.findOne({
