@@ -32,6 +32,7 @@ router
     NewsQueryParserMiddleware,
     newsController.getByStateChecking,
   )
+  .get("/news/search", NewsQueryParserMiddleware, newsController.search)
   .get(
     "/news/favorites",
     NewsQueryParserMiddleware,

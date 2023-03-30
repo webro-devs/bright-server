@@ -13,6 +13,15 @@ export async function getAll(req: Request, res: Response) {
   }
 }
 
+export async function getCategoryWithFiveNews(req: Request, res: Response) {
+  try {
+    const categories = await categoryService.getAllWithFiveNews();
+    res.send(categories);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
 export async function getById(req: Request, res: Response) {
   try {
     const { id } = req.params;

@@ -15,6 +15,30 @@ export class CategoryService {
     }
   }
 
+  async getAllWithFiveNews(): Promise<Category[]> {
+    try {
+      const categories = await this.categoryRepository.find({
+        relations: {
+          news: {
+            uz: true,
+            ru: true,
+            en: true,
+            уз: true,
+            categories: true,
+            creator: true,
+            mainCategory: true,
+          },
+        },
+      });
+      categories.forEach((category) => {
+        category.news = category.news.slice(0, 5);
+      });
+      return categories;
+    } catch (error) {
+      throw new HttpException(true, 500, error.message);
+    }
+  }
+
   async getById(id: string): Promise<Category> {
     try {
       const category = await this.categoryRepository.findOne({ where: { id } });

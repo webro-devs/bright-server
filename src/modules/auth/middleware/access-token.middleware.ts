@@ -12,6 +12,8 @@ const AccessTokenMiddleware = async (
     if (
       (req.method == "GET" && req.url.includes("/single-news")) ||
       (req.method == "GET" && req.url.includes("/news/published")) ||
+      (req.method == "GET" && req.url.includes("/news/search")) ||
+      (req.method == "GET" && req.url.includes("/category/with-five")) ||
       req.url == "/auth/login" ||
       req.url == "/auth/logout" ||
       req.url == "/auth/refresh" ||

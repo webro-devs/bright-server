@@ -4,6 +4,7 @@ const NewsQueryParserMiddleware = (req, res, next) => {
   let where: any = {};
   let relations: any = {};
   let pagination: { limit: number; offset: number } = { limit: 100, offset: 0 };
+  let elasticsearch = { text: "" };
   const {
     startDate,
     endDate,
@@ -14,6 +15,7 @@ const NewsQueryParserMiddleware = (req, res, next) => {
     lang,
     limit,
     page,
+    text,
   } = req.query;
 
   if (startDate && endDate) {
@@ -76,10 +78,14 @@ const NewsQueryParserMiddleware = (req, res, next) => {
   } else if (limit && !page) {
     pagination.limit = +limit;
   }
+  if (text) {
+    elasticsearch.text = text;
+  }
 
   req.where = where;
   req.relations = relations;
   req.pagination = pagination;
+  req.elasticsearch = elasticsearch;
   next();
 };
 
