@@ -7,6 +7,7 @@ const router = Router();
 
 router
   .get("/category", categoryController.getAll)
+  .get("/category/with-five", categoryController.getCategoryWithFiveNews)
   .get("/category/:id", categoryController.getById)
   .post(
     "/category",

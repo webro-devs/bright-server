@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.6.0",
     "adm-zip": "^0.5.10",
     "bcrypt": "^5.1.0",
     "class-sanitizer": "^1.0.1",
