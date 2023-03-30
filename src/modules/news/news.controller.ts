@@ -8,17 +8,17 @@ import { fileService } from "../../infra/helpers";
 import slugify from "slugify";
 import { State } from "../../infra/shared/enums";
 import { ZipMaker } from "../../infra/helpers";
-import { Search, IndexNews } from "./elastic-search";
+// import { Search, IndexNews } from "./elastic-search";
 
 export async function search(req, res: Response) {
   try {
-     const data = await Search(
-      req["elasticsearch"]?.text,
-      req["pagination"]?.offset,
-      req["pagination"]?.limit,
-      req["where"]?.state || "general access",
-    );
-    return data;
+    //  const data = await Search(
+    //   req["elasticsearch"]?.text,
+    //   req["pagination"]?.offset,
+    //   req["pagination"]?.limit,
+    //   req["where"]?.state || "general access",
+    // );
+    // return data;
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
   }
@@ -138,16 +138,17 @@ export async function create(req: Upload, res: Response) {
     const newsData: CreateNewsDto = req.body;
     const imgData = ["uz", "ru", "en", "уз"];
 
-    if (newsData?.["Ñ\x83Ð·"]) {
-      if (newsData?.["Ñ\x83Ð·"] !== "уз") {
-        Object.defineProperty(
-          newsData,
-          "уз",
-          Object.getOwnPropertyDescriptor(newsData, "Ñ\x83Ð·"),
-        );
-        delete newsData["Ñ\x83Ð·"];
-      }
-    }
+    // if (newsData?.["Ñ\x83Ð·"]) {
+    //   if (newsData?.["Ñ\x83Ð·"] !== "уз") {
+    //     Object.defineProperty(
+    //       newsData,
+    //       "уз",
+    //       Object.getOwnPropertyDescriptor(newsData, "Ñ\x83Ð·"),
+    //     );
+    //     delete newsData["Ñ\x83Ð·"];
+    //   }
+    // }
+    
 
     for (let i = 0; imgData.length > i; i++) {
       if (!newsData[imgData[i]]) {
