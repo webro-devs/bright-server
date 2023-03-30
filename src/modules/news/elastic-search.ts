@@ -40,6 +40,7 @@ export async function ElasticIndexNews(news: News) {
   try {
     return await client.index<INewsSearchResult | INewsSearchBody>({
       index,
+      id: news.id,
       body: news,
     });
   } catch (err) {
@@ -50,14 +51,14 @@ export async function ElasticIndexNews(news: News) {
 export async function ElasticCount(query: string) {
   const body: INewsCountResult = await client.count({
     index,
-    body: {
-      query: {
-        multi_match: {
-          query,
-          fields,
-        },
-      },
-    },
+    // body: {
+    //   query: {
+    //     multi_match: {
+    //       query,
+    //       fields,
+    //     },
+    //   },
+    // },
   });
   return body.count;
 }
@@ -129,25 +130,11 @@ export async function ElasticRemove(newsId: string) {
 
 export async function ElasticUpdate(news: News) {
   const newBody: INewsSearchBody = news;
-  console.log(
-    Object.entries(newBody).reduce((result, [key, value]) => {
-      return `${result} ctx._source.${key}='${value}';`;
-    }, ""),
-  );
-
-  return client.updateByQuery({
+  return client.update({
     index,
+    id: news.id,
     body: {
-      query: {
-        match: {
-          id: news.id,
-        },
-      },
-      script: {
-        source: Object.entries(newBody).reduce((result, [key, value]) => {
-          return `${result} ctx._source.${key}='${value}';`;
-        }, ""),
-      },
+      doc: newBody,
     },
   });
 }
