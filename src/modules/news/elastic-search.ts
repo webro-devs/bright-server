@@ -123,6 +123,7 @@ export async function Search(
   const count = body.hits.total;
   const hits = body.hits.hits;
   const results = hits.map((item) => item._source);
+
   return {
     count: startId ? separateCount : count["value"],
     results,

@@ -15,7 +15,10 @@ export async function getAll(req: Request, res: Response) {
 
 export async function getCategoryWithFiveNews(req: Request, res: Response) {
   try {
-    const categories = await categoryService.getAllWithFiveNews();
+    const relations = {
+      news: req["relations"],
+    };
+    const categories = await categoryService.getAllWithFiveNews(relations);
     res.send(categories);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

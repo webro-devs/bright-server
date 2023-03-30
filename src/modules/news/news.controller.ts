@@ -12,13 +12,13 @@ import { Search, IndexNews } from "./elastic-search";
 
 export async function search(req, res: Response) {
   try {
-     const data = await Search(
+    const data = await Search(
       req["elasticsearch"]?.text,
       req["pagination"]?.offset,
       req["pagination"]?.limit,
       req["where"]?.state || "general access",
     );
-    return data;
+    return res.send(data);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
   }
