@@ -412,9 +412,9 @@ export class NewsService {
     }
   }
 
-  async updateIsEditing(id: string, isEditing: boolean) {
+  async updateIsEditing(id: string, isEditing: boolean,updated_at:Date) {
     try {
-      await this.newsRepository.update(id, { isEditing });
+      await this.newsRepository.update(id, { isEditing,updated_at });
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
