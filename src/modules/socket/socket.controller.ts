@@ -72,7 +72,8 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
-      await newsService.updateIsEditing(roomId, true);
+      const news = await newsService.getByIdForUpdateIndexing(roomId);
+      await newsService.updateIsEditing(roomId, true, news.updated_at);
     }
     io.to(socket.id).emit("get_changes", obj?.[roomId]);
   } catch (error) {
@@ -83,7 +84,8 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
 export const OnLeave = async (roomId: string, socket: any, io: any) => {
   try {
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
-      await newsService.updateIsEditing(roomId, false);
+      const news = await newsService.getByIdForUpdateIndexing(roomId);
+      await newsService.updateIsEditing(roomId, false, news.updated_at);
     }
     socket.leave(roomId);
   } catch (error) {
@@ -98,8 +100,6 @@ export const OnChange = async (
 ) => {
   try {
     obj = j(obj, data.roomId, data.inputName, data.value);
-    console.log(obj);
-
     myStopFunction();
     myTimeout = setTimeout(async () => {
       const res = await newsEditorService.updateEditDate(
