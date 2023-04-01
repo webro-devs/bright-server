@@ -14,4 +14,7 @@ export class SocketEntity {
 
   @Column({type: "text"})
   admin: string;
+
+  @Column({type: "text",nullable:true})
+  news: string;
 }

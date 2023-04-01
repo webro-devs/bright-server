@@ -38,4 +38,16 @@ export class SocketService {
       return new HttpException(true, 500, error.message);
     }
   }
+
+  async updateNews(socketId: string, news: string) {
+    try {
+      const response = await this.socketRepository.update(
+        { socketId },
+        { news },
+      );
+      return response;
+    } catch (err) {
+      return new HttpException(true, 500, err.message);
+    }
+  }
 }

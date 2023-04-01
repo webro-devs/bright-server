@@ -20,6 +20,6 @@ export const connectSocket = (server: any) => {
     socket.on("change", (data) => OnChange(data, socket, io));
     socket.on("focus", (data) => OnFocus(data, io));
     socket.on("blur", (data) => OnBlur(data, io));
-    socket.on("disconnect", () => OnDisconnect(socket));
+    socket.on("disconnect", () => OnDisconnect(socket, io));
   });
 };

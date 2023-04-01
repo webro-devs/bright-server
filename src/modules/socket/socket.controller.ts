@@ -51,16 +51,22 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   }
 };
 
-export const OnDisconnect = async (socket: any) => {
+export const OnDisconnect = async (socket: any, io: any) => {
   try {
     const date = new Date();
-    const userId = await socketService.getBySocketId(socket?.id);
-    await adminService.changeProfile(userId.admin, {
+    const data = await socketService.getBySocketId(socket?.id);
+    await adminService.changeProfile(data.admin, {
       isOnline: false,
       lastSeen: date,
     } as UpdateAdminProfileDto);
+    if (data?.news) {
+      if (io.sockets.adapter.rooms.get(data.news).size == 1) {
+        const news = await newsService.getByIdForUpdateIndexing(data.news);
+        await newsService.updateIsEditing(news.id, false, news.updated_at);
+      }
+    }
     await socketService.removeBySocketId(socket?.id);
-    socket.emit("user_left", userId.id);
+    socket.emit("user_left", data.id);
     socket.disconnect(true);
     socket = null;
   } catch (error) {
@@ -75,6 +81,7 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
       const news = await newsService.getByIdForUpdateIndexing(roomId);
       await newsService.updateIsEditing(roomId, true, news.updated_at);
     }
+    await socketService.updateNews(socket?.id, roomId);
     io.to(socket.id).emit("get_changes", obj?.[roomId]);
   } catch (error) {
     console.log(error);
