@@ -4,52 +4,16 @@ import { newsEditorService } from "../editors";
 import { adminService } from "../admin";
 import { UpdateAdminProfileDto } from "../admin/dto";
 import { newsService } from "../news";
+import {
+  UpdateNestedObject,
+  SocketNewsOnChangeObject,
+} from "../../infra/helpers";
 
 let myTimeout = setTimeout(() => {}, 3000);
 let obj: any = {};
 
 function myStopFunction() {
   clearTimeout(myTimeout);
-}
-
-function j(obj: any, room: string, input: string, value: string) {
-  const a = input.split(".");
-  if (input.length) {
-    if (a.length == 2) {
-      if (obj?.[room]) {
-        if (obj[room]?.[a[0]]) {
-          obj[room][a[0]][a[1]] = value;
-        } else {
-          obj[room][a[0]] = {};
-          obj[room][a[0]][a[1]] = value;
-          obj[room]["editors"] = [];
-        }
-      } else {
-        obj[room] = {};
-        obj[room][a[0]] = {};
-        obj[room][a[0]][a[1]] = value;
-      }
-    } else {
-      if (obj?.[room]) {
-        obj[room][a[0]] = value;
-      } else {
-        obj[room] = {};
-        obj[room][a[0]] = value;
-        obj[room]["editors"] = [];
-      }
-    }
-  } else {
-    if (obj?.[room]) {
-      if (!obj?.[room]?.["editors"]) {
-        obj[room]["editors"] = [];
-      }
-    } else {
-      obj[room] = {};
-      obj[room]["editors"] = [];
-    }
-  }
-
-  return obj;
 }
 
 export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
@@ -97,11 +61,12 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
-      const news = await newsService.getByIdForUpdateIndexing(roomId);
+      var news = await newsService.getByIdForUpdateIndexing(roomId);
       await newsService.updateIsEditing(roomId, true, news.updated_at);
     }
+    const changedObject = UpdateNestedObject(obj?.[roomId], news);
     await socketService.updateNews(socket?.id, roomId);
-    io.to(socket.id).emit("get_changes", obj?.[roomId]);
+    io.to(socket.id).emit("get_changes", changedObject);
   } catch (error) {
     console.log(error);
   }
@@ -125,7 +90,12 @@ export const OnChange = async (
   io: any,
 ) => {
   try {
-    obj = j(obj, data.roomId, data.inputName, data.value);
+    obj = SocketNewsOnChangeObject(
+      obj,
+      data.roomId,
+      data.inputName,
+      data.value,
+    );
     myStopFunction();
     myTimeout = setTimeout(async () => {
       const res = await newsEditorService.updateEditDate(
@@ -147,7 +117,7 @@ export const OnFocus = async (
 ) => {
   try {
     const user = await adminService.getOnlyAdmin(data.userId);
-    obj = j(obj, data.roomId, "", "");
+    obj = SocketNewsOnChangeObject(obj, data.roomId, "", "");
     obj[data.roomId]["editors"]?.push(user);
     io.sockets.in(data.roomId).emit("input_focus", { ...data, user });
   } catch (error) {
