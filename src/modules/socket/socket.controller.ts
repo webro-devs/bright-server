@@ -14,25 +14,38 @@ function myStopFunction() {
 
 function j(obj: any, room: string, input: string, value: string) {
   const a = input.split(".");
-  if (a.length == 2) {
-    if (obj?.[room]) {
-      if (obj[room]?.[a[0]]) {
-        obj[room][a[0]][a[1]] = value;
+  if (input.length) {
+    if (a.length == 2) {
+      if (obj?.[room]) {
+        if (obj[room]?.[a[0]]) {
+          obj[room][a[0]][a[1]] = value;
+        } else {
+          obj[room][a[0]] = {};
+          obj[room][a[0]][a[1]] = value;
+          obj[room]["editors"] = [];
+        }
       } else {
+        obj[room] = {};
         obj[room][a[0]] = {};
         obj[room][a[0]][a[1]] = value;
       }
     } else {
-      obj[room] = {};
-      obj[room][a[0]] = {};
-      obj[room][a[0]][a[1]] = value;
+      if (obj?.[room]) {
+        obj[room][a[0]] = value;
+      } else {
+        obj[room] = {};
+        obj[room][a[0]] = value;
+        obj[room]["editors"] = [];
+      }
     }
   } else {
     if (obj?.[room]) {
-      obj[room][a[0]] = value;
+      if (!obj?.[room]?.["editors"]) {
+        obj[room]["editors"] = [];
+      }
     } else {
       obj[room] = {};
-      obj[room][a[0]] = value;
+      obj[room]["editors"] = [];
     }
   }
 
@@ -63,6 +76,12 @@ export const OnDisconnect = async (socket: any, io: any) => {
       if (io.sockets.adapter.rooms.get(data.news).size == 1) {
         const news = await newsService.getByIdForUpdateIndexing(data.news);
         await newsService.updateIsEditing(news.id, false, news.updated_at);
+      }
+      const index = obj[data.news]["editors"]?.findIndex(
+        (o) => o.id == data.admin,
+      );
+      if (index != -1) {
+        obj[data.news]["editors"].splice(index, 1);
       }
     }
     await socketService.removeBySocketId(socket?.id);
@@ -128,6 +147,8 @@ export const OnFocus = async (
 ) => {
   try {
     const user = await adminService.getOnlyAdmin(data.userId);
+    obj = j(obj, data.roomId, "", "");
+    obj[data.roomId]["editors"]?.push(user);
     io.sockets.in(data.roomId).emit("input_focus", { ...data, user });
   } catch (error) {
     console.log(error);
@@ -139,6 +160,10 @@ export const OnBlur = async (
   io: any,
 ) => {
   try {
+    const index = obj[data.roomId]["editors"]?.findIndex(
+      (o) => o.id == data.userId,
+    );
+    obj[data.roomId]["editors"].splice(index, 1);
     io.sockets.in(data.roomId).emit("input_blur", data);
   } catch (error) {
     console.log(error);
