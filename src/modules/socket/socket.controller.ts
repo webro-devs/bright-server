@@ -135,7 +135,7 @@ export const OnChange = async (
         data.userId,
       );
       const edition = await newsEditorService.getById(res);
-      io.to(data.roomId).emit("set_editor", edition);
+      socket.to(data.roomId).emit("set_editor", edition);
     }, 3000);
     socket.broadcast.to(data.roomId).emit("input_change", data);
   } catch (error) {
