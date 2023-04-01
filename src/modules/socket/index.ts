@@ -18,8 +18,8 @@ export const connectSocket = (server: any) => {
     socket.on("create", (roomId) => OnCreate(roomId, socket, io));
     socket.on("leave", (roomId) => OnLeave(roomId, socket, io));
     socket.on("change", (data) => OnChange(data, socket, io));
-    socket.on("focus", (data) => OnFocus(data, io));
-    socket.on("blur", (data) => OnBlur(data, io));
-    socket.on("disconnect", () => OnDisconnect(socket));
+    socket.on("focus", (data) => OnFocus(data, socket));
+    socket.on("blur", (data) => OnBlur(data, socket));
+    socket.on("disconnect", () => OnDisconnect(socket, io));
   });
 };

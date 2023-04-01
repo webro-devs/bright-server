@@ -51,11 +51,11 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
   }
 };
 
-export const OnDisconnect = async (socket: any) => {
+export const OnDisconnect = async (socket: any, io: any) => {
   try {
     const date = new Date();
     const userId = await socketService.getBySocketId(socket?.id);
-    await adminService.changeProfile(userId.admin, {
+    await adminService.changeProfile(userId?.admin, {
       isOnline: false,
       lastSeen: date,
     } as UpdateAdminProfileDto);
@@ -73,6 +73,7 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
     socket.join(roomId);
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
       await newsService.updateIsEditing(roomId, true);
+      io.sockets.emit('news_editing', roomId)
     }
     io.to(socket.id).emit("get_changes", obj?.[roomId]);
   } catch (error) {
@@ -82,8 +83,9 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
 
 export const OnLeave = async (roomId: string, socket: any, io: any) => {
   try {
-    if (io.sockets.adapter.rooms.get(roomId).size == 1) {
+    if (io.sockets.adapter.rooms.get(roomId)?.size == 1) {
       await newsService.updateIsEditing(roomId, false);
+      io.sockets.emit('news_end_editing', roomId)
     }
     socket.leave(roomId);
   } catch (error) {
@@ -98,7 +100,6 @@ export const OnChange = async (
 ) => {
   try {
     obj = j(obj, data.roomId, data.inputName, data.value);
-    console.log(obj);
 
     myStopFunction();
     myTimeout = setTimeout(async () => {
@@ -109,7 +110,7 @@ export const OnChange = async (
       const edition = await newsEditorService.getById(res);
       io.to(data.roomId).emit("set_editor", edition);
     }, 3000);
-    io.sockets.in(data.roomId).emit("input_change", data);
+    socket.broadcast.to(data.roomId).emit("input_change", data);
   } catch (error) {
     console.log(error);
   }
@@ -117,11 +118,11 @@ export const OnChange = async (
 
 export const OnFocus = async (
   data: { roomId: string; userId: string; inputName: string },
-  io: any,
+  socket: any,
 ) => {
   try {
     const user = await adminService.getOnlyAdmin(data.userId);
-    io.sockets.in(data.roomId).emit("input_focus", { ...data, user });
+    socket.broadcast.to(data.roomId).emit("input_focus", { ...data, user });
   } catch (error) {
     console.log(error);
   }
@@ -129,10 +130,10 @@ export const OnFocus = async (
 
 export const OnBlur = async (
   data: { roomId: string; userId: string; inputName: string },
-  io: any,
+  socket: any,
 ) => {
   try {
-    io.sockets.in(data.roomId).emit("input_blur", data);
+    socket.broadcast.to(data.roomId).emit("input_blur", data);
   } catch (error) {
     console.log(error);
   }
