@@ -12,10 +12,10 @@ import {
   deleteDirectory,
   CronJob,
 } from "../../infra/helpers";
-import { Upload } from "../../infra/shared/interface";
 import { HttpException } from "../../infra/validation";
 import { State } from "../../infra/shared/enums";
 import { ChatService } from "../chat/chat.service";
+// import { ElasticUpdate } from "./elastic-search";
 
 export class NewsService {
   constructor(
@@ -236,7 +236,7 @@ export class NewsService {
     }
   }
 
-  async update(values: UpdateNewsDto, id: string, imgs: Upload) {
+  async update(values: UpdateNewsDto, id: string) {
     try {
       const languages = ["uz", "ru", "en", "уз"];
       const oldNews = await this.newsRepository.findOne({
@@ -246,32 +246,22 @@ export class NewsService {
       const find = await this.getById(id);
       await Promise.all(
         languages?.map(async (key) => {
-          if (values[key] && !imgs?.[key + "_img"]) {
-            await this.newsLanguageService.put(
-              { ...values[key] },
-              find[key].id,
-            );
-          }
-          if (imgs && imgs?.[key + "_img"]) {
-            if (find[key].file) {
-              await fileService.removeFile(find[key].file);
+          if (values[key]) {
+            if (values[key]?.file) {
+              if (find[key].file) {
+                await fileService.removeFile(find[key].file);
+              }
             }
-            const img = await fileService.uploadImage(imgs[key + "_img"]);
-            if (img.error) {
-              return new HttpException(true, 500, "image upload error");
+            if (values[key]?.shortLink) {
+              values[key].shortLink = slugify(values[key].shortLink, {
+                replacement: "-",
+                remove: /[*+~.()'"!:@]/g,
+                lower: true,
+                strict: true,
+                locale: "vi",
+                trim: true,
+              });
             }
-            values[key] = values[key] ? values[key] : {};
-            values[key].file = img.url;
-            values[key].shortLink = values[key].shortLink
-              ? slugify(values[key].shortLink, {
-                  replacement: "-",
-                  remove: /[*+~.()'"!:@]/g,
-                  lower: true,
-                  strict: true,
-                  locale: "vi",
-                  trim: true,
-                })
-              : find[key].shortLink;
             await this.newsLanguageService.put(
               { ...values[key] },
               find[key].id,
@@ -410,6 +400,9 @@ export class NewsService {
             .set({ state })
             .where("id = :id", { id: news.id })
             .execute();
+
+          // const newNews = await this.getByIdForUpdateIndexing(news.id);
+          // await ElasticUpdate(newNews);
         });
       }
 
@@ -419,9 +412,9 @@ export class NewsService {
     }
   }
 
-  async updateIsEditing(id: string, isEditing: boolean) {
+  async updateIsEditing(id: string, isEditing: boolean,updated_at:Date) {
     try {
-      await this.newsRepository.update(id, { isEditing });
+      await this.newsRepository.update(id, { isEditing,updated_at });
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }

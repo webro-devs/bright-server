@@ -154,7 +154,11 @@ export class AdminService {
       if (admin.avatar) {
         await fileService.removeFile(admin.avatar);
       }
-      admin.avatar = values.avatar;
+      if (values.avatar != "null") {
+        admin.avatar = values.avatar;
+      } else {
+        admin.avatar = null;
+      }
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(admin);

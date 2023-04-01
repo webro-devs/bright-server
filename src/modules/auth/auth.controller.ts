@@ -26,6 +26,7 @@ export const Login = async (req, res: Response) => {
 export const Logout = async (_: Request, res: Response) => {
   res.clearCookie(ACCESS_TOKEN_ADMIN, accessTokenOptions);
   res.clearCookie(REFRESH_TOKEN_ADMIN, refreshTokenOptions);
+  res.end()
 };
 
 export const Refresh = async (req, res: Response) => {

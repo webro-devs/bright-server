@@ -74,6 +74,9 @@ export async function update(req: Upload, res: Response) {
     const { id } = req.params;
     const updateData: UpdateAdminDto = req.body;
     let avatar = { url: null, error: null };
+    if (updateData.avatar == "null") {
+      avatar.url = "null";
+    }
     if (req?.files?.avatar) {
       avatar = await fileService.uploadImage(req.files.avatar);
       if (avatar.error) {

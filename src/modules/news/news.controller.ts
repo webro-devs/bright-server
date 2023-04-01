@@ -13,6 +13,7 @@ import { ZipMaker } from "../../infra/helpers";
 //   ElasticIndexNews,
 //   ElasticRemove,
 //   ElasticUpdate,
+//   ElasticCount,
 // } from "./elastic-search";
 
 export async function search(req, res: Response) {
@@ -143,31 +144,9 @@ export async function create(req: Upload, res: Response) {
     const newsData: CreateNewsDto = req.body;
     const imgData = ["uz", "ru", "en", "уз"];
 
-    // if (newsData?.["Ñ\x83Ð·"]) {
-    //   if (newsData?.["Ñ\x83Ð·"] !== "уз") {
-    //     Object.defineProperty(
-    //       newsData,
-    //       "уз",
-    //       Object.getOwnPropertyDescriptor(newsData, "Ñ\x83Ð·"),
-    //     );
-    //     delete newsData["Ñ\x83Ð·"];
-    //   }
-    // }
-    
-
     for (let i = 0; imgData.length > i; i++) {
       if (!newsData[imgData[i]]) {
         newsData[imgData[i]] = {};
-      }
-      if (req?.files?.[imgData[i] + "_img"]) {
-        const avatar = await fileService.uploadImage(
-          req?.files?.[imgData[i] + "_img"],
-        );
-        if (avatar.error) {
-          res.send(new HttpException(true, 500, "Image upload error"));
-          return;
-        }
-        newsData[imgData[i]]["file"] = avatar.url;
       }
 
       newsData[imgData[i]].shortLink = slugify(
@@ -184,7 +163,7 @@ export async function create(req: Upload, res: Response) {
     }
 
     const news = await newsService.create(newsData, req["user"]?.id);
-    res.send(new HttpException(false, 200, "News succesfully created"));
+    res.send(new HttpException(false, 201, "News succesfully created"));
     // await ElasticIndexNews(news);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -196,7 +175,7 @@ export async function update(req: Upload, res: Response) {
     const newsData: UpdateNewsDto = req.body;
     const { id } = req.params;
 
-    const updateNews = await newsService.update(newsData, id, req?.files);
+    const updateNews = await newsService.update(newsData, id);
 
     // const news = await newsService.getByIdForUpdateIndexing(id);
     // await ElasticUpdate(news);
@@ -300,12 +279,12 @@ export async function deleteData(req: Request, res: Response) {
   try {
     const { ids } = req.body;
 
-    // await Promise.all(
-    //   ids.map(async (id) => {
-    //     await newsService.remove(id);
-    //     await ElasticRemove(id);
-    //   }),
-    // );
+    await Promise.all(
+      ids.map(async (id) => {
+        await newsService.remove(id);
+        // await ElasticRemove(id);
+      }),
+    );
 
     res.send({ Data: "ok", error: false });
   } catch (err) {
@@ -327,21 +306,8 @@ export async function updateStatePublished(req: Request, res: Response) {
         "Content-Type": fileType,
       });
 
-      // await Promise.all(
-      //   newsIds.map(async (id) => {
-      //     const news = await newsService.getByIdForUpdateIndexing(id);
-      //     await ElasticUpdate(news);
-      //   }),
-      // );
-
       return res.end(data);
     }
-    // await Promise.all(
-    //   newsIds.map(async (id) => {
-    //     const news = await newsService.getByIdForUpdateIndexing(id);
-    //     await ElasticUpdate(news);
-    //   }),
-    // );
     return res.send("News published succesfully");
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

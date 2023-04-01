@@ -5,7 +5,7 @@ import { adminService } from "../admin";
 import { UpdateAdminProfileDto } from "../admin/dto";
 import { newsService } from "../news";
 
-let myTimeout = setTimeout(() => {}, 3000);
+let myTimeout = setTimeout(() => { }, 3000);
 let obj: any = {};
 
 function myStopFunction() {
@@ -14,25 +14,38 @@ function myStopFunction() {
 
 function j(obj: any, room: string, input: string, value: string) {
   const a = input.split(".");
-  if (a.length == 2) {
-    if (obj?.[room]) {
-      if (obj[room]?.[a[0]]) {
-        obj[room][a[0]][a[1]] = value;
+  if (input.length) {
+    if (a.length == 2) {
+      if (obj?.[room]) {
+        if (obj[room]?.[a[0]]) {
+          obj[room][a[0]][a[1]] = value;
+        } else {
+          obj[room][a[0]] = {};
+          obj[room][a[0]][a[1]] = value;
+          obj[room]["editors"] = [];
+        }
       } else {
+        obj[room] = {};
         obj[room][a[0]] = {};
         obj[room][a[0]][a[1]] = value;
       }
     } else {
-      obj[room] = {};
-      obj[room][a[0]] = {};
-      obj[room][a[0]][a[1]] = value;
+      if (obj?.[room]) {
+        obj[room][a[0]] = value;
+      } else {
+        obj[room] = {};
+        obj[room][a[0]] = value;
+        obj[room]["editors"] = [];
+      }
     }
   } else {
     if (obj?.[room]) {
-      obj[room][a[0]] = value;
+      if (!obj?.[room]?.["editors"]) {
+        obj[room]["editors"] = [];
+      }
     } else {
       obj[room] = {};
-      obj[room][a[0]] = value;
+      obj[room]["editors"] = [];
     }
   }
 
@@ -54,13 +67,25 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
 export const OnDisconnect = async (socket: any, io: any) => {
   try {
     const date = new Date();
-    const userId = await socketService.getBySocketId(socket?.id);
-    await adminService.changeProfile(userId?.admin, {
+    const data = await socketService.getBySocketId(socket?.id);
+    await adminService.changeProfile(data.admin, {
       isOnline: false,
       lastSeen: date,
     } as UpdateAdminProfileDto);
+    if (data?.news) {
+      if (io.sockets.adapter.rooms.get(data.news)?.size == 1) {
+        const news = await newsService.getByIdForUpdateIndexing(data.news);
+        await newsService.updateIsEditing(news.id, false, news.updated_at);
+      }
+      const index = obj[data.news]["editors"]?.findIndex(
+        (o) => o.id == data.admin,
+      );
+      if (index != -1) {
+        obj[data.news]["editors"].splice(index, 1);
+      }
+    }
     await socketService.removeBySocketId(socket?.id);
-    socket.emit("user_left", userId.id);
+    socket.emit("user_left", data.id);
     socket.disconnect(true);
     socket = null;
   } catch (error) {
@@ -72,9 +97,11 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
-      await newsService.updateIsEditing(roomId, true);
+      const news = await newsService.getByIdForUpdateIndexing(roomId);
+      await newsService.updateIsEditing(roomId, true, news.updated_at);
       io.sockets.emit('news_editing', roomId)
     }
+    await socketService.updateNews(socket?.id, roomId);
     io.to(socket.id).emit("get_changes", obj?.[roomId]);
   } catch (error) {
     console.log(error);
@@ -83,8 +110,9 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
 
 export const OnLeave = async (roomId: string, socket: any, io: any) => {
   try {
-    if (io.sockets.adapter.rooms.get(roomId)?.size == 1) {
-      await newsService.updateIsEditing(roomId, false);
+    if (io.sockets.adapter.rooms.get(roomId).size == 1) {
+      const news = await newsService.getByIdForUpdateIndexing(roomId);
+      await newsService.updateIsEditing(roomId, false, news.updated_at);
       io.sockets.emit('news_end_editing', roomId)
     }
     socket.leave(roomId);
@@ -100,7 +128,6 @@ export const OnChange = async (
 ) => {
   try {
     obj = j(obj, data.roomId, data.inputName, data.value);
-
     myStopFunction();
     myTimeout = setTimeout(async () => {
       const res = await newsEditorService.updateEditDate(
@@ -122,6 +149,8 @@ export const OnFocus = async (
 ) => {
   try {
     const user = await adminService.getOnlyAdmin(data.userId);
+    obj = j(obj, data.roomId, "", "");
+    obj[data.roomId]["editors"]?.push(user);
     socket.broadcast.to(data.roomId).emit("input_focus", { ...data, user });
   } catch (error) {
     console.log(error);
@@ -133,7 +162,11 @@ export const OnBlur = async (
   socket: any,
 ) => {
   try {
-    socket.broadcast.to(data.roomId).emit("input_blur", data);
+    const index = obj[data.roomId]["editors"]?.findIndex(
+      (o) => o.id == data.userId,
+      );
+      obj[data.roomId]["editors"].splice(index, 1);
+      socket.broadcast.to(data.roomId).emit("input_blur", data);
   } catch (error) {
     console.log(error);
   }
