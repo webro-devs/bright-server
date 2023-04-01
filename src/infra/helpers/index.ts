@@ -9,3 +9,5 @@ export { default as SocialMediaService } from "./social-media-service/file-uploa
 export { default as deleteDirectory } from "./remove-dir";
 export { default as CronJob } from "./cron";
 export { default as IsSameDate } from "./is-same-date";
+export { default as SocketNewsOnChangeObject } from "./socket-object-onchange";
+export { default as UpdateNestedObject } from "./update-nested-object";
