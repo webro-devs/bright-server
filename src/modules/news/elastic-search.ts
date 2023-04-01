@@ -83,9 +83,15 @@ export async function ElasticSearch(
       query: {
         bool: {
           must: [
+            // {
+            //   multi_match: {
+            //     query: text,
+            //     fields,
+            //   },
+            // },
             {
-              multi_match: {
-                query: text,
+              query_string: {
+                query: `*${text}*`,
                 fields,
               },
             },
