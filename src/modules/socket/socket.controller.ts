@@ -60,8 +60,8 @@ export const OnDisconnect = async (socket: any, io: any) => {
 export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
+    const news = await newsService.getByIdForUpdateIndexing(roomId);
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
-      var news = await newsService.getByIdForUpdateIndexing(roomId);
       await newsService.updateIsEditing(roomId, true, news.updated_at);
       io.sockets.emit('news_editing', roomId)
     }

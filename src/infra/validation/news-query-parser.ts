@@ -16,6 +16,7 @@ const NewsQueryParserMiddleware = (req, res, next) => {
     limit,
     page,
     text,
+    editor,
   } = req.query;
 
   if (startDate && endDate) {
@@ -58,6 +59,11 @@ const NewsQueryParserMiddleware = (req, res, next) => {
       mainCategory: true,
     };
     relations[lang] = true;
+    if (editor) {
+      relations["editors"] = {
+        position: true,
+      };
+    }
   } else {
     relations = {
       uz: true,
@@ -70,6 +76,11 @@ const NewsQueryParserMiddleware = (req, res, next) => {
       },
       mainCategory: true,
     };
+    if (editor) {
+      relations["editors"] = {
+        position: true,
+      };
+    }
   }
   if (limit && page) {
     const offset = (+page - 1) * +limit;
