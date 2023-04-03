@@ -148,7 +148,6 @@ export async function create(req: Upload, res: Response) {
       if (!newsData[imgData[i]]) {
         newsData[imgData[i]] = {};
       }
-
       newsData[imgData[i]].shortLink = slugify(
         newsData[imgData[i]].shortLink || "",
         {

@@ -32,6 +32,9 @@ export class News {
   @Column({ default: false, type: "boolean" })
   isEditing: boolean;
 
+  @Column({ type: "varchar", nullable: true })
+  file: string;
+
   @ManyToMany(() => Category, (category) => category.news, {
     onDelete: "CASCADE",
   })

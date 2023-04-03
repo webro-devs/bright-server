@@ -22,16 +22,15 @@ const SocialMediaService = async (
     }
     if (isMain) {
       await CImage({
-        imgPath: news[key].file,
-        imgName:
-          `uploads/${newsDirName}/${key}/` + news[key].file.split("/").at(-1),
+        imgPath: news.file,
+        imgName: `uploads/${newsDirName}/${key}/` + news.file.split("/").at(-1),
         txt:
           news[key].title.length > 102
             ? news[key].title.slice(0, 99) + "..."
             : news[key].title,
         ctgs: news.categories?.map((ctg) => ctg[key]),
       });
-      return `${newsDirName}/${key}/` + news[key].file.split("/").at(-1);
+      return `${newsDirName}/${key}/` + news.file.split("/").at(-1);
     } else {
       await CImage3({
         imgName:

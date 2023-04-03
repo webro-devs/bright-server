@@ -27,9 +27,6 @@ export class NewsLanguage {
   @Column({ type: "varchar", nullable: true })
   shortLink: string;
 
-  @Column({ type: "varchar", nullable: true })
-  file: string;
-
   @Column({ type: "varchar", array: true, nullable: true })
   tags: string[];
 

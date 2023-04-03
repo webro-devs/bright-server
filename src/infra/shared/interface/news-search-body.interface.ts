@@ -43,7 +43,6 @@ interface INewsLanguage {
   shortDescription: string;
   descImg: string[];
   shortLink: string;
-  file: string;
   tags: string[];
   uz?: INews;
   ru?: INews;
@@ -58,6 +57,7 @@ interface INews {
   created_at: Date;
   updated_at: Date;
   isEditing: boolean;
+  file: string;
   uz: INewsLanguage;
   ru: INewsLanguage;
   en: INewsLanguage;
