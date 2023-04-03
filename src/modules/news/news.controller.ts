@@ -163,7 +163,7 @@ export async function create(req: Upload, res: Response) {
     }
 
     const news = await newsService.create(newsData, req["user"]?.id);
-    res.send(new HttpException(false, 200, "News succesfully created"));
+    res.send(new HttpException(false, 201, "News succesfully created"));
     // await ElasticIndexNews(news);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

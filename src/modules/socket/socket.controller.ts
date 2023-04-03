@@ -37,7 +37,7 @@ export const OnDisconnect = async (socket: any, io: any) => {
       lastSeen: date,
     } as UpdateAdminProfileDto);
     if (data?.news) {
-      if (io.sockets.adapter.rooms.get(data.news).size == 1) {
+      if (io.sockets.adapter.rooms.get(data.news)?.size == 1) {
         const news = await newsService.getByIdForUpdateIndexing(data.news);
         await newsService.updateIsEditing(news.id, false, news.updated_at);
       }
@@ -61,8 +61,9 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
     const news = await newsService.getByIdForUpdateIndexing(roomId);
-    if (io.sockets.adapter.rooms.get(roomId).size == 1) {
+    if (io.sockets.adapter.rooms.get(roomId)?.size == 1) {
       await newsService.updateIsEditing(roomId, true, news.updated_at);
+      io.sockets.emit("news_editing", roomId);
     }
     const changedObject = UpdateNestedObject(obj?.[roomId], news);
     await socketService.updateNews(socket?.id, roomId);
@@ -78,6 +79,7 @@ export const OnLeave = async (roomId: string, socket: any, io: any) => {
     if (io.sockets.adapter.rooms.get(roomId).size == 1) {
       const news = await newsService.getByIdForUpdateIndexing(roomId);
       await newsService.updateIsEditing(roomId, false, news.updated_at);
+      io.sockets.emit("news_end_editing", roomId);
     }
     socket.leave(roomId);
   } catch (error) {
@@ -106,7 +108,7 @@ export const OnChange = async (
       const edition = await newsEditorService.getById(res);
       io.to(data.roomId).emit("set_editor", edition);
     }, 3000);
-    io.sockets.in(data.roomId).emit("input_change", data);
+    socket.broadcast.to(data.roomId).emit("input_change", data);
   } catch (error) {
     console.log(error);
   }
@@ -114,13 +116,13 @@ export const OnChange = async (
 
 export const OnFocus = async (
   data: { roomId: string; userId: string; inputName: string },
-  io: any,
+  socket: any,
 ) => {
   try {
     const user = await adminService.getOnlyAdmin(data.userId);
     obj = SocketNewsOnChangeObject(obj, data.roomId, "", "");
     obj[data.roomId]["onlineEditors"]?.push(user);
-    io.sockets.in(data.roomId).emit("input_focus", { ...data, user });
+    socket.broadcast.to(data.roomId).emit("input_focus", { ...data, user });
   } catch (error) {
     console.log(error);
   }
@@ -128,14 +130,14 @@ export const OnFocus = async (
 
 export const OnBlur = async (
   data: { roomId: string; userId: string; inputName: string },
-  io: any,
+  socket: any,
 ) => {
   try {
     const index = obj[data.roomId]["onlineEditors"]?.findIndex(
       (o) => o.id == data.userId,
     );
     obj[data.roomId]["onlineEditors"].splice(index, 1);
-    io.sockets.in(data.roomId).emit("input_blur", data);
+    socket.broadcast.to(data.roomId).emit("input_blur", data);
   } catch (error) {
     console.log(error);
   }

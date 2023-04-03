@@ -41,7 +41,7 @@ export class AdminService {
       },
       where: { id },
     });
-    admin.news = admin.news.filter((n) => n.state == "published");
+    admin.news = admin?.news.filter((n) => n.state == "published");
     if (!admin) {
       console.log(admin);
       throw new HttpException(true, 404, "Admin not found");
