@@ -129,6 +129,11 @@ export class NewsService {
           categories: true,
           creator: true,
           mainCategory: true,
+          editors: {
+            editor: {
+              position: true,
+            },
+          },
         },
       });
       return response;
@@ -412,9 +417,9 @@ export class NewsService {
     }
   }
 
-  async updateIsEditing(id: string, isEditing: boolean,updated_at:Date) {
+  async updateIsEditing(id: string, isEditing: boolean, updated_at: Date) {
     try {
-      await this.newsRepository.update(id, { isEditing,updated_at });
+      await this.newsRepository.update(id, { isEditing, updated_at });
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
