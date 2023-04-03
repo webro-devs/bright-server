@@ -6,6 +6,8 @@ import { LoginDto } from "../dto";
 const LoginMiddleware = async (req, res: Response, next: NextFunction) => {
   try {
     const data: LoginDto = req.body;
+    console.log(data);
+    
     const user = await authService.validateAdminByLoginPassword(
       data.login,
       data.password,

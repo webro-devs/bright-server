@@ -75,7 +75,7 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
 
 export const OnLeave = async (roomId: string, socket: any, io: any) => {
   try {
-    if (io.sockets.adapter.rooms.get(roomId).size == 1) {
+    if (io.sockets.adapter.rooms.get(roomId)?.size == 1) {
       const news = await newsService.getByIdForUpdateIndexing(roomId);
       await newsService.updateIsEditing(roomId, false, news.updated_at);
       io.sockets.emit('news_end_editing', roomId)
