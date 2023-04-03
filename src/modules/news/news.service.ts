@@ -129,6 +129,7 @@ export class NewsService {
           categories: true,
           creator: true,
           mainCategory: true,
+          editors: true
         },
       });
       return response;

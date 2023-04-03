@@ -61,7 +61,7 @@ export const OnCreate = async (roomId: string, socket: any, io: any) => {
   try {
     socket.join(roomId);
     const news = await newsService.getByIdForUpdateIndexing(roomId);
-    if (io.sockets.adapter.rooms.get(roomId).size == 1) {
+    if (io.sockets.adapter.rooms.get(roomId)?.size == 1) {
       await newsService.updateIsEditing(roomId, true, news.updated_at);
       io.sockets.emit('news_editing', roomId)
     }
@@ -83,7 +83,7 @@ export const OnLeave = async (roomId: string, socket: any, io: any) => {
     socket.leave(roomId);
   } catch (error) {
     console.log(error);
-  }
+  } 
 };
 
 export const OnChange = async (
@@ -105,7 +105,7 @@ export const OnChange = async (
         data.userId,
       );
       const edition = await newsEditorService.getById(res);
-      socket.to(data.roomId).emit("set_editor", edition);
+      io.to(data.roomId).emit("set_editor", edition);
     }, 3000);
     socket.broadcast.to(data.roomId).emit("input_change", data);
   } catch (error) {

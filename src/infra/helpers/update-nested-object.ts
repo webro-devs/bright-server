@@ -1,6 +1,6 @@
 const UpdateNestedObject = (updatedObj, mainObj) => {
   for (let lang in updatedObj) {
-    if (mainObj.hasOwnProperty(lang)) {
+    if (mainObj?.hasOwnProperty(lang)) {
       if (
         typeof updatedObj[lang] === "object" &&
         !Array.isArray(updatedObj[lang]) &&
