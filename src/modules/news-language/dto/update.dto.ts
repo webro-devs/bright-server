@@ -18,10 +18,6 @@ class UpdateLanguageDto {
   shortLink: string;
 
   @IsOptional()
-  @IsString()
-  file: string;
-
-  @IsOptional()
   @IsArray()
   tags: string[];
 }

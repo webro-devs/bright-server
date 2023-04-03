@@ -18,10 +18,6 @@ class CreateLanguageDto {
   shortLink: string;
 
   @IsNotEmpty()
-  @IsString()
-  file: string;
-
-  @IsNotEmpty()
   @IsArray()
   tags: string[];
 }

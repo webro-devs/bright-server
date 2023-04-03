@@ -252,11 +252,6 @@ export class NewsService {
       await Promise.all(
         languages?.map(async (key) => {
           if (values[key]) {
-            if (values[key]?.file) {
-              if (find[key].file) {
-                await fileService.removeFile(find[key].file);
-              }
-            }
             if (values[key]?.shortLink) {
               values[key].shortLink = slugify(values[key].shortLink, {
                 replacement: "-",
@@ -286,7 +281,17 @@ export class NewsService {
         );
         oldNews.mainCategory = mainCategory;
       }
-      if (values?.categories?.length > 0 || values?.mainCategory) {
+      if (values?.file) {
+        if (oldNews?.file) {
+          await fileService.removeFile(oldNews.file);
+        }
+        oldNews.file = values.file;
+      }
+      if (
+        values?.categories?.length > 0 ||
+        values?.mainCategory ||
+        values?.file
+      ) {
         await this.connection.transaction(async (manager: EntityManager) => {
           await manager.save(oldNews);
         });
@@ -318,6 +323,7 @@ export class NewsService {
         categories: null,
         publishDate: data.publishDate,
         mainCategory: null,
+        file: data.file || null,
       };
       if (data?.categories?.length > 0) {
         const categories = await this.categoryService.getManyCategoriesById(
@@ -362,7 +368,7 @@ export class NewsService {
         }
         for (const lang of languages) {
           if (lang == "ru") {
-            if (news?.[lang] && news?.[lang]?.file && (tg || inst)) {
+            if (news?.[lang] && news?.file && (tg || inst)) {
               const imgDir = await SocialMediaService(
                 news,
                 `news_${i + 1}`,
