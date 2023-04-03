@@ -75,6 +75,9 @@ export class AdminService {
   async getOnlyAdmin(id: string): Promise<Admin> {
     const admin = await this.adminRepository.findOne({
       where: { id },
+      relations:{
+        position:true
+      }
     });
     if (!admin) {
       console.log(admin);
