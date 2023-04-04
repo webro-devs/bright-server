@@ -52,7 +52,7 @@ export class Admin {
   isOnline: boolean = false;
 
   @ManyToMany(() => Permission, (permission) => permission.admins, {
-    onDelete: "SET NULL",
+    onDelete: "CASCADE",
   })
   @JoinTable()
   permissions: Permission[];
