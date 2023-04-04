@@ -364,7 +364,7 @@ export class NewsService {
         if (diffTime > 1000) {
           date = publishDate;
         } else {
-          date.setSeconds(date.getSeconds() + 5);
+          date.setSeconds(date.getSeconds() + 1);
         }
         for (const lang of languages) {
           if (lang == "ru") {
@@ -403,7 +403,7 @@ export class NewsService {
             }
           }
         }
-        date.setSeconds(date.getSeconds() + 5);
+        date.setSeconds(date.getSeconds() + 4);
         CronJob(date, async () => {
           await this.newsRepository
             .createQueryBuilder()

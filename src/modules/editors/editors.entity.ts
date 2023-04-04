@@ -15,7 +15,7 @@ export class NewsEditor {
 
   @ManyToOne(() => Admin, (admin) => admin.editors, {
     cascade: true,
-    onDelete: "SET NULL",
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   editor: Admin;
