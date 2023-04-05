@@ -154,11 +154,17 @@ export class NewsService {
     }
   }
 
-  async getLastNews(relations, where): Promise<News[]> {
+  async getLastNews(
+    relations,
+    where,
+    pagination: { limit: number; offset: number },
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where,
         relations,
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return response;
     } catch (err) {
