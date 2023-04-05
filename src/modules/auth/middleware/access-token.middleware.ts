@@ -11,6 +11,7 @@ const AccessTokenMiddleware = async (
   try {
     if (
       (req.method == "GET" && req.url.includes("/single-news")) ||
+      (req.method == "GET" && req.url.includes("/news/last-news")) ||
       (req.method == "GET" && req.url.includes("/news/published")) ||
       (req.method == "GET" && req.url.includes("/news/search")) ||
       (req.method == "GET" && req.url.includes("/category/with-five")) ||
@@ -18,6 +19,7 @@ const AccessTokenMiddleware = async (
       req.url == "/auth/logout" ||
       req.url == "/auth/refresh" ||
       req.url == "/category" ||
+      req.url == "/news/last-news" ||
       req.url == "/currency"
     ) {
       next();
