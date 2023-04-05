@@ -56,6 +56,16 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
+export const getLastNews = async (req: Request, res: Response) => {
+  try {
+    const relations = req?.["relations"];
+    const news = await newsService.getLastNews(relations);
+    return res.send(news);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
+};
+
 export const getMyNews = async (req: Request, res: Response) => {
   try {
     const where = req?.["where"];

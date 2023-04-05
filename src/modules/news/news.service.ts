@@ -154,6 +154,18 @@ export class NewsService {
     }
   }
 
+  async getLastNews(relations): Promise<News[]> {
+    try {
+      const response = await this.newsRepository.find({
+        where: { isLastNews: true },
+        relations,
+      });
+      return response;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
   async getByCreatorId(
     where,
     relations,
