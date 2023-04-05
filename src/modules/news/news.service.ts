@@ -300,7 +300,7 @@ export class NewsService {
         oldNews.mainCategory = mainCategory;
       }
       if (values?.file) {
-        if (oldNews?.file) {
+        if (oldNews?.file && values.file != oldNews?.file) {
           await fileService.removeFile(oldNews.file);
         }
         oldNews.file = values.file;
