@@ -154,10 +154,10 @@ export class NewsService {
     }
   }
 
-  async getLastNews(relations): Promise<News[]> {
+  async getLastNews(relations, where): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
-        where: { isLastNews: true },
+        where,
         relations,
       });
       return response;
