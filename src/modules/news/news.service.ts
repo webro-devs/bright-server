@@ -372,12 +372,7 @@ export class NewsService {
         const news = await this.getById(ids[i]);
         let publishDate = new Date(news.publishDate);
         let date = new Date();
-        let diffTime = publishDate.getTime() - date.getTime();
-        if (diffTime > 1000) {
-          date = publishDate;
-        } else {
-          date.setSeconds(date.getSeconds() + 1);
-        }
+        let diffTime = publishDate.getTime() - date.getTime() > 0;
         for (const lang of languages) {
           if (lang == "ru") {
             if (news?.[lang] && news?.file && (tg || inst)) {
@@ -388,14 +383,23 @@ export class NewsService {
                 true,
               );
               if (tg) {
-                CronJob(date, async () => {
+                if (diffTime) {
+                  CronJob(publishDate, async () => {
+                    await telegram({
+                      title: news[lang]?.title,
+                      desc: news[lang]?.shortDescription,
+                      link: "http://bright.getter.uz/news/" + news?.id,
+                      imgDir,
+                    });
+                  });
+                } else {
                   await telegram({
                     title: news[lang]?.title,
                     desc: news[lang]?.shortDescription,
                     link: "http://bright.getter.uz/news/" + news?.id,
                     imgDir,
                   });
-                });
+                }
               }
               if (inst) {
                 const descImgs = news[lang]?.descImg;
@@ -415,8 +419,19 @@ export class NewsService {
             }
           }
         }
-        date.setSeconds(date.getSeconds() + 4);
-        CronJob(date, async () => {
+        if (diffTime) {
+          CronJob(publishDate, async () => {
+            await this.newsRepository
+              .createQueryBuilder()
+              .update()
+              .set({ state })
+              .where("id = :id", { id: news.id })
+              .execute();
+
+            // const newNews = await this.getByIdForUpdateIndexing(news.id);
+            // await ElasticUpdate(newNews);
+          });
+        } else {
           await this.newsRepository
             .createQueryBuilder()
             .update()
@@ -426,7 +441,7 @@ export class NewsService {
 
           // const newNews = await this.getByIdForUpdateIndexing(news.id);
           // await ElasticUpdate(newNews);
-        });
+        }
       }
 
       return new HttpException(true, 203, "successfully edited");
