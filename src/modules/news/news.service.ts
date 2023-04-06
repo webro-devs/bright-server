@@ -163,6 +163,9 @@ export class NewsService {
       const response = await this.newsRepository.find({
         where,
         relations,
+        order: {
+          updated_at: "DESC",
+        },
         take: pagination.limit,
         skip: pagination.offset,
       });
