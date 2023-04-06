@@ -60,8 +60,9 @@ export const getLastNews = async (req: Request, res: Response) => {
   try {
     const relations = req?.["relations"];
     const where = req?.["where"];
+    const pagination = req?.["pagination"];
     where.isLastNews = true;
-    const news = await newsService.getLastNews(relations, where);
+    const news = await newsService.getLastNews(relations, where, pagination);
     return res.send(news);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));

@@ -154,11 +154,20 @@ export class NewsService {
     }
   }
 
-  async getLastNews(relations, where): Promise<News[]> {
+  async getLastNews(
+    relations,
+    where,
+    pagination: { limit: number; offset: number },
+  ): Promise<News[]> {
     try {
       const response = await this.newsRepository.find({
         where,
         relations,
+        order: {
+          updated_at: "DESC",
+        },
+        take: pagination.limit,
+        skip: pagination.offset,
       });
       return response;
     } catch (err) {
@@ -294,7 +303,7 @@ export class NewsService {
         oldNews.mainCategory = mainCategory;
       }
       if (values?.file) {
-        if (oldNews?.file) {
+        if (oldNews?.file && values.file != oldNews?.file) {
           await fileService.removeFile(oldNews.file);
         }
         oldNews.file = values.file;
