@@ -358,16 +358,16 @@ const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
   let ctg = "Мировые новости";
   try {
     const Merreweat = await Jimp.loadFont(
-      path.resolve(__dirname, "./fonts/Merriweat/black.fnt"),
+      path.resolve(__dirname, "./uploads/fonts/Merriweat/black.fnt"),
     );
     const notoSans = await Jimp.loadFont(
       path.resolve(
         __dirname,
-        "./fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt",
+        "./uploads/fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt",
       ),
     );
     const logo = await Jimp.read(
-      path.resolve(__dirname, "./images/black_logo.png"),
+      path.resolve(__dirname, "./uploads/mask/black_logo.png"),
     );
     const cropImage = await Jimp.read(imgPath);
 
