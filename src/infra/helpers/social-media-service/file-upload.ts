@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { images } from "..";
 import { HttpException } from "../../validation";
-const { CImage, CImage3 } = images;
+const { Image2, CImage3 } = images;
 
 const mkdir = async (dir) => {
   return await fs.mkdirSync(dir, { recursive: true });
@@ -21,14 +21,14 @@ const SocialMediaService = async (
       await mkdir(__dirname + `/../output/uploads/${newsDirName}/${key}/`);
     }
     if (isMain) {
-      await CImage({
+      await Image2({
         imgPath: news.file,
         imgName: `uploads/${newsDirName}/${key}/` + news.file.split("/").at(-1),
         txt:
           news[key].title.length > 102
             ? news[key].title.slice(0, 99) + "..."
             : news[key].title,
-        ctgs: news.categories?.map((ctg) => ctg[key]),
+        ctg: news.mainCategory || "",
       });
       return `${newsDirName}/${key}/` + news.file.split("/").at(-1);
     } else {

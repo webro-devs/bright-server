@@ -383,7 +383,7 @@ export class NewsService {
         let date = new Date();
         let diffTime = publishDate.getTime() - date.getTime() > 0;
         for (const lang of languages) {
-          if (lang == "ru") {
+          if (lang == "uz") {
             if (news?.[lang] && news?.file && (tg || inst)) {
               const imgDir = await SocialMediaService(
                 news,
