@@ -16,7 +16,7 @@ export async function getAll(req: Request, res: Response) {
 export async function create(req: Request, res: Response) {
   try {
     const values: CreateMessageDto = req.body;
-
+    values.user = req["user"].id;
     const response = await messageService.create(values);
     res.send(response);
   } catch (err) {
