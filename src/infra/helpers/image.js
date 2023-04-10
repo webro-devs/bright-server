@@ -355,7 +355,7 @@ const CImage3 = async ({ imgPath, imgName }) => {
 };
 
 const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
-  let ctg = "Мировые новости";
+  
   try {
     const Merreweat = await Jimp.loadFont(
       path.resolve(__dirname, "./uploads/fonts/Merriweat/black.fnt"),
