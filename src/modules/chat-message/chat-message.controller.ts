@@ -10,7 +10,7 @@ export async function getAll(req: Request, res: Response) {
     const response = await messageService.getAll();
     res.send(response);
   } catch (err) {
-    throw new HttpException(true, 500, err.message);
+    res.send(new HttpException(true, 500, err.message));
   }
 }
 
@@ -22,7 +22,7 @@ export async function create(req: Request, res: Response) {
     const response = await messageService.create(values);
     res.send({ message: "succesfully created" }).status(201);
   } catch (err) {
-    throw new HttpException(true, 500, err.message);
+    res.send(new HttpException(true, 500, err.message));
   }
 }
 
@@ -32,6 +32,6 @@ export async function deleteData(req: Request, res: Response) {
     const response = await messageService.remove(id);
     res.send(response);
   } catch (err) {
-    throw new HttpException(true, 500, err.message);
+    res.send(new HttpException(true, 500, err.message));
   }
 }
