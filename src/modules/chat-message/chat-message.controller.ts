@@ -3,11 +3,19 @@ import { CreateMessageDto } from "./dto";
 import { HttpException } from "../../infra/validation";
 
 import { messageService } from ".";
-import { chatMessage } from "./chat-message.entity";
 
 export async function getAll(req: Request, res: Response) {
   try {
     const response = await messageService.getAll();
+    res.send(response);
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function getById(req: Request, res: Response) {
+  try {
+    const response = await messageService.getById(req.params.id);
     res.send(response);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
