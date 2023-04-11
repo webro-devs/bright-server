@@ -102,13 +102,6 @@ export class NewsService {
           categories: true,
           creator: true,
           mainCategory: true,
-          chat: {
-            messages: {
-              user: {
-                position: true,
-              },
-            },
-          },
         },
       });
       return response;
@@ -134,6 +127,7 @@ export class NewsService {
               position: true,
             },
           },
+          chat: true,
         },
       });
       return response;
