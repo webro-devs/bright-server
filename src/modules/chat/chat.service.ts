@@ -52,6 +52,9 @@ export class ChatService {
             },
           },
         },
+        order: {
+          messages: { date: "ASC" },
+        },
       });
       return response;
     } catch (err) {
