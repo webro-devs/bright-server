@@ -20,7 +20,7 @@ export async function create(req: Request, res: Response) {
     const values: CreateMessageDto = req.body;
     values.user = req["user"].id;
     const response = await messageService.create(values);
-    res.send({ message: "succesfully created" }).status(201);
+    res.send(response).status(201);
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
   }
