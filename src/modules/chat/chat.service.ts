@@ -29,7 +29,27 @@ export class ChatService {
         where: { news: { id } },
         relations: {
           messages: {
-            user: true,
+            user: {
+              position: true,
+            },
+          },
+        },
+        select: {
+          id: true,
+          messages: {
+            id: true,
+            body: true,
+            date: true,
+            user: {
+              id: true,
+              avatar: true,
+              fullName: true,
+              isOnline: true,
+              position: {
+                id: true,
+                title: true,
+              },
+            },
           },
         },
       });

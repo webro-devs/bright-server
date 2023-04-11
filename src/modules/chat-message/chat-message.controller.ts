@@ -3,6 +3,7 @@ import { CreateMessageDto } from "./dto";
 import { HttpException } from "../../infra/validation";
 
 import { messageService } from ".";
+import { chatMessage } from "./chat-message.entity";
 
 export async function getAll(req: Request, res: Response) {
   try {
@@ -15,6 +16,7 @@ export async function getAll(req: Request, res: Response) {
 
 export async function create(req: Request, res: Response) {
   try {
+    req.body.chat = req.params.chatId;
     const values: CreateMessageDto = req.body;
     values.user = req["user"].id;
     const response = await messageService.create(values);
