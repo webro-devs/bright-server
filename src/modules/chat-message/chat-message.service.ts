@@ -21,7 +21,14 @@ export class MessageService {
 
   async getById(id: string): Promise<chatMessage> {
     try {
-      const response = await this.messageRepository.findOne({ where: { id } });
+      const response = await this.messageRepository.findOne({
+        where: { id },
+        relations: {
+          user: {
+            position: true,
+          },
+        },
+      });
       return response;
     } catch (err) {
       throw new HttpException(true, 500, err.message);

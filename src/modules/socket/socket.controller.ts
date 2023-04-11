@@ -4,6 +4,7 @@ import { newsEditorService } from "../editors";
 import { adminService } from "../admin";
 import { UpdateAdminProfileDto } from "../admin/dto";
 import { newsService } from "../news";
+import { messageService } from "../chat-message";
 import {
   UpdateNestedObject,
   SocketNewsOnChangeObject,
@@ -142,3 +143,14 @@ export const OnBlur = async (
     console.log(error);
   }
 };
+
+export async function newMessage(data, socket, io) {
+  try {
+    const { msgId }: { msgId: string } = data;
+    const message = await messageService.getById(msgId);
+
+    socket.broadcast.to(data.roomId).emit("get_new_message", message);
+  } catch (err) {
+    console.log(err);
+  }
+}
