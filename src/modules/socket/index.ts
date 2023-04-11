@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import {
+  newMessage,
   OnBlur,
   OnChange,
   OnCreate,
@@ -20,6 +21,7 @@ export const connectSocket = (server: any) => {
     socket.on("change", (data) => OnChange(data, socket, io));
     socket.on("focus", (data) => OnFocus(data, socket));
     socket.on("blur", (data) => OnBlur(data, socket));
+    socket.on("new_message", (data) => newMessage(data, socket, io));
     socket.on("disconnect", () => OnDisconnect(socket, io));
   });
 };
