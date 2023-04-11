@@ -33,7 +33,7 @@ export class MessageService {
       const response = this.messageRepository.create(values);
       return await this.messageRepository.save(response);
     } catch (err) {
-      throw new HttpException(true, 500, err.message);
+      console.log(new HttpException(true, 500, err.message));
     }
   }
 
@@ -47,7 +47,7 @@ export class MessageService {
         .execute();
       return edit;
     } catch (err) {
-      throw new HttpException(true, 500, err.message);
+      console.log(new HttpException(true, 500, err.message));
     }
   }
 
@@ -56,7 +56,7 @@ export class MessageService {
       const response = await this.messageRepository.delete(id);
       return response;
     } catch (err) {
-      throw new HttpException(true, 500, err.message);
+      console.log(new HttpException(true, 500, err.message));
     }
   }
 }
