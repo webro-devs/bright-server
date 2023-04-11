@@ -6,6 +6,7 @@ const router = Router();
 
 router
   .get("/chat/:id", chatController.getById)
+  .get("/message/:id", messageController.getById)
   .post("/message/:chatId", messageController.create)
   .delete("/message/:id", messageController.deleteData)
   .delete("/chat/:id", chatController.deleteData)
