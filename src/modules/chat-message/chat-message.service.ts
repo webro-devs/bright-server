@@ -44,24 +44,45 @@ export class MessageService {
     }
   }
 
-  async update(body: string, id: string): Promise<UpdateResult> {
+  async update(
+    body: string,
+    id: string,
+    user_id: string,
+  ): Promise<UpdateResult> {
     try {
-      const edit = await this.messageRepository
-        .createQueryBuilder()
-        .update()
-        .set({ body })
-        .where("id = :id", { id })
-        .execute();
-      return edit;
+      const msg = await this.messageRepository.findOne({
+        relations: { user: true },
+        where: { id },
+      });
+
+      if (msg?.user?.id == user_id) {
+        const edit = await this.messageRepository
+          .createQueryBuilder()
+          .update()
+          .set({ body })
+          .where("id = :id", { id })
+          .execute();
+        return edit;
+      } else {
+        return { raw: "asdasd", generatedMaps: [] };
+      }
     } catch (err) {
       console.log(new HttpException(true, 500, err.message));
     }
   }
 
-  async remove(id: string): Promise<DeleteResult> {
+  async remove(id: string, user_id: string): Promise<DeleteResult> {
     try {
-      const response = await this.messageRepository.delete(id);
-      return response;
+      const msg = await this.messageRepository.findOne({
+        relations: { user: true },
+        where: { id },
+      });
+      if (msg.user.id == user_id) {
+        const response = await this.messageRepository.delete(id);
+        return response;
+      } else {
+        return { raw: "asdasd" };
+      }
     } catch (err) {
       console.log(new HttpException(true, 500, err.message));
     }

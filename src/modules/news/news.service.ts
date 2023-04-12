@@ -1,6 +1,7 @@
 import { DataSource, DeleteResult, EntityManager, Repository } from "typeorm";
 import slugify from "slugify";
 import { News } from "./news.entity";
+import { NewsLanguage } from "../news-language/news-language.entity";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 import { NewsLanguageService } from "../news-language/news-language.service";
 import { CategoryService } from "../category/category.service";
@@ -460,4 +461,19 @@ export class NewsService {
       throw new HttpException(true, 500, err.message);
     }
   }
+  // async getByShortLink(shortLink: string, key: string) {
+  //   try {
+  //     const response = await this.newsRepository.findOne({
+  //       relations: {
+  //         uz: true,
+  //         ru: true,
+  //         en: true,
+  //         уз: true,
+  //       },
+  //       where: { uz: { shortLink } },
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 }

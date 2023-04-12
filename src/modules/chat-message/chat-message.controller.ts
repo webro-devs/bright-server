@@ -43,8 +43,29 @@ export async function create(req: Request, res: Response) {
 export async function deleteData(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const response = await messageService.remove(id);
-    res.send(response);
+    const response = await messageService.remove(id, req["user"].id);
+    if (response?.raw != "asdasd") {
+      res.status(204).send(response);
+    } else {
+      res.send(new HttpException(true, 403, "It's not your bussines"));
+    }
+  } catch (err) {
+    res.send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function updateData(req: Request, res: Response) {
+  try {
+    const response = await messageService.update(
+      req.body["body"],
+      req.params["id"],
+      req["user"].id,
+    );
+    if (response?.raw != "asdasd") {
+      res.status(203).send(response);
+    } else {
+      res.send(new HttpException(true, 403, "It's not your bussines"));
+    }
   } catch (err) {
     res.send(new HttpException(true, 500, err.message));
   }

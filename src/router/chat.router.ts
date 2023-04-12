@@ -10,6 +10,7 @@ router
   .post("/message/:chatId", messageController.create)
   .delete("/message/:id", messageController.deleteData)
   .delete("/chat/:id", chatController.deleteData)
+  .put("/message/:id", messageController.updateData)
   .post("/message", messageController.create);
 
 module.exports = router;

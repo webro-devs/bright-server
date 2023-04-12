@@ -16,6 +16,15 @@ export class NewsLanguageService {
     return response;
   }
 
+  // async getByShortLink(shortLink: string, key: string): Promise<NewsLanguage> {
+  //   const response = await this.languageRepository.findOne({ include: [{
+  //     model: NewsLanguage,
+  //     where: { lang_id: languageId }
+  //   }]})
+  //     return response;
+  //   }
+  // }
+
   async create(values: CreateNewsLanguageDto) {
     const response = this.languageRepository.create(values);
     return await this.languageRepository.save(response);

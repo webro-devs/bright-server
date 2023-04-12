@@ -8,6 +8,7 @@ import { NewsQueryParserMiddleware } from "../infra/validation";
 const router = Router();
 
 router
+  .get("/news/:key/:shortLink")
   .get("/news", NewsQueryParserMiddleware, newsController.getAll)
   .get("/news/my-news", NewsQueryParserMiddleware, newsController.getMyNews)
   .get(

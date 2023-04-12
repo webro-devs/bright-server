@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CreateNewsDto, UpdateNewsDto } from "./dto";
 
 import { newsService } from ".";
+import { newsLanguageService } from "../news-language";
 import { HttpException } from "../../infra/validation";
 import { Upload } from "../../infra/shared/interface";
 import { fileService } from "../../infra/helpers";
@@ -325,3 +326,12 @@ export async function updateStatePublished(req: Request, res: Response) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }
 }
+// export async function getByShortLink(req: Request, res: Response) {
+//   try {
+//     const { shortLink, key } = req.params;
+//     const response = await newsLanguageService.getByShortLink(shortLink, key);
+//     res.send(response);
+//   } catch (err) {
+//     res.status(500).send(new HttpException(true, 500, err.message));
+//   }
+// }
