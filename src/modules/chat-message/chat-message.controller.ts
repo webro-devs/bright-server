@@ -62,7 +62,7 @@ export async function updateData(req: Request, res: Response) {
       req["user"].id,
     );
     if (response?.raw != "asdasd") {
-      res.status(203).send(response);
+      res.status(203).send(await messageService.getById(req.params["id"]));
     } else {
       res.send(new HttpException(true, 403, "It's not your bussines"));
     }
