@@ -17,7 +17,8 @@ export async function getMe(req: Request, res: Response) {
 
 export async function getAll(req: Request, res: Response) {
   try {
-    const categories = await adminService.getAll();
+    const { permissionId } = req.query;
+    const categories = await adminService.getAll(permissionId);
     res.send(categories);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

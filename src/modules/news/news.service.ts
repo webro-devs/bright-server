@@ -311,6 +311,11 @@ export class NewsService {
         await this.connection.transaction(async (manager: EntityManager) => {
           await manager.save(oldNews);
         });
+      } else {
+        oldNews.updated_at = new Date();
+        await this.connection.transaction(async (manager: EntityManager) => {
+          await manager.save(oldNews);
+        });
       }
       return new HttpException(false, 203, "successfully edited");
     } catch (err) {

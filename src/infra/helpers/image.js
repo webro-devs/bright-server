@@ -70,7 +70,7 @@ const size = {
 };
 
 const getTextSize = (text) => {
-  const arr = text.split("");
+  const arr = text?.split("");
   let textSize = arr.reduce((acc, curr) => {
     return (acc += size[curr] || 12);
   }, 0);
@@ -372,7 +372,7 @@ const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
 
     const imageWidth = cropImage.bitmap.width;
     const imageHeight = cropImage.bitmap.height;
-    const textSize = getTextSize(ctg);
+    const textSize = getTextSize(ctg) || 0;
     const ctgWrapperWidth = textSize + 70;
 
     if (imageWidth > imageHeight) {

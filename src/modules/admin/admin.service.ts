@@ -14,7 +14,12 @@ export class AdminService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll(): Promise<Admin[]> {
+  async getAll(permissionId): Promise<Admin[]> {
+    if (permissionId) {
+      const admins = await this.permissionService.getById(permissionId);
+      return admins.admins;
+    }
+
     const admins = await this.adminRepository.find({
       where: { isActive: true },
       relations: {
@@ -75,9 +80,9 @@ export class AdminService {
   async getOnlyAdmin(id: string): Promise<Admin> {
     const admin = await this.adminRepository.findOne({
       where: { id },
-      relations:{
-        position:true
-      }
+      relations: {
+        position: true,
+      },
     });
     if (!admin) {
       console.log(admin);
