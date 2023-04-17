@@ -267,7 +267,7 @@ const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
     }
 
     await image
-      .resize(1000, 1000)
+      .resize(700, 700)
       .composite(topMask, 0, 0, {
         mode: Jimp.BLEND_SOURCE_OVER,
         opacityDest: 1,
@@ -337,7 +337,7 @@ const CImage3 = async ({ imgPath, imgName }) => {
     }
 
     await image
-      .resize(1000, 1000)
+      .resize(700, 700)
       .composite(topMask, 0, 0, {
         mode: Jimp.BLEND_SOURCE_OVER,
         opacityDest: 1,
