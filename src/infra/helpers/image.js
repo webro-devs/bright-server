@@ -395,7 +395,7 @@ const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
 
     cropImage.scaleToFit(700, 700);
 
-    const image = await Jimp.read(1000, 1000, "#fff");
+    const image = await Jimp.read(700, 700, "#fff");
     await image.composite(cropImage, 0, 0, {
       mode: Jimp.BLEND_SOURCE_OVER,
       opacityDest: 1,
