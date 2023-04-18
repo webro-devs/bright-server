@@ -307,7 +307,7 @@ export async function deleteData(req: Request, res: Response) {
 
 export async function updateStatePublished(req: Request, res: Response) {
   try {
-    const { newsIds, tg, inst = false } = req.body;
+    const { newsIds, tg, inst } = req.body;
     await newsService.updateStatePublished(newsIds, State.published, tg, inst);
     if (inst) {
       const { data } = await ZipMaker();

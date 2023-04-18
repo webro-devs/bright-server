@@ -70,7 +70,7 @@ const size = {
 };
 
 const getTextSize = (text) => {
-  const arr = text.split("");
+  const arr = text?.split("");
   let textSize = arr.reduce((acc, curr) => {
     return (acc += size[curr] || 12);
   }, 0);
