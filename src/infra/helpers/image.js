@@ -267,7 +267,7 @@ const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
     }
 
     await image
-      .resize(700, 700)
+      .resize(1000, 1000)
       .composite(topMask, 0, 0, {
         mode: Jimp.BLEND_SOURCE_OVER,
         opacityDest: 1,
@@ -337,7 +337,7 @@ const CImage3 = async ({ imgPath, imgName }) => {
     }
 
     await image
-      .resize(700, 700)
+      .resize(1000, 1000)
       .composite(topMask, 0, 0, {
         mode: Jimp.BLEND_SOURCE_OVER,
         opacityDest: 1,
@@ -375,13 +375,14 @@ const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
         const textSize = getTextSize(ctg)
         const ctgWrapperWidth = textSize + 70
 
-        if (imageWidth > imageHeight) {
-            const diff = (imageWidth - ((imageHeight / 13) * 20)) / 2
-            await cropImage.crop(diff, 0, (imageWidth - ((imageHeight / 13) * 20)), imageHeight)
-        } else {
-            const diff = (imageHeight - ((imageWidth / 20) * 13)) / 2
-            await cropImage.crop(0, diff, imageWidth, (imageHeight - ((imageWidth / 20) * 13)))
-        }
+        if (imageWidth > ((imageHeight / 13) * 20)) {
+          const diff = (imageWidth - ((imageHeight / 13) * 20)) / 2
+          await cropImage.crop(diff, 0, (imageWidth - ((imageHeight / 13) * 20)), imageHeight)
+      } else {
+          const diff = (imageHeight - ((imageWidth / 20) * 13)) / 2
+          console.log(((imageWidth / 20) * 13));
+          await cropImage.crop(0, diff, imageWidth, ((imageWidth / 20) * 13))
+      }
    
         cropImage.scaleToFit(700, 700)
 
@@ -392,7 +393,7 @@ const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
             drawLine({ image, x: 0, y: 650, width: 1000, height: 350, color: [238, 238, 238, 255] })
             drawLine({ image, x: 0, y: 623, width: ctgWrapperWidth, height: 53, color: [220, 84, 67, 255] })
             
-            await image.print(Merreweat, 76, 705, text2, 804, 216)
+            await image.print(Merreweat, 76, 705, txt, 804, 216)
             await image.print(notoSans, 33, 635, ctg)
             .composite(logo, 850, 916, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
     await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
