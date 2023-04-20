@@ -154,3 +154,21 @@ export async function newMessage(data, socket, io) {
     console.log(err);
   }
 }
+
+export async function onMessageEdited(data, socket, io) {
+  try {
+    const {msgId, msg, roomId} = data
+    socket.broadcast.to(roomId).emit('on_edited_message', {msg, msgId})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function onMessageDeleted(data, socket, io) {
+  try {
+    const {msgId, roomId} = data
+    socket.broadcast.to(roomId).emit('on_deleted_message', {msgId})
+  } catch (error) {
+    console.log(error);
+  }
+}
