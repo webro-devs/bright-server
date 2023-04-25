@@ -18,6 +18,18 @@ export class Category {
   @Column({ type: "text" })
   уз: string;
 
+  @Column({ type: "text", nullable: true })
+  uzSlag: string;
+
+  @Column({ type: "text", nullable: true })
+  enSlag: string;
+
+  @Column({ type: "text", nullable: true })
+  ruSlag: string;
+
+  @Column({ type: "text", nullable: true })
+  узSlag: string;
+
   @ManyToMany(() => News, (news) => news.categories, {
     cascade: true,
     onDelete: "CASCADE",

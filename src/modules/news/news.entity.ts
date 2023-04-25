@@ -26,7 +26,11 @@ export class News {
   @Column({ type: "varchar", default: "general access" })
   state: string;
 
-  @Column({ type: "timestamp", nullable:true})
+  @Column({
+    type: "timestamp",
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
   publishDate: Date;
 
   @Column({ default: false, type: "boolean" })

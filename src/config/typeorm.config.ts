@@ -15,7 +15,10 @@ const TypeOrmDataSource = new DataSource({
       ? "src/**/*.entity.{js,ts}"
       : "dist/**/*.entity.{js,ts}",
   ],
-  logging: false   ,
+  extra: {
+    timezone: "UTC+5",
+  },
+  logging: false,
   synchronize: true,
 });
 
