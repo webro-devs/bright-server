@@ -16,6 +16,7 @@ router
     categoryController.getCategoryWithFiveNews,
   )
   .get("/category/:id", categoryController.getById)
+  .get("/:key/:Category", categoryController.getByName)
   .post(
     "/category",
     DtoValidationMiddleware(CreateCategoryDto),

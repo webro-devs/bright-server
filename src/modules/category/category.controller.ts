@@ -35,6 +35,16 @@ export async function getById(req: Request, res: Response) {
   }
 }
 
+export async function getByName(req: Request, res: Response) {
+  try {
+    const { category, key } = req.params;
+    const response = await categoryService.getCategoryByName(key, category);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
 export async function create(req: Request, res: Response) {
   try {
     const createData: CreateCategoryDto = req.body;

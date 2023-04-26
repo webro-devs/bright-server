@@ -1,4 +1,5 @@
 import { UpdateResult, DeleteResult, Repository } from "typeorm";
+import slugify from "slugify";
 import { HttpException } from "../../infra/validation";
 import { Category } from "./category.entity";
 import { CreateCategoryDto, UpdateCategoryDto } from "./dto";
@@ -40,6 +41,18 @@ export class CategoryService {
 
   async create(values: CreateCategoryDto): Promise<Category> {
     try {
+      const langs = ["uz", "ru", "en", "уз"];
+      for (let i = 0; i < langs.length; i++) {
+        values[langs[i] + "Slag"] = slugify(values[langs[i]], {
+          replacement: "-",
+          remove: /[*+~.()'"!:@]/g,
+          lower: true,
+          strict: true,
+          locale: "vi",
+          trim: true,
+        });
+      }
+
       const response = this.categoryRepository.create(values);
       return this.categoryRepository.save(response);
     } catch (error) {
@@ -49,6 +62,18 @@ export class CategoryService {
 
   async update(values: UpdateCategoryDto, id: string): Promise<UpdateResult> {
     try {
+      const langs = ["uz", "ru", "en", "уз"];
+      for (let i = 0; i < langs.length; i++) {
+        values[langs[i] + "Slag"] = slugify(values[langs[i]], {
+          replacement: "-",
+          remove: /[*+~.()'"!:@]/g,
+          lower: true,
+          strict: true,
+          locale: "vi",
+          trim: true,
+        });
+      }
+
       const response = await this.categoryRepository.update(id, values);
       return response;
     } catch (error) {
@@ -76,5 +101,17 @@ export class CategoryService {
     } catch (error) {
       throw new HttpException(true, 500, error.message);
     }
+  }
+
+  async getCategoryByName(key: string, data: string): Promise<Category> {
+    const category = await this.categoryRepository.findOne({
+      where: { [key]: data },
+      relations: {
+        news: {
+          [key]: true,
+        },
+      },
+    });
+    return category;
   }
 }
