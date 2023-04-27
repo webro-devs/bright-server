@@ -397,7 +397,7 @@ export class NewsService {
                     await telegram({
                       title: news[lang]?.title,
                       desc: news[lang]?.shortDescription,
-                      link: "http://bright.getter.uz/news/" + news?.id,
+                      link: "https://buzb.uz/news/" + news?.id,
                       imgDir,
                     });
                   });
@@ -405,7 +405,7 @@ export class NewsService {
                   await telegram({
                     title: news[lang]?.title,
                     desc: news[lang]?.shortDescription,
-                    link: "http://bright.getter.uz/news/" + news?.id,
+                    link: "https://buzb.uz/news/" + news?.id,
                     imgDir,
                   });
                 }

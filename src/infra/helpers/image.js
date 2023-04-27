@@ -70,6 +70,7 @@ const size = {
 };
 
 const getTextSize = (text) => {
+  if (!text) return 0
   const arr = text?.split("");
   let textSize = arr.reduce((acc, curr) => {
     return (acc += size[curr] || 12);
@@ -356,46 +357,35 @@ const CImage3 = async ({ imgPath, imgName }) => {
 
 const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
   try {
-    const Merreweat = await Jimp.loadFont(
-      path.resolve(__dirname, "./uploads/fonts/Merriweat/black.fnt"),
-    );
-    const notoSans = await Jimp.loadFont(
-      path.resolve(
-        __dirname,
-        "./uploads/fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt",
-      ),
-    );
-    const logo = await Jimp.read(
-      path.resolve(__dirname, "./uploads/mask/black_logo.png"),
-    );
+    const Merreweat = await Jimp.loadFont(path.resolve(__dirname, "./uploads/fonts/Merriweat/black.fnt"));
+    const notoSans = await Jimp.loadFont(path.resolve(__dirname, "./uploads/fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt"));
+    const logo = await Jimp.read(path.resolve(__dirname, "./uploads/mask/black_logo.png"));
     const cropImage = await Jimp.read(imgPath);
 
     const imageWidth = cropImage.bitmap.width
-        const imageHeight = cropImage.bitmap.height
-        const textSize = getTextSize(ctg)
-        const ctgWrapperWidth = textSize + 70
+    const imageHeight = cropImage.bitmap.height
+    const textSize = getTextSize(ctg)
+    const ctgWrapperWidth = textSize + 70
 
-        if (imageWidth > ((imageHeight / 13) * 20)) {
-          const diff = (imageWidth - ((imageHeight / 13) * 20)) / 2
-          await cropImage.crop(diff, 0, (imageWidth - ((imageHeight / 13) * 20)), imageHeight)
-      } else {
-          const diff = (imageHeight - ((imageWidth / 20) * 13)) / 2
-          console.log(((imageWidth / 20) * 13));
-          await cropImage.crop(0, diff, imageWidth, ((imageWidth / 20) * 13))
-      }
-   
-        cropImage.scaleToFit(700, 700)
+    if (imageWidth > ((imageHeight / 13) * 20)) {
+      const diff = (imageWidth - ((imageHeight / 13) * 20)) / 2
+      await cropImage.crop(diff, 0, (imageHeight / 13) * 20, imageHeight)
+  } else {
+      const diff = (imageHeight - ((imageWidth / 20) * 13)) / 2
+      await cropImage.crop(0, diff, imageWidth, ((imageWidth / 20) * 13))
+  }
 
-        const image = await Jimp.read(700, 700, '#fff')
-        await image
-            .composite(cropImage, 0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
-            
-            drawLine({ image, x: 0, y: 650, width: 1000, height: 350, color: [238, 238, 238, 255] })
-            drawLine({ image, x: 0, y: 623, width: ctgWrapperWidth, height: 53, color: [220, 84, 67, 255] })
-            
-            await image.print(Merreweat, 76, 705, txt, 804, 216)
-            await image.print(notoSans, 33, 635, ctg)
-            .composite(logo, 850, 916, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
+    cropImage.scaleToFit(1000, 1000)
+    const image = await Jimp.read(1000, 1000, '#fff')
+    await image
+      .composite(cropImage, 0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
+
+    drawLine({ image, x: 0, y: 650, width: 1000, height: 350, color: [238, 238, 238, 255] })
+    drawLine({ image, x: 0, y: 623, width: ctgWrapperWidth, height: 53, color: [220, 84, 67, 255] })
+
+    await image.print(Merreweat, 76, 705, txt, 804, 216)
+    await image.print(notoSans, 33, 635, ctg)
+      .composite(logo, 850, 916, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
     await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
   } catch (error) {
     console.log(error);

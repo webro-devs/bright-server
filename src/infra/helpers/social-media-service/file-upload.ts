@@ -21,6 +21,17 @@ const SocialMediaService = async (
       await mkdir(__dirname + `/../output/uploads/${newsDirName}/${key}/`);
     }
     if (isMain) {
+      console.log(news?.[key]);
+      
+      console.log({
+        imgPath: news?.file,
+        imgName: `uploads/${newsDirName}/${key}/` + news?.file?.split("/")?.at(-1),
+        txt:
+          news?.[key]?.title?.length > 102
+            ? news?.[key]?.title?.slice(0, 99) + "..."
+            : news?.[key]?.title,
+        ctg: news?.mainCategory?.[key] || "",
+      });
       await Image2({
         imgPath: news.file,
         imgName: `uploads/${newsDirName}/${key}/` + news.file.split("/").at(-1),
@@ -28,7 +39,7 @@ const SocialMediaService = async (
           news[key].title.length > 102
             ? news[key].title.slice(0, 99) + "..."
             : news[key].title,
-        ctg: news.mainCategory || "",
+        ctg: news?.mainCategory?.[key] || "",
       });
       return `${newsDirName}/${key}/` + news.file.split("/").at(-1);
     } else {
