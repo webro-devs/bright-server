@@ -297,6 +297,9 @@ export class NewsService {
         );
         oldNews.mainCategory = mainCategory;
       }
+      if (values?.publishDate) {
+        oldNews.publishDate = values.publishDate;
+      }
       if (values?.file) {
         if (oldNews?.file && values.file != oldNews?.file) {
           await fileService.removeFile(oldNews.file);
