@@ -21,7 +21,6 @@ const SocialMediaService = async (
       await mkdir(__dirname + `/../output/uploads/${newsDirName}/${key}/`);
     }
     if (isMain) {
-      console.log(news?.[key]);
       
       console.log({
         imgPath: news?.file,
@@ -43,6 +42,12 @@ const SocialMediaService = async (
       });
       return `${newsDirName}/${key}/` + news.file.split("/").at(-1);
     } else {
+      console.log({
+        imgName:
+          `uploads/${newsDirName}/${key}/` + instagramImage.split("/").at(-1),
+        imgPath: instagramImage,
+      });
+      
       await CImage3({
         imgName:
           `uploads/${newsDirName}/${key}/` + instagramImage.split("/").at(-1),

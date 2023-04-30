@@ -1,5 +1,7 @@
 import * as Jimp from "jimp";
+import * as fs from 'fs'
 import * as path from "path";
+import { registerFont, loadImage, createCanvas } from 'canvas'
 
 const size = {
   А: 16,
@@ -68,6 +70,64 @@ const size = {
   я: 11,
   " ": 16,
 };
+
+registerFont(path.join(__dirname, './uploads/fonts/Merriweat/Merriweather-Regular.ttf'), { family: 'MerriweatherRegular', weight: 400 })
+registerFont(path.resolve(__dirname, './uploads/fonts/Noto/NotoSans-Bold.ttf'), { family: 'NotoSansBold', weight: 700 })
+
+function wrapText({
+  ctx,
+  text,
+  x,
+  y,
+  maxWidth,
+  maxHeight,
+  fontFamily,
+  fontSize,
+  lineHeight,
+}) {
+  let font = `${fontSize}px ${fontFamily}`
+  ctx.textBaseline = 'middle';
+  ctx.font = font
+  let words = text?.split(' ');
+  let lines = [];
+  let line = '';
+
+  for (let i = 0; i < words.length; i++) {
+      let testLine = line + words[i] + ' ';
+      let metrics = ctx.measureText(testLine);
+      let testWidth = metrics.width;
+
+      if (testWidth > maxWidth && i > 0) {
+          lines.push(line);
+          line = words[i] + ' ';
+      } else {
+          line = testLine;
+      }
+  }
+
+  lines.push(line);
+
+  if (lines.length * lineHeight > maxHeight) {
+      lineHeight = maxHeight / lines.length
+      wrapText({
+          ctx, 
+          text,
+          x,
+          y,
+          maxWidth,
+          maxHeight,
+          fontFamily,
+          fontSize: fontSize - 1,
+          lineHeight: fontSize - 1 + 4
+      })
+  } else {
+      y = y + ((maxHeight - (lines.length * lineHeight)) / 2)
+      for (let i = 0; i < lines.length; i++) {
+          ctx.fillText(lines[i], x, y);
+          y += lineHeight;
+      }
+  }
+}
 
 const getTextSize = (text) => {
   if (!text) return 0
@@ -320,73 +380,115 @@ const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
 
 const CImage3 = async ({ imgPath, imgName }) => {
   try {
-    const logo = await Jimp.read(path.resolve(__dirname, "./uploads/logo.png"));
-    const topMask = await Jimp.read(
-      path.resolve(__dirname, "./uploads/mask/top.png"),
-    );
-    const url = `${imgPath}`;
-    const image = await Jimp.read(url);
-    const imageWidth = image.bitmap.width;
-    const imageHeight = image.bitmap.height;
+    const image = await loadImage(imgPath)
+    const logo = await loadImage(path.resolve(__dirname, './uploads/logo.png'))
+    const topMask = await loadImage(path.resolve(__dirname, './uploads/mask/top.png'))
+    const canvas = createCanvas(1000, 1000)
+    const ctx = canvas.getContext('2d')
 
-    if (imageWidth > imageHeight) {
-      const diff = (imageWidth - imageHeight) / 2;
-      await image.crop(diff, 0, imageHeight, imageHeight);
+    if(image.width > image.height){
+        let y = 0
+        let x = (image.width - image.height) / 2
+        let w = image.width - (image.width - image.height)
+        let h = image.height
+        ctx.drawImage(image, 
+            x, y,
+            w, h, 
+            0, 0,
+            1000, 1000
+        )
     } else {
-      const diff = (imageHeight - imageWidth) / 2;
-      await image.crop(0, diff, imageWidth, imageWidth);
+        let y = (image.height - image.width) / 2
+        let x = 0
+        let w = image.width
+        let h = image.height  - (image.height - image.width)
+        ctx.drawImage(image, 
+            x, y,
+            w, h, 
+            0, 0,
+            1000, 1000
+        )
     }
 
-    await image
-      .resize(1000, 1000)
-      .composite(topMask, 0, 0, {
-        mode: Jimp.BLEND_SOURCE_OVER,
-        opacityDest: 1,
-      })
-      .composite(logo, 60, 61, {
-        mode: Jimp.BLEND_SOURCE_OVER,
-        opacityDest: 1,
-      });
+    ctx.drawImage(topMask, 0, 0)
+    ctx.drawImage(logo, 60, 60)
 
-    await image.normalize();
-    await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
+    const buffer = canvas.toBuffer("image/png");
+    fs.writeFileSync(path.resolve(__dirname, `./output/${imgName}`), buffer)
   } catch (error) {
     console.log(error);
   }
 };
 
-const Image2 = async ({ txt, ctg = "", imgPath, imgName }) => {
+const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
   try {
-    const Merreweat = await Jimp.loadFont(path.resolve(__dirname, "./uploads/fonts/Merriweat/black.fnt"));
-    const notoSans = await Jimp.loadFont(path.resolve(__dirname, "./uploads/fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt"));
-    const logo = await Jimp.read(path.resolve(__dirname, "./uploads/mask/black_logo.png"));
-    const cropImage = await Jimp.read(imgPath);
+    const image = await loadImage(imgPath)
+    const imageHeight = image.height
+    const imageWidth = image.width
+    const logo = await loadImage(path.resolve(__dirname, './uploads/mask/black_logo.png'))
+    const canvas = createCanvas(1000, 1000)
+    const ctx = canvas.getContext("2d");
+    ctx.font = '22px Noto Sans'
+    const ctgSizes = ctx.measureText(ctg)
 
-    const imageWidth = cropImage.bitmap.width
-    const imageHeight = cropImage.bitmap.height
-    const textSize = getTextSize(ctg)
-    const ctgWrapperWidth = textSize + 70
+    if(imageWidth > ((imageHeight / 13) * 20)){
+        let y = 0
+        let x = (imageWidth - ((imageHeight / 13) * 20)) / 2
+        let w = ((imageHeight / 13) * 20)
+        let h = imageHeight
+        ctx.drawImage(image, 
+            x, y,
+            w, h,
+            0, 0,
+            1000, 650
+        )
+    } else {
+        let x = 0
+        let y = (imageHeight - ((imageWidth / 20) * 13)) / 2
+        let h = ((imageWidth / 20) * 13)
+        let w = imageWidth
+        ctx.drawImage(image, 
+            x, y,
+            w, h,
+            0, 0,
+            1000, 650
+        )
+    }
 
-    if (imageWidth > ((imageHeight / 13) * 20)) {
-      const diff = (imageWidth - ((imageHeight / 13) * 20)) / 2
-      await cropImage.crop(diff, 0, (imageHeight / 13) * 20, imageHeight)
-  } else {
-      const diff = (imageHeight - ((imageWidth / 20) * 13)) / 2
-      await cropImage.crop(0, diff, imageWidth, ((imageWidth / 20) * 13))
-  }
+    ctx.beginPath()
+    ctx.moveTo(0, 825);
+    ctx.lineTo(1000, 825)
+    ctx.strokeStyle = '#fff'
+    ctx.lineWidth = 350
+    ctx.stroke();
 
-    cropImage.scaleToFit(1000, 1000)
-    const image = await Jimp.read(1000, 1000, '#fff')
-    await image
-      .composite(cropImage, 0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
+    ctx.drawImage(logo, 1000 - logo.width - 41, 1000 - logo.height - 41)
 
-    drawLine({ image, x: 0, y: 650, width: 1000, height: 350, color: [238, 238, 238, 255] })
-    drawLine({ image, x: 0, y: 623, width: ctgWrapperWidth, height: 53, color: [220, 84, 67, 255] })
+    wrapText({
+        ctx, 
+        text: txt, 
+        x: 76, y: 735, 
+        maxWidth: 848, 
+        maxHeight: 210, 
+        lineHeight: 58, 
+        fontFamily: 'MerriweatherRegular', 
+        fontSize: 54
+    });
 
-    await image.print(Merreweat, 76, 705, txt, 804, 216)
-    await image.print(notoSans, 33, 635, ctg)
-      .composite(logo, 850, 916, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
-    await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
+    ctx.beginPath()
+    ctx.moveTo(0, 660)
+    ctx.lineTo(ctgSizes.width + 150, 660)
+    ctx.strokeStyle = 'rgb(220, 84, 67)'
+    ctx.lineWidth = 54
+    ctx.stroke()
+
+    ctx.font = '22px NotoSansBold'
+    ctx.textBaseline = 'alphabetic'
+    ctx.fillStyle = '#fff'
+    ctx.fillText(ctg, 75, 660 + 7)
+
+    const buffer = canvas.toBuffer("image/png");
+    fs.writeFileSync(path.resolve(__dirname, `./output/${imgName}`), buffer)
   } catch (error) {
     console.log(error);
   }
