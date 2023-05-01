@@ -397,7 +397,7 @@ export class NewsService {
         let date = new Date();
         let diffTime = publishDate.getTime() - date.getTime() > 0;
         for (const lang of languages) {
-          if (lang == "uz") {
+          if (lang == "uz" || lang == 'ru') {
             if (news?.[lang] && news?.file && (tg || inst)) {
               const imgDir = await SocialMediaService(
                 news,
@@ -405,7 +405,7 @@ export class NewsService {
                 lang,
                 true,
               );
-              if (tg) {
+              if (tg && lang == 'uz') {
                 if (diffTime) {
                   CronJob(publishDate, async () => {
                     await telegram({

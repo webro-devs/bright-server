@@ -73,6 +73,7 @@ const size = {
 
 registerFont(path.join(__dirname, './uploads/fonts/Merriweat/Merriweather-Regular.ttf'), { family: 'MerriweatherRegular', weight: 400 })
 registerFont(path.resolve(__dirname, './uploads/fonts/Noto/NotoSans-Bold.ttf'), { family: 'NotoSansBold', weight: 700 })
+registerFont(path.resolve(__dirname, './uploads/fonts/Times/Times-Bold.ttf'), { family: 'TimesBold', weight: 700 })
 
 function wrapText({
   ctx,
@@ -126,6 +127,14 @@ function wrapText({
           ctx.fillText(lines[i], x, y);
           y += lineHeight;
       }
+  }
+}
+
+const textWithLetterSpace = ({ ctx, text = '', x, y, letterSpacing }) => {
+  let posX = x;
+  for (let i = 0; i < text.length; i++) {
+      ctx.fillText(text.charAt(i), posX, y);
+      posX += ctx.measureText(text.charAt(i)).width + letterSpacing;
   }
 }
 
@@ -422,21 +431,26 @@ const CImage3 = async ({ imgPath, imgName }) => {
 
 const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
   try {
+    ctg = ctg?.toUpperCase()
     const image = await loadImage(imgPath)
     const imageHeight = image.height
     const imageWidth = image.width
     const logo = await loadImage(path.resolve(__dirname, './uploads/mask/black_logo.png'))
     const canvas = createCanvas(1000, 1000)
     const ctx = canvas.getContext("2d");
-    ctx.font = '22px Noto Sans'
-    const ctgSizes = ctx.measureText(ctg)
+    ctx.font = '26px TimesBold'
+    let ctgWidth = 0
+    for (let i = 0; i < ctg.length; i++) {
+        ctgWidth += ctx.measureText(ctg.charAt(i))?.width + 3.5
+    }
+    ctgWidth = ctgWidth - 3.5
 
-    if(imageWidth > ((imageHeight / 13) * 20)){
+    if (imageWidth > ((imageHeight / 6) * 10)) {
         let y = 0
-        let x = (imageWidth - ((imageHeight / 13) * 20)) / 2
-        let w = ((imageHeight / 13) * 20)
+        let x = (imageWidth - ((imageHeight / 6) * 10)) / 2
+        let w = ((imageHeight / 6) * 10)
         let h = imageHeight
-        ctx.drawImage(image, 
+        ctx.drawImage(image,
             x, y,
             w, h,
             0, 0,
@@ -444,10 +458,10 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
         )
     } else {
         let x = 0
-        let y = (imageHeight - ((imageWidth / 20) * 13)) / 2
-        let h = ((imageWidth / 20) * 13)
+        let y = (imageHeight - ((imageWidth / 10) * 6)) / 2
+        let h = ((imageWidth / 10) * 6)
         let w = imageWidth
-        ctx.drawImage(image, 
+        ctx.drawImage(image,
             x, y,
             w, h,
             0, 0,
@@ -456,36 +470,43 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
     }
 
     ctx.beginPath()
-    ctx.moveTo(0, 825);
-    ctx.lineTo(1000, 825)
-    ctx.strokeStyle = '#fff'
-    ctx.lineWidth = 350
+    ctx.moveTo(0, 800);
+    ctx.lineTo(1000, 800)
+    ctx.strokeStyle = 'rgb(238, 238, 238)'
+    ctx.lineWidth = 400
     ctx.stroke();
 
-    ctx.drawImage(logo, 1000 - logo.width - 41, 1000 - logo.height - 41)
+    ctx.drawImage(logo, 1000 - logo.width - 41, 1000 - logo.height - 32)
 
     wrapText({
-        ctx, 
-        text: txt, 
-        x: 76, y: 735, 
-        maxWidth: 848, 
-        maxHeight: 210, 
-        lineHeight: 58, 
-        fontFamily: 'MerriweatherRegular', 
+        ctx,
+        text: txt,
+        x: 76, y: 667,
+        maxWidth: 848,
+        maxHeight: 258,
+        lineHeight: 58,
+        fontFamily: 'MerriweatherRegular',
         fontSize: 54
     });
 
     ctx.beginPath()
-    ctx.moveTo(0, 660)
-    ctx.lineTo(ctgSizes.width + 150, 660)
-    ctx.strokeStyle = 'rgb(220, 84, 67)'
+    ctx.moveTo(0, 600)
+    ctx.lineTo(ctgWidth + 150, 600)
+    ctx.strokeStyle = '#E56B54'
     ctx.lineWidth = 54
     ctx.stroke()
 
-    ctx.font = '22px NotoSansBold'
+    ctx.font = '26px TimesBold'
     ctx.textBaseline = 'alphabetic'
+    ctx.textTracking = 5
     ctx.fillStyle = '#fff'
-    ctx.fillText(ctg, 75, 660 + 7)
+    textWithLetterSpace({
+        ctx, 
+        text: ctg, 
+        x: 75, 
+        y: 600 + 10, 
+        letterSpacing: 3.5
+    })
 
     const buffer = canvas.toBuffer("image/png");
     fs.writeFileSync(path.resolve(__dirname, `./output/${imgName}`), buffer)
