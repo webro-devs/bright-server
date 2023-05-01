@@ -19,6 +19,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/user/getter/bright-backend
+            git stash
             git pull origin main
             git status
             npm install --yes
