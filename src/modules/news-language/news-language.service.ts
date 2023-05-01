@@ -16,6 +16,13 @@ export class NewsLanguageService {
     return response;
   }
 
+  async getByShortLink(shortLink: string, relations): Promise<NewsLanguage> {
+    const data = await this.languageRepository.findOne({
+      where: { shortLink },
+      relations,
+    });
+    return data;
+  }
   // async getByShortLink(shortLink: string, key: string): Promise<NewsLanguage> {
   //   const response = await this.languageRepository.findOne({ include: [{
   //     model: NewsLanguage,

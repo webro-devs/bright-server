@@ -14,7 +14,7 @@ class UpdateNewsDto {
 
   @IsOptional()
   @IsString()
-  publishDate: string;
+  publishDate: Date;
 
   @IsOptional()
   @IsArray()

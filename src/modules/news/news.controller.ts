@@ -49,7 +49,7 @@ export const getById = async (req: Request, res: Response) => {
     const { id } = req.params;
     const relations = req?.["relations"];
     relations.editors = { editor: true };
-    const news = await newsService.getOne(id, relations);
+    const news = await newsService.getOne(id, relations, req["slugKey"]);
 
     return res.send(news);
   } catch (err) {

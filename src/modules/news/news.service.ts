@@ -137,13 +137,27 @@ export class NewsService {
     }
   }
 
-  async getOne(id: string, relations): Promise<News> {
+  async getOne(id: string, relations, slugKey): Promise<News> {
     try {
-      const response = await this.newsRepository.findOne({
-        where: { id },
-        relations,
-      });
-      return response;
+      const slugRelation = {};
+      slugRelation[slugKey] = true;
+      const newsLang = await this.newsLanguageService.getByShortLink(
+        id,
+        slugRelation,
+      );
+      if (newsLang) {
+        const response = await this.newsRepository.findOne({
+          where: { id: newsLang[slugKey]["id"] },
+          relations,
+        });
+        return response;
+      } else {
+        const response = await this.newsRepository.findOne({
+          where: { id },
+          relations,
+        });
+        return response;
+      }
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }

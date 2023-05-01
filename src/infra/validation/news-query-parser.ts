@@ -97,6 +97,8 @@ const NewsQueryParserMiddleware = (req, res, next) => {
   req.relations = relations;
   req.pagination = pagination;
   req.elasticsearch = elasticsearch;
+  req.slugKey = lang || "uz";
+
   next();
 };
 
