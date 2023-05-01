@@ -435,7 +435,7 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
     const image = await loadImage(imgPath)
     const imageHeight = image.height
     const imageWidth = image.width
-    const logo = await loadImage(path.resolve(__dirname, '../uploads/black_logo.png'))
+    const logo = await loadImage(path.resolve(__dirname, '../uploads/mask/black_logo.png'))
     const canvas = createCanvas(1000, 1000)
     const ctx = canvas.getContext("2d");
     ctx.font = '26px TimesBold'
