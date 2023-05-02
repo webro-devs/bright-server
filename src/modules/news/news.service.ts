@@ -141,13 +141,15 @@ export class NewsService {
     try {
       const slugRelation = {};
       slugRelation[slugKey] = true;
+      slugRelation["уз"] = true;
       const newsLang = await this.newsLanguageService.getByShortLink(
         id,
         slugRelation,
       );
       if (newsLang) {
+        const id = newsLang?.[slugKey]?.["id"] || newsLang?.["уз"]?.["id"];
         const response = await this.newsRepository.findOne({
-          where: { id: newsLang[slugKey]["id"] },
+          where: { id },
           relations,
         });
         return response;
@@ -397,7 +399,7 @@ export class NewsService {
         let date = new Date();
         let diffTime = publishDate.getTime() - date.getTime() > 0;
         for (const lang of languages) {
-          if (lang == "uz" || lang == 'ru') {
+          if (lang == "uz" || lang == "ru") {
             if (news?.[lang] && news?.file && (tg || inst)) {
               const imgDir = await SocialMediaService(
                 news,
@@ -405,7 +407,7 @@ export class NewsService {
                 lang,
                 true,
               );
-              if (tg && lang == 'uz') {
+              if (tg && lang == "uz") {
                 if (diffTime) {
                   CronJob(publishDate, async () => {
                     await telegram({
