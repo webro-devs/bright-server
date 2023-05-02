@@ -478,6 +478,7 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
 
     ctx.drawImage(logo, 1000 - logo.width - 41, 1000 - logo.height - 32)
 
+    ctx.fillStyle = '#202020'
     wrapText({
         ctx,
         text: txt,
