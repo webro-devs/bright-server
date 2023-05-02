@@ -454,7 +454,7 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
             x, y,
             w, h,
             0, 0,
-            1000, 650
+            1000, 600
         )
     } else {
         let x = 0
@@ -465,7 +465,7 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
             x, y,
             w, h,
             0, 0,
-            1000, 650
+            1000, 600
         )
     }
 
