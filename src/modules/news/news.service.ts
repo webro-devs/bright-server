@@ -140,14 +140,22 @@ export class NewsService {
   async getOne(id: string, relations, slugKey): Promise<News> {
     try {
       const slugRelation = {};
-      slugRelation[slugKey] = true;
+      slugRelation["uz"] = true;
       slugRelation["уз"] = true;
+      slugRelation["ru"] = true;
+      slugRelation["en"] = true;
       const newsLang = await this.newsLanguageService.getByShortLink(
         id,
         slugRelation,
       );
       if (newsLang) {
-        const id = newsLang?.[slugKey]?.["id"] || newsLang?.["уз"]?.["id"];
+        const id =
+          newsLang?.[slugKey]?.["id"] ||
+          newsLang?.["уз"]?.["id"] ||
+          newsLang?.["uz"]?.["id"] ||
+          newsLang?.["en"]?.["id"] ||
+          newsLang?.["ru"]?.["id"];
+
         const response = await this.newsRepository.findOne({
           where: { id },
           relations,
@@ -413,7 +421,7 @@ export class NewsService {
                     await telegram({
                       title: news[lang]?.title,
                       desc: news[lang]?.shortDescription,
-                      link: `https://buzb.uz/uz/news/${news?.['uz']?.shortLink}`,
+                      link: `https://buzb.uz/uz/news/${news?.["uz"]?.shortLink}`,
                       imgDir,
                     });
                   });
@@ -421,7 +429,7 @@ export class NewsService {
                   await telegram({
                     title: news[lang]?.title,
                     desc: news[lang]?.shortDescription,
-                    link: `https://buzb.uz/uz/news/${news?.['uz']?.shortLink}`,
+                    link: `https://buzb.uz/uz/news/${news?.["uz"]?.shortLink}`,
                     imgDir,
                   });
                 }
