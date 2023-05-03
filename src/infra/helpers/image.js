@@ -482,9 +482,9 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
     wrapText({
         ctx,
         text: txt,
-        x: 76, y: 667,
+        x: 76, y: 680,
         maxWidth: 848,
-        maxHeight: 258,
+        maxHeight: 260,
         lineHeight: 58,
         fontFamily: 'MerriweatherRegular',
         fontSize: 54
