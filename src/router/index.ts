@@ -7,6 +7,7 @@ const authRouter = require("./auth.rout");
 const chatRouter = require("./chat.router");
 const notificationRouter = require("./notification.rout");
 const currencyRouter = require("./currency.router");
+const advertisementRouter = require("./advertisement.rout");
 
 module.exports = {
   categoryRouter,
@@ -18,4 +19,5 @@ module.exports = {
   notificationRouter,
   chatRouter,
   currencyRouter,
+  advertisementRouter,
 };
