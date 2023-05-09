@@ -17,6 +17,7 @@ router
     advertisementController.create,
   )
   .patch("/advertisement/:id", advertisementController.updateIsActive)
+  .patch("/advertisement/click/:id", advertisementController.updateIsClickCount)
   .put(
     "/advertisement/:id",
     DtoValidationMiddleware(UpdateAdvertisementDto, true),

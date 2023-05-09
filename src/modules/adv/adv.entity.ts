@@ -23,6 +23,9 @@ export class Advertisement {
   imgUrl: string;
 
   @Column({ type: "varchar" })
+  title: string;
+
+  @Column({ type: "varchar" })
   link: string;
 
   @Column({ type: "int", default: 0 })
@@ -30,6 +33,9 @@ export class Advertisement {
 
   @Column({ type: "int", default: 0 })
   viewUniqueCount: number;
+
+  @Column({ type: "int", default: 0 })
+  clickCount: number;
 
   @Column({ type: "boolean", default: false })
   isActive: boolean = false;

@@ -12,6 +12,10 @@ class CreateAdvertisementDto {
 
   @IsNotEmpty()
   @IsString()
+  title: string;
+
+  @IsNotEmpty()
+  @IsString()
   type: AdvertisementEnum;
 
   @IsOptional()
