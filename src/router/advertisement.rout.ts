@@ -11,18 +11,19 @@ const router = Router();
 router
   .get("/advertisement", advertisementController.getAll)
   .get("/advertisement/:type", advertisementController.getByType)
+  .get("/advertisement/single/:id", advertisementController.getById)
   .post(
     "/advertisement",
     DtoValidationMiddleware(CreateAdvertisementDto),
     advertisementController.create,
   )
-  .patch("/advertisement/:id", advertisementController.updateIsActive)
+  .patch("/advertisement/isActive", advertisementController.updateIsActive)
   .patch("/advertisement/click/:id", advertisementController.updateIsClickCount)
   .put(
     "/advertisement/:id",
     DtoValidationMiddleware(UpdateAdvertisementDto, true),
     advertisementController.update,
   )
-  .delete("/advertisement/:id", advertisementController.remove);
+  .delete("/advertisement/remove", advertisementController.remove);
 
 module.exports = router;
