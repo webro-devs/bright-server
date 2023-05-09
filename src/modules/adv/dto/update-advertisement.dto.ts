@@ -15,6 +15,10 @@ class UpdateAdvertisementDto {
   link: string;
 
   @IsOptional()
+  @IsString()
+  title: string;
+
+  @IsOptional()
   @IsNumber()
   viewTotalCount: number;
 

@@ -169,6 +169,19 @@ export class AdvertisementService {
     }
   }
 
+  async updateIsClickCount(id: string) {
+    try {
+      const data = await this.advertisementRepository.findOne({where:{id}})
+      data.clickCount += 1
+      await this.connection.transaction(async(manger)=>{
+         await manger.save(data)
+      })
+      return data;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
   async update(
     values: UpdateAdvertisementDto,
     id: string,

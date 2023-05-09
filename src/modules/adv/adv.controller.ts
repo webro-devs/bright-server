@@ -64,6 +64,16 @@ export async function updateIsActive(req: Request, res: Response) {
   }
 }
 
+export async function updateIsClickCount(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const response = await advertisementService.updateIsClickCount(id);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
 export async function remove(req: Request, res: Response) {
   try {
     const { id } = req.params;
