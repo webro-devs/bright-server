@@ -37,8 +37,8 @@ export class Advertisement {
   @Column({ type: "int", default: 0 })
   clickCount: number;
 
-  @Column({ type: "boolean", default: false })
-  isActive: boolean = false;
+  @Column({ type: "boolean", default: true })
+  isActive: boolean = true;
 
   @Column({ type: "varchar" })
   type: AdvertisementEnum;

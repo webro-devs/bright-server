@@ -24,7 +24,7 @@ export class AdvertisementService {
 
   async getAll(): Promise<Advertisement[]> {
     try {
-      const data = await this.advertisementRepository.find();
+      const data = await this.advertisementRepository.find({order: {date: 'DESC'}});
       return data;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
