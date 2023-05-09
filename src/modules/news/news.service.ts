@@ -180,7 +180,7 @@ export class NewsService {
     relations,
     where,
     pagination: { limit: number; offset: number },
-  ): Promise<News[]> {
+  ): Promise<{ items: News[]; totalCount: number }> {
     try {
       const response = await this.newsRepository.find({
         where,
@@ -191,7 +191,8 @@ export class NewsService {
         take: pagination.limit,
         skip: pagination.offset,
       });
-      return response;
+      const count = await this.newsRepository.count({ where });
+      return { items: response, totalCount: count };
     } catch (err) {
       throw new HttpException(true, 500, err.message);
     }
