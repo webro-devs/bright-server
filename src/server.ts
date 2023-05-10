@@ -26,6 +26,7 @@ TypeOrmDataSource.initialize()
       notificationRouter,
       chatRouter,
       currencyRouter,
+      advertisementRouter,
     } = require("./router");
     connectSocket(server);
     app.use(cors({ origin: true, credentials: true }));
@@ -43,6 +44,7 @@ TypeOrmDataSource.initialize()
       notificationRouter,
       chatRouter,
       currencyRouter,
+      advertisementRouter,
     );
 
     console.log("Data Source has been initialized!");

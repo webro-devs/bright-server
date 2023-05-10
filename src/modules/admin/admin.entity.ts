@@ -15,6 +15,7 @@ import { Position } from "../position/position.entity";
 import { chatMessage } from "../chat-message/chat-message.entity";
 import { Notification } from "../notification/notification.entity";
 import { NewsEditor } from "../editors/editors.entity";
+import { Advertisement } from "../adv/adv.entity";
 
 @Entity("admin")
 export class Admin {
@@ -75,6 +76,9 @@ export class Admin {
 
   @OneToMany(() => NewsEditor, (newsEditor) => newsEditor.editor)
   editors: NewsEditor[];
+
+  @OneToMany(() => Advertisement, (advertisement) => advertisement.creator)
+  advertisements: Advertisement[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);
