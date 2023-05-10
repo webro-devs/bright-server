@@ -8,7 +8,15 @@ class UpdateAdvertisementDto {
 
   @IsOptional()
   @IsString()
+  categoryId: string;
+
+  @IsOptional()
+  @IsString()
   imgUrl: string;
+
+  @IsOptional()
+  @IsString()
+  imgMobileUrl: string;
 
   @IsOptional()
   @IsString()
