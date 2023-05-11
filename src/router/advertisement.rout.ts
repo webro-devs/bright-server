@@ -12,6 +12,7 @@ router
   .get("/advertisement", advertisementController.getAll)
   .get("/advertisement/:type", advertisementController.getByType)
   .get("/advertisement/single/:id", advertisementController.getById)
+  .get("/advertisement/incr-count/:id", advertisementController.IncrCounts)
   .post(
     "/advertisement",
     DtoValidationMiddleware(CreateAdvertisementDto),

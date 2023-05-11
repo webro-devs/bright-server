@@ -40,6 +40,20 @@ export class UniqueAddressService {
     }
   }
 
+  async getByIp(ipAddress: string): Promise<UniqueAddress> {
+    try {
+      const data = await this.uniqueAddressRepository.findOne({
+        where: { ipAddress },
+        relations: {
+          advertisements: true,
+        },
+      });
+      return data;
+    } catch (err) {
+      throw new HttpException(true, 500, err.message);
+    }
+  }
+
   async create(values: CreateUniqueAddressDto) {
     try {
       const response = this.uniqueAddressRepository.create(values);

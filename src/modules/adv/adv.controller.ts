@@ -38,12 +38,25 @@ export async function create(req: Request, res: Response) {
   }
 }
 
-export async function getByType(req, res: Response) {
+export async function getByType(req:Request, res: Response) {
   try {
     const { type } = req.params;
 
     const data = await advertisementService.getByType(
       type as AdvertisementEnum,
+      req.ip,
+    );
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
+export async function IncrCounts(req:Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const data = await advertisementService.IncrCounts(
+      id,
       req.ip,
     );
     res.send(data);
