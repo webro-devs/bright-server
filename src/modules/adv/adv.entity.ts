@@ -23,6 +23,9 @@ export class Advertisement {
   imgUrl: string;
 
   @Column({ type: "varchar" })
+  imgMobileUrl: string;
+
+  @Column({ type: "varchar" })
   title: string;
 
   @Column({ type: "varchar" })
@@ -42,6 +45,9 @@ export class Advertisement {
 
   @Column({ type: "varchar" })
   type: AdvertisementEnum;
+
+  @Column({ type: "varchar", nullable: true })
+  categoryId: string;
 
   @ManyToOne(() => Admin, (admin) => admin.advertisements)
   @JoinColumn()

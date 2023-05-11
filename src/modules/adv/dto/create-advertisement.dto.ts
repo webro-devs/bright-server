@@ -8,6 +8,14 @@ class CreateAdvertisementDto {
 
   @IsNotEmpty()
   @IsString()
+  imgMobileUrl: string;
+
+  @IsOptional()
+  @IsString()
+  categoryId: string;
+
+  @IsNotEmpty()
+  @IsString()
   link: string;
 
   @IsNotEmpty()
