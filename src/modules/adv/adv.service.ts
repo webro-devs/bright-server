@@ -24,7 +24,10 @@ export class AdvertisementService {
 
   async getAll(): Promise<Advertisement[]> {
     try {
-      const data = await this.advertisementRepository.find({order: {date: 'DESC'}});
+      const data = await this.advertisementRepository.find({
+        order: { date: "DESC" },
+        relations: { creator: true },
+      });
       return data;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
@@ -158,11 +161,14 @@ export class AdvertisementService {
     }
   }
 
-  async updateIsActive(id: string, isActive: boolean) {
+  async updateIsActive(ids: string[], isActive: boolean) {
     try {
-      const response = await this.advertisementRepository.update(id, {
-        isActive,
-      });
+      const response = await this.advertisementRepository
+        .createQueryBuilder()
+        .update()
+        .set({ isActive })
+        .where("id IN(:...ids)", { ids })
+        .execute();
       return response;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
@@ -171,11 +177,13 @@ export class AdvertisementService {
 
   async updateIsClickCount(id: string) {
     try {
-      const data = await this.advertisementRepository.findOne({where:{id}})
-      data.clickCount += 1
-      await this.connection.transaction(async(manger)=>{
-         await manger.save(data)
-      })
+      const data = await this.advertisementRepository.findOne({
+        where: { id },
+      });
+      data.clickCount += 1;
+      await this.connection.transaction(async (manger) => {
+        await manger.save(data);
+      });
       return data;
     } catch (err) {
       throw new HttpException(true, 500, err.message);
