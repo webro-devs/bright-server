@@ -40,7 +40,6 @@ export class AdvertisementService {
         where: { id },
         relations: {
           creator: true,
-          uniqueAddresses: true,
         },
       });
       return data;
@@ -51,36 +50,28 @@ export class AdvertisementService {
 
   async getByType(type: AdvertisementEnum, ip: string) {
     try {
-      let index, uniqueIp;
+      let index;
       const [data, count] = await this.advertisementRepository.findAndCount({
         where: { type, isActive: true },
         order: { date: "ASC" },
-        relations: {
-          uniqueAddresses: true,
-        },
       });
 
       if (data.length > 0) {
         if (type == AdvertisementEnum.top) {
           const value = await this.getByTypeTop(ip, count);
           index = value.index;
-          uniqueIp = value.uniqueIp;
         } else if (type == AdvertisementEnum.aside) {
           const value = await this.getByTypeAside(ip, count);
           index = value.index;
-          uniqueIp = value.uniqueIp;
         } else if (type == AdvertisementEnum.mid) {
           const value = await this.getByTypeMid(ip, count);
           index = value.index;
-          uniqueIp = value.uniqueIp;
         } else if (type == AdvertisementEnum.midSingle) {
           const value = await this.getByTypeSingle(ip, count);
           index = value.index;
-          uniqueIp = value.uniqueIp;
         } else if (type == AdvertisementEnum.vip) {
           const value = await this.getByTypeVip(ip, count);
           index = value.index;
-          uniqueIp = value.uniqueIp;
         }
         // const isExist = data[index].uniqueAddresses.find(
         //   (f) => f.id == uniqueIp.id,
@@ -149,7 +140,10 @@ export class AdvertisementService {
   }
 
   async IncrCounts(id: string, ip: string) {
-    const data = await this.getById(id);
+    const data = await this.advertisementRepository.findOne({
+      where: { id },
+      relations: { uniqueAddresses: true },
+    });
     const isExist = data.uniqueAddresses.find((f) => f.ipAddress == ip);
     if (!isExist) {
       const uniqueAddress = await this.uniqueAddressService.getByIp(ip);
