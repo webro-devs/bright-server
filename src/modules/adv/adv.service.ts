@@ -14,12 +14,14 @@ import {
 import { HttpException } from "../../infra/validation";
 import { AdvertisementEnum } from "../../infra/shared/enums";
 import { UniqueAddressService } from "../unique-address/unique-address.service";
+import { CategoryService } from "../category/category.service";
 
 export class AdvertisementService {
   constructor(
     private readonly advertisementRepository: Repository<Advertisement>,
     private readonly uniqueAddressService: UniqueAddressService,
     private readonly connection: DataSource,
+    private readonly categoryService: CategoryService,
   ) {}
 
   async getAll(): Promise<Advertisement[]> {
@@ -156,6 +158,25 @@ export class AdvertisementService {
     });
     return data;
   }
+
+  async getMidWithCategory() {
+    const result = [];
+    const data = await this.advertisementRepository.find({
+      where: { type: AdvertisementEnum.mid, isActive: true },
+    });
+    console.log(data);
+
+    const categories = await this.categoryService.getAll();
+    categories.forEach((c) => {
+      const adv = data.filter((d) => d.categoryId == c.id);
+      if (adv.length > 0) {
+        const min = Math.min(...adv.map((d) => d.viewTotalCount));
+        result.push(adv.find((a) => a.viewTotalCount == min));
+      }
+    });
+    return result;
+  }
+
   async create(values: CreateAdvertisementDto) {
     try {
       const response = this.advertisementRepository

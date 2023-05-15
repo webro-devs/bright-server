@@ -24,6 +24,15 @@ export async function getById(req: Request, res: Response) {
   }
 }
 
+export async function getMidByCategory(req: Request, res: Response) {
+  try {
+    const data = await advertisementService.getMidWithCategory();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}
+
 export async function create(req: Request, res: Response) {
   try {
     const createData: CreateAdvertisementDto = req.body;
@@ -38,7 +47,7 @@ export async function create(req: Request, res: Response) {
   }
 }
 
-export async function getByType(req:Request, res: Response) {
+export async function getByType(req: Request, res: Response) {
   try {
     const { type } = req.params;
 
@@ -52,13 +61,10 @@ export async function getByType(req:Request, res: Response) {
   }
 }
 
-export async function IncrCounts(req:Request, res: Response) {
+export async function IncrCounts(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const data = await advertisementService.IncrCounts(
-      id,
-      req.ip,
-    );
+    const data = await advertisementService.IncrCounts(id, req.ip);
     res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

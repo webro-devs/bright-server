@@ -8,7 +8,7 @@ class UpdateAdvertisementDto {
 
   @IsOptional()
   @IsString()
-  category: string;
+  categoryId: string;
 
   @IsOptional()
   @IsString()
