@@ -59,6 +59,7 @@ export async function IncrCounts(req:Request, res: Response) {
       id,
       req.ip,
     );
+    delete data?.uniqueAddresses
     res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

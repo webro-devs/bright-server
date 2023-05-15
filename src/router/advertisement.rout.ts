@@ -13,13 +13,13 @@ router
   .get("/advertisement/:type", advertisementController.getByType)
   .get("/advertisement/single/:id", advertisementController.getById)
   .get("/advertisement/incr-count/:id", advertisementController.IncrCounts)
+  .get("/advertisement/click/:id", advertisementController.updateIsClickCount)
   .post(
     "/advertisement",
     DtoValidationMiddleware(CreateAdvertisementDto),
     advertisementController.create,
   )
   .patch("/advertisement/isActive", advertisementController.updateIsActive)
-  .patch("/advertisement/click/:id", advertisementController.updateIsClickCount)
   .put(
     "/advertisement/:id",
     DtoValidationMiddleware(UpdateAdvertisementDto, true),
