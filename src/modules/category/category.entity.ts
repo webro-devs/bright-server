@@ -42,7 +42,4 @@ export class Category {
     onDelete: "CASCADE",
   })
   news: News[];
-
-  @OneToMany(() => Advertisement, (advertisement) => advertisement.category)
-  advertisements: Advertisement[];
 }

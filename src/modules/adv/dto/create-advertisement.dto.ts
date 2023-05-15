@@ -12,7 +12,7 @@ class CreateAdvertisementDto {
 
   @IsOptional()
   @IsString()
-  category: string;
+  categoryId: string;
 
   @IsNotEmpty()
   @IsString()

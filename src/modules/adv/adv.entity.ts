@@ -10,7 +10,6 @@ import {
 import { AdvertisementEnum } from "../../infra/shared/enums";
 import { Admin } from "../admin/admin.entity";
 import { UniqueAddress } from "../unique-address/unique-address.entity";
-import { Category } from "../category/category.entity";
 
 @Entity("advertisement")
 export class Advertisement {
@@ -47,9 +46,8 @@ export class Advertisement {
   @Column({ type: "varchar" })
   type: AdvertisementEnum;
 
-  @ManyToOne(() => Category, (category) => category.advertisements)
-  @JoinColumn()
-  category: Category;
+  @Column({ type: "varchar", nullable: true })
+  categoryId: string;
 
   @ManyToOne(() => Admin, (admin) => admin.advertisements)
   @JoinColumn()
