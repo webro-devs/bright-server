@@ -9,7 +9,17 @@ export class CategoryService {
 
   async getAll(): Promise<Category[]> {
     try {
-      const categories = await this.categoryRepository.find();
+      const categories = await this.categoryRepository.find({
+        relations: { advertisements: true },
+      });
+      categories.forEach((c) => {
+        c.advertisements = c.advertisements
+          .sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          )
+          .filter((a) => a.isActive)
+          .filter((a, i) => i == 0);
+      });
       return categories;
     } catch (error) {
       throw new HttpException(true, 500, error.message);
@@ -18,11 +28,18 @@ export class CategoryService {
 
   async getAllWithFiveNews(relations): Promise<Category[]> {
     try {
+      relations.advertisements = true;
       const categories = await this.categoryRepository.find({
         relations,
       });
       categories.forEach((category) => {
         category.news = category.news.slice(0, 5);
+        category.advertisements = category.advertisements
+          .sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          )
+          .filter((a) => a.isActive)
+          .filter((a, i) => i == 0);
       });
       return categories;
     } catch (error) {
