@@ -7,16 +7,9 @@ const router = Router();
 
 router
   .get("/notification", notificationController.getAll)
-  .get(
-    "/notification/my-notifications",
-    notificationController.getMyNotifications,
-  )
+  .get("/notification/my-notifications", notificationController.getMyNotifications)
   .get("/notification/:id", notificationController.getById)
-  .post(
-    "/notification",
-    DtoValidationMiddleware(CreateNotificationDto),
-    notificationController.create,
-  )
+  .post("/notification", DtoValidationMiddleware(CreateNotificationDto), notificationController.create)
   .patch("/notification/isViewed", notificationController.updateIsViewed)
   .patch("/notification/state", notificationController.updateState)
   .delete("/notification/:id", notificationController.deleteData);

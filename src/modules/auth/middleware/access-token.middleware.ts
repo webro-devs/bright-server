@@ -8,7 +8,7 @@ const AccessTokenMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  try {
+  try {    
     if (
       (req.method == "GET" && req.url.includes("/single-news")) ||
       (req.method == "GET" && req.url.includes("/news/last-news")) ||
@@ -24,6 +24,7 @@ const AccessTokenMiddleware = async (
       req.url == "/news/published" ||
       req.url == "/currency"
     ) {
+      
       next();
       return;
     }
@@ -34,7 +35,7 @@ const AccessTokenMiddleware = async (
         const [key, value] = curr?.split("=");
         acc[key?.trim()] = value;
         return acc;
-      }, {});
+      }, {})
 
     const token = cookies[ACCESS_TOKEN_ADMIN];
 

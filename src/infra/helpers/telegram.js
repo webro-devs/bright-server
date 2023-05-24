@@ -11,7 +11,7 @@ ${desc || ""}
 
 <b>Batafsil: </b>${String(link) || ""}`;
   await app.telegram.sendPhoto(
-    "-1001601225733",
+    process.env.TG_ID,
     {
       source: fs.readFileSync(path.resolve(__dirname, `./output/uploads/${imgDir}`)),
     },
