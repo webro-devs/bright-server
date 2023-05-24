@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  OneToMany,
+} from "typeorm";
 import { News } from "../news/news.entity";
+import { Advertisement } from "../adv/adv.entity";
 
 @Entity("category")
 export class Category {

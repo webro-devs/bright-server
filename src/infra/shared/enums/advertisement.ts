@@ -3,6 +3,6 @@ enum AdvertisementEnum {
   mid = "mid",
   aside = "aside",
   vip = "vip",
-  midSingle = "mid single",
+  midSingle = "single",
 }
 export default AdvertisementEnum;
