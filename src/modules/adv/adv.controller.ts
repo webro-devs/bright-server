@@ -26,7 +26,7 @@ export async function getById(req: Request, res: Response) {
 
 export async function getMidByCategory(req: Request, res: Response) {
   try {
-    const data = await advertisementService.getMidWithCategory();
+    const data = await advertisementService.getMidWithCategory(req.ip);
     res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));

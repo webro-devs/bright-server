@@ -159,8 +159,13 @@ export class AdvertisementService {
     return data;
   }
 
-  async getMidWithCategory() {
+  async getMidWithCategory(ip: string) {
     const result = [];
+    const [dat, count] = await this.advertisementRepository.findAndCount({
+      where: { type: AdvertisementEnum.mid, isActive: true },
+      order: { date: "ASC" },
+    });
+    await this.getByTypeMid(ip, count);
     const data = await this.advertisementRepository.find({
       where: { type: AdvertisementEnum.mid, isActive: true },
     });
