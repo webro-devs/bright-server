@@ -335,3 +335,21 @@ export async function updateStatePublished(req: Request, res: Response) {
 //     res.status(500).send(new HttpException(true, 500, err.message));
 //   }
 // }
+export async function uploadZipFile(req: Request, res: Response) {
+  try {
+    const { newsIds } = req.body;
+    await newsService.getzip(true, true, newsIds);
+    const { data } = await ZipMaker();
+    const fileName = "instagram.zip";
+    const fileType = "application/zip";
+
+    res.writeHead(200, {
+      "Content-Disposition": `attachment; filename="${fileName}`,
+      "Content-Type": fileType,
+    });
+
+    return res.end(data);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}

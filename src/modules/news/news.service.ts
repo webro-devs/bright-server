@@ -510,4 +510,45 @@ export class NewsService {
   //     console.log(err);
   //   }
   // }
+
+  async getzip(tg: boolean, inst: boolean, ids: string[]) {
+    try {
+      deleteDirectory();
+      const languages = ["ru", "uz", "en", "уз"];
+      for (let i = 0; i < ids.length; i++) {
+        const news = await this.getById(ids[i]);
+        for (const lang of languages) {
+          if (lang == "uz" || lang == "ru") {
+            if (news?.[lang] && news?.file && (tg || inst)) {
+              const imgDir = await SocialMediaService(
+                news,
+                `news_${i + 1}`,
+                lang,
+                true,
+              );
+
+              if (inst) {
+                const descImgs = news[lang]?.descImg;
+                if (descImgs?.length > 0) {
+                  for (let j = 0; j < descImgs?.length; j++) {
+                    const element = descImgs?.[j];
+                    await SocialMediaService(
+                      news,
+                      `news_${i + 1}`,
+                      lang,
+                      false,
+                      element,
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return new HttpException(true, 203, "successfully edited");
+    } catch (err) {
+      return new HttpException(true, 500, err.message);
+    }
+  }
 }

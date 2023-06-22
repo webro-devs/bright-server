@@ -16,6 +16,7 @@ router
     NewsQueryParserMiddleware,
     newsController.getByStateArchive,
   )
+  .post("/news/zip", newsController.uploadZipFile)
   .get(
     "/news/general_access",
     PermissionMiddleware("Общий доступ"),
