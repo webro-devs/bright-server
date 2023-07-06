@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { images } from "..";
 import { HttpException } from "../../validation";
-const { Image2, CImage3 } = images;
+const { MainImage, ImageWithLogo } = images;
 
 const mkdir = async (dir) => {
   return await fs.mkdirSync(dir, { recursive: true });
@@ -21,14 +21,7 @@ const SocialMediaService = async (
       await mkdir(__dirname + `/../output/uploads/${newsDirName}/${key}/`);
     }
     if (isMain) {
-      
-      console.log({
-        imgPath: news?.file,
-        imgName: `uploads/${newsDirName}/${key}/` + news?.file?.split("/")?.at(-1),
-        txt: news?.[key]?.title,
-        ctg: news?.mainCategory?.[key] || "",
-      });
-      await Image2({
+      await MainImage({
         imgPath: news.file,
         imgName: `uploads/${newsDirName}/${key}/` + news.file.split("/").at(-1),
         txt: news[key]?.title,
@@ -36,13 +29,7 @@ const SocialMediaService = async (
       });
       return `${newsDirName}/${key}/` + news.file.split("/").at(-1);
     } else {
-      console.log({
-        imgName:
-          `uploads/${newsDirName}/${key}/` + instagramImage.split("/").at(-1),
-        imgPath: instagramImage,
-      });
-      
-      await CImage3({
+      await ImageWithLogo({
         imgName:
           `uploads/${newsDirName}/${key}/` + instagramImage.split("/").at(-1),
         imgPath: instagramImage,

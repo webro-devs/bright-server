@@ -50,10 +50,11 @@ export async function create(req: Request, res: Response) {
 export async function getByType(req: Request, res: Response) {
   try {
     const { type } = req.params;
-
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    ip = ip.toString().replace('::ffff:', '');
     const data = await advertisementService.getByType(
       type as AdvertisementEnum,
-      req.ip,
+      ip,
     );
     res.send(data);
   } catch (err) {
