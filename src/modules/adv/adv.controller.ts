@@ -26,7 +26,9 @@ export async function getById(req: Request, res: Response) {
 
 export async function getMidByCategory(req: Request, res: Response) {
   try {
-    const data = await advertisementService.getMidWithCategory(req.ip);
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    ip = ip.toString().replace('::ffff:', '');
+    const data = await advertisementService.getMidWithCategory(ip);
     res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
@@ -65,7 +67,9 @@ export async function getByType(req: Request, res: Response) {
 export async function IncrCounts(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const data = await advertisementService.IncrCounts(id, req.ip);
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    ip = ip.toString().replace('::ffff:', '');
+    const data = await advertisementService.IncrCounts(id, ip);
     res.send(data);
   } catch (err) {
     res.status(500).send(new HttpException(true, 500, err.message));
