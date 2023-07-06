@@ -175,7 +175,7 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
 
     if (brightness > 127.5) {
         const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
         ctx.fill();
         ctx.fillStyle = '#fff'
@@ -183,7 +183,7 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
         ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 62)
     } else {
         const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
         ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
         ctx.fill();
         ctx.fillStyle = '#000'
