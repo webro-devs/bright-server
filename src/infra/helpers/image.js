@@ -7,7 +7,7 @@ registerFont(path.join(__dirname, './uploads/fonts/Merriweat/Merriweather-Regula
 registerFont(path.resolve(__dirname, './uploads/fonts/Noto/NotoSans-Bold.ttf'), { family: 'NotoSansBold', weight: 700 })
 registerFont(path.resolve(__dirname, './uploads/fonts/Times/Times-Bold.ttf'), { family: 'TimesBold', weight: 700 })
 registerFont(path.resolve(__dirname, './uploads/fonts/GIloy/Giloy.ttf'), { family: 'GiloyExtraBold', weight: 800 })
-registerFont(path.resolve(__dirname, './uploads/fonts/Mont/Mont-Bold.otf'), { family: 'MontBold', weight: 700 })
+registerFont(path.resolve(__dirname, './uploads/fonts/Mont/Mont-Bold.ttf'), { family: 'MontBold', weight: 700 })
 
 function wrapText({
   ctx,
