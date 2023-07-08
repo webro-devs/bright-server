@@ -40,7 +40,7 @@ export class News {
   file: string;
 
   @Column({ type: "varchar", nullable: true })
-  imgForGener: string;
+  imageForGenerate: string;
 
   @Column({ type: "boolean", default: true })
   isLastNews: boolean;

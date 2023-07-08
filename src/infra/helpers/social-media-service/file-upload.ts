@@ -22,7 +22,7 @@ const SocialMediaService = async (
     }
     if (isMain) {
       await MainImage({
-        imgPath: news.imgForGener || news.file,
+        imgPath: news.imageForGenerate || news.file,
         imgName: `uploads/${newsDirName}/${key}/` + news.file.split("/").at(-1),
         txt: news[key]?.title,
         ctg: news?.mainCategory?.[key] || "",
