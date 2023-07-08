@@ -13,7 +13,7 @@ class CreateNewsDto {
   state: State;
 
   @IsOptional()
-  imgForGener: string;
+  imageForGenerate: string;
 
   @IsOptional()
   @IsString()

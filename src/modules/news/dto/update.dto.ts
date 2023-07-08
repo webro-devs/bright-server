@@ -13,7 +13,7 @@ class UpdateNewsDto {
   state: State;
 
   @IsOptional()
-  imgForGener: string;
+  imageForGenerate: string;
 
   @IsOptional()
   @IsString()
