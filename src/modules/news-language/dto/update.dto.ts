@@ -15,6 +15,10 @@ class UpdateLanguageDto {
 
   @IsOptional()
   @IsString()
+  photoDesc: string;
+
+  @IsOptional()
+  @IsString()
   shortLink: string;
 
   @IsOptional()

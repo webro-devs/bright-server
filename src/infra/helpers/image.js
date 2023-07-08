@@ -3,77 +3,11 @@ import * as fs from 'fs'
 import * as path from "path";
 import { registerFont, loadImage, createCanvas } from 'canvas'
 
-const size = {
-  А: 16,
-  Б: 12,
-  В: 12,
-  Г: 11,
-  Д: 17,
-  Е: 10,
-  Ж: 20,
-  З: 13,
-  И: 15,
-  Й: 15,
-  К: 13,
-  Л: 15,
-  М: 17,
-  Н: 14,
-  О: 16,
-  П: 13,
-  Р: 12,
-  С: 12,
-  Т: 13,
-  У: 14,
-  Ф: 18,
-  Х: 15,
-  Ц: 15,
-  Ч: 14,
-  Ш: 20,
-  Щ: 23,
-  Ъ: 16,
-  Ы: 18,
-  Ь: 12,
-  Э: 13,
-  Ю: 21,
-  Я: 13,
-  а: 11,
-  б: 12,
-  в: 11,
-  г: 9,
-  д: 14,
-  е: 12,
-  ж: 18,
-  з: 11,
-  и: 13,
-  й: 13,
-  к: 12,
-  л: 13,
-  м: 16,
-  н: 12,
-  о: 13,
-  п: 12,
-  р: 12,
-  с: 11,
-  т: 12,
-  у: 13,
-  ф: 16,
-  х: 12,
-  ц: 13,
-  ч: 12,
-  ш: 18,
-  щ: 20,
-  ъ: 15,
-  ы: 16,
-  ь: 11,
-  э: 10,
-  ю: 17,
-  я: 11,
-  " ": 16,
-};
-
 registerFont(path.join(__dirname, './uploads/fonts/Merriweat/Merriweather-Regular.ttf'), { family: 'MerriweatherRegular', weight: 400 })
 registerFont(path.resolve(__dirname, './uploads/fonts/Noto/NotoSans-Bold.ttf'), { family: 'NotoSansBold', weight: 700 })
 registerFont(path.resolve(__dirname, './uploads/fonts/Times/Times-Bold.ttf'), { family: 'TimesBold', weight: 700 })
+registerFont(path.resolve(__dirname, './uploads/fonts/GIloy/Giloy.ttf'), { family: 'GiloyExtraBold', weight: 800 })
+registerFont(path.resolve(__dirname, './uploads/fonts/Mont/Mont-Bold.ttf'), { family: 'MontBold', weight: 700 })
 
 function wrapText({
   ctx,
@@ -138,256 +72,11 @@ const textWithLetterSpace = ({ ctx, text = '', x, y, letterSpacing }) => {
   }
 }
 
-const getTextSize = (text) => {
-  if (!text) return 0
-  const arr = text?.split("");
-  let textSize = arr.reduce((acc, curr) => {
-    return (acc += size[curr] || 12);
-  }, 0);
-  return textSize + text.length;
-};
+function getBrightness(r, g, b) {
+  return Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+}
 
-const drawLine = ({
-  image,
-  width,
-  height,
-  x,
-  y,
-  color = [255, 255, 255, 142],
-}) => {
-  for (let h = 0; h < height; h++) {
-    for (let i = 0; i < width; i++) {
-      image.setPixelColor(Jimp.rgbaToInt(...color), x + i, y + h);
-    }
-  }
-};
-
-const outline = ({
-  x,
-  y,
-  width,
-  height,
-  image,
-  borderWidth = 1,
-  color = [255, 255, 255, 255],
-}) => {
-  for (let w = 0; w < borderWidth; w++) {
-    x = x + w;
-    y = y + w;
-    width = width - w + 1;
-    height = height - w + 1;
-    const borderRadius = height / 2;
-    const iterCount = borderRadius * 11.11;
-    const center = {
-      x: borderRadius + x,
-      y: borderRadius + y,
-    };
-    const radius = {
-      x: borderRadius,
-      y: borderRadius,
-    };
-    let angle_step = (2 * Math.PI) / iterCount;
-    let output_points = [];
-
-    for (let t = borderRadius; t < width - borderRadius; t++) {
-      image.setPixelColor(Jimp.rgbaToInt(...color), x + t, y);
-    }
-    for (let b = borderRadius; b < width - borderRadius; b++) {
-      image.setPixelColor(Jimp.rgbaToInt(...color), x + b, y + height);
-    }
-
-    for (let i = 0, angle = 0; i < iterCount; i++, angle += angle_step) {
-      let point = {};
-      if (i > iterCount / 2) {
-        point = {
-          x: center.x + Math.sin(angle) * radius.x,
-          y: center.y + Math.cos(angle) * radius.y,
-        };
-      } else {
-        point = {
-          x: center.x + width - borderRadius * 2 + Math.sin(angle) * radius.x,
-          y: center.y + Math.cos(angle) * radius.y,
-        };
-      }
-      output_points.push(point);
-    }
-
-    output_points.map((coordinate) => {
-      image.setPixelColor(Jimp.rgbaToInt(...color), coordinate.x, coordinate.y);
-    });
-  }
-};
-
-const textWrapper = ({
-  text,
-  px = 22,
-  py = 12,
-  image,
-  font,
-  left,
-  top,
-  startFromRight = true,
-  startFromBottom = true,
-}) => {
-  const textSize = getTextSize(text);
-  const wrapperWidth = textSize + px * 2;
-  const wrapperHeight = 30 + py * 2;
-  const x = startFromRight ? left - wrapperWidth : left;
-  const y = startFromBottom ? top - wrapperHeight : top;
-
-  outline({
-    x,
-    y,
-    width: wrapperWidth,
-    height: wrapperHeight,
-    image,
-    borderWidth: 1,
-  });
-  image.print(font, x + px, y + py, text);
-
-  return {
-    left: startFromRight ? left - wrapperWidth : left,
-    top: startFromBottom ? top - wrapperHeight : top,
-    width: wrapperWidth,
-    height: wrapperHeight,
-  };
-};
-
-const lines = [
-  {
-    width: 100,
-    height: 2,
-    x: 60,
-    y: 156,
-  },
-  {
-    width: 340,
-    height: 2,
-    x: 201,
-    y: 156,
-  },
-  {
-    width: 340,
-    height: 2,
-    x: 599,
-    y: 156,
-  },
-  {
-    width: 410,
-    height: 2,
-    x: 60,
-    y: 720,
-  },
-  {
-    width: 410,
-    height: 2,
-    x: 530,
-    y: 720,
-  },
-];
-
-const CImage = async ({ txt, ctgs = [], imgPath, imgName }) => {
-  ctgs = ctgs.slice(0, 3);
-  const Ddate = new Date();
-  const months = [
-    "January",
-    "Февраль",
-    "Март",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  try {
-    const oldStandart = await Jimp.loadFont(
-      path.resolve(
-        __dirname,
-        "./uploads/fonts/OldStandart/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt",
-      ),
-    );
-    const notoSans = await Jimp.loadFont(
-      path.resolve(
-        __dirname,
-        "./uploads/fonts/Noto/White/pVr3RJw06gZ6gvNh9TSpYAZX.ttf.fnt",
-      ),
-    );
-    const logo = await Jimp.read(path.resolve(__dirname, "./uploads/logo.png"));
-    const topMask = await Jimp.read(
-      path.resolve(__dirname, "./uploads/mask/top.png"),
-    );
-    const bottomMask = await Jimp.read(
-      path.resolve(__dirname, "./uploads/mask/bottom.png"),
-    );
-    const url = `${imgPath}`;
-    const image = await Jimp.read(url);
-    const imageWidth = image.bitmap.width;
-    const imageHeight = image.bitmap.height;
-
-    if (imageWidth > imageHeight) {
-      const diff = (imageWidth - imageHeight) / 2;
-      await image.crop(diff, 0, imageHeight, imageHeight);
-    } else {
-      const diff = (imageHeight - imageWidth) / 2;
-      await image.crop(0, diff, imageWidth, imageWidth);
-    }
-
-    await image
-      .resize(1000, 1000)
-      .composite(topMask, 0, 0, {
-        mode: Jimp.BLEND_SOURCE_OVER,
-        opacityDest: 1,
-      })
-      .composite(bottomMask, 0, 544, {
-        mode: Jimp.BLEND_SOURCE_OVER,
-        opacityDest: 1,
-      })
-      .composite(logo, 60, 61, { mode: Jimp.BLEND_SOURCE_OVER, opacityDest: 1 })
-      .print(oldStandart, 60, 742, txt, 800, 250);
-
-    lines.forEach((line) => drawLine({ image, ...line }));
-    const year = textWrapper({
-      image,
-      font: notoSans,
-      left: 940,
-      top: 128,
-      text: "2023",
-    });
-    const date = textWrapper({
-      image,
-      font: notoSans,
-      left: year.left - 10,
-      top: 128,
-      text: `${Ddate.getDate()} ${months[Ddate.getMonth()]}`,
-    });
-
-    let nextCtgPositionX = 60;
-
-    ctgs?.length > 0 &&
-      ctgs.forEach((ctg) => {
-        const { left, width } = textWrapper({
-          image,
-          font: notoSans,
-          left: nextCtgPositionX,
-          top: 690,
-          text: ctg,
-          startFromRight: false,
-        });
-        nextCtgPositionX = left + width + 10;
-      });
-
-    await image.normalize();
-    await image.writeAsync(path.resolve(__dirname, `./output/${imgName}`));
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const CImage3 = async ({ imgPath, imgName }) => {
+const ImageWithLogo = async ({ imgPath, imgName }) => {
   try {
     const image = await loadImage(imgPath)
     const logo = await loadImage(path.resolve(__dirname, './uploads/logo.png'))
@@ -429,85 +118,94 @@ const CImage3 = async ({ imgPath, imgName }) => {
   }
 };
 
-const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
+const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
   try {
-    ctg = ctg?.toUpperCase()
+    const ctgPadding = 10
     const image = await loadImage(imgPath)
-    const imageHeight = image.height
-    const imageWidth = image.width
-    const logo = await loadImage(path.resolve(__dirname, './uploads/mask/black_logo.png'))
-    const canvas = createCanvas(1000, 1000)
+    const logo = await loadImage(path.resolve(__dirname, './uploads/logo.png'))
+    const bottomMask = await loadImage(path.resolve(__dirname, './uploads/mask/bottom.png'))
+    const canvas = createCanvas(1000, 900)
     const ctx = canvas.getContext("2d");
-    ctx.font = '26px TimesBold'
-    let ctgWidth = 0
-    for (let i = 0; i < ctg.length; i++) {
-        ctgWidth += ctx.measureText(ctg.charAt(i))?.width + 3.5
-    }
-    ctgWidth = ctgWidth - 3.5
 
-    if (imageWidth > ((imageHeight / 6) * 10)) {
+    if (image.width > image.height) {
         let y = 0
-        let x = (imageWidth - ((imageHeight / 6) * 10)) / 2
-        let w = ((imageHeight / 6) * 10)
-        let h = imageHeight
+        let cropImageWidth = (image.height / 9) * 10
+        let x = (image.width - cropImageWidth) / 2
+        let h = image.height
         ctx.drawImage(image,
             x, y,
-            w, h,
+            cropImageWidth, h,
             0, 0,
-            1000, 600
+            1000, 900
         )
     } else {
         let x = 0
-        let y = (imageHeight - ((imageWidth / 10) * 6)) / 2
-        let h = ((imageWidth / 10) * 6)
-        let w = imageWidth
+        let w = image.width
+        let cropImageHeight = (image.width / 10) * 9
+        let y = (image.height - cropImageHeight) / 2
         ctx.drawImage(image,
             x, y,
-            w, h,
+            w, cropImageHeight,
             0, 0,
-            1000, 600
+            1000, 900
         )
     }
 
-    ctx.beginPath()
-    ctx.moveTo(0, 800);
-    ctx.lineTo(1000, 800)
-    ctx.strokeStyle = 'rgb(238, 238, 238)'
-    ctx.lineWidth = 400
-    ctx.stroke();
+    ctx.font = '27px MontBold'
+    const { width: ctgWidth } = ctx.measureText(ctg)
+    const imageData = ctx.getImageData(72, 49, ctgWidth, 50);
 
-    ctx.drawImage(logo, 1000 - logo.width - 41, 1000 - logo.height - 32)
+    const data = imageData.data;
+    const colors = {};
 
-    ctx.fillStyle = '#202020'
+    for (let i = 0; i < data.length; i += 4) {
+        const color = `rgb(${data[i]}, ${data[i + 1]}, ${data[i + 2]})`;
+
+        if (!colors[color]) {
+            colors[color] = 0;
+        }
+
+        colors[color]++;
+    }
+
+    const maxColor = Math.max(...Object.values(colors))
+    const bgColor = Object.keys(colors).find((el) => colors?.[el] === maxColor)
+
+    const brightness = getBrightness(...bgColor.match(/\d+/g)); // 150.6
+
+    if (brightness > 127.5) {
+        const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
+        ctx.fill();
+        ctx.fillStyle = '#fff'
+        ctx.textBaseline = 'top'
+        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 62)
+    } else {
+        const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
+        ctx.fill();
+        ctx.fillStyle = '#000'
+        ctx.textBaseline = 'top'
+        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 62)
+    }
+
+    ctx.drawImage(bottomMask, 0, 110)
+
+    ctx.fillStyle = '#fff'
     wrapText({
         ctx,
         text: txt,
-        x: 76, y: 680,
+        x: 72, y: 536,
         maxWidth: 848,
-        maxHeight: 260,
-        lineHeight: 58,
-        fontFamily: 'MerriweatherRegular',
-        fontSize: 54
+        maxHeight: 220,
+        lineHeight: 57,
+        fontFamily: 'MontBold',
+        fontSize: 52
     });
 
-    ctx.beginPath()
-    ctx.moveTo(0, 600)
-    ctx.lineTo(ctgWidth + 150, 600)
-    ctx.strokeStyle = '#E56B54'
-    ctx.lineWidth = 54
-    ctx.stroke()
-
-    ctx.font = '26px TimesBold'
-    ctx.textBaseline = 'alphabetic'
-    ctx.textTracking = 5
-    ctx.fillStyle = '#fff'
-    textWithLetterSpace({
-        ctx, 
-        text: ctg, 
-        x: 75, 
-        y: 600 + 10, 
-        letterSpacing: 3.5
-    })
+    ctx.drawImage(logo, 72, 773)
 
     const buffer = canvas.toBuffer("image/png");
     fs.writeFileSync(path.resolve(__dirname, `./output/${imgName}`), buffer)
@@ -516,4 +214,4 @@ const Image2 = async ({ txt = '', ctg = "", imgPath, imgName }) => {
   }
 };
 
-export default { CImage, CImage3, Image2 };
+export default { ImageWithLogo, MainImage };

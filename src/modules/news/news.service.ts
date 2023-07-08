@@ -439,7 +439,6 @@ export class NewsService {
                 }
               }
               if (inst) {
-                console.log(news[lang]);
                 const descImgs = news[lang]?.descImg;
                 if (descImgs?.length > 0) {
                   for (let j = 0; j < descImgs?.length; j++) {
