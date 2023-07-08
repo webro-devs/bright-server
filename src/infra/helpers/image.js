@@ -200,7 +200,7 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
         x: 72, y: 545,
         maxWidth: 848,
         maxHeight: 220,
-        lineHeight: 57,
+        lineHeight: 52,
         fontFamily: 'MontBold',
         fontSize: 47
     });
