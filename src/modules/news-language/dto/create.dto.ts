@@ -15,6 +15,10 @@ class CreateLanguageDto {
 
   @IsNotEmpty()
   @IsString()
+  photoDesc: string;
+
+  @IsNotEmpty()
+  @IsString()
   shortLink: string;
 
   @IsNotEmpty()
