@@ -39,9 +39,6 @@ export class News {
   @Column({ type: "varchar", nullable: true })
   file: string;
 
-  @Column({ type: "varchar", nullable: true })
-  imageForGenerate: string;
-
   @Column({ type: "boolean", default: true })
   isLastNews: boolean;
 
@@ -50,6 +47,9 @@ export class News {
   })
   @JoinTable()
   categories: Category[];
+
+  @Column({ type: "varchar", nullable: true })
+  imageForGenerate: string;
 
   @ManyToOne(() => Category, (category) => category, {
     cascade: true,
