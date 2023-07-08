@@ -373,6 +373,7 @@ export class NewsService {
         publishDate: data.publishDate,
         mainCategory: null,
         file: data.file || null,
+        imageForGenerate: data.imageForGenerate,
       };
       if (data?.categories?.length > 0) {
         const categories = await this.categoryService.getManyCategoriesById(
