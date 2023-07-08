@@ -13,6 +13,9 @@ class CreateNewsDto {
   state: State;
 
   @IsOptional()
+  imgForGener: string;
+
+  @IsOptional()
   @IsString()
   publishDate: string;
 
