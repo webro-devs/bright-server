@@ -209,7 +209,7 @@ export class AdminService {
     const allNews = await this.adminRepository.find();
     await Promise.all(
       allNews.map(async (news) => {
-        news.avatar = news.avatar.replace("bright.getter.uz", "buzb.uz");
+        news.avatar = news.avatar?.replace("bright.getter.uz", "buzb.uz");
         await this.adminRepository.save(news);
       }),
     );

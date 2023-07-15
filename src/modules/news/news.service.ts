@@ -555,7 +555,7 @@ export class NewsService {
     const allNews = await this.newsRepository.find();
     await Promise.all(
       allNews.map(async (news) => {
-        news.file = news.file.replace("bright.getter.uz", "buzb.uz");
+        news.file = news.file?.replace("bright.getter.uz", "buzb.uz");
         await this.newsRepository.save(news);
       }),
     );
