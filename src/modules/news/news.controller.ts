@@ -353,11 +353,3 @@ export async function uploadZipFile(req: Request, res: Response) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }
 }
-export async function updateImgUrl(req: Request, res: Response) {
-  try {
-    const response = await newsService.updateImgUrl();
-    res.send(response);
-  } catch (err) {
-    res.status(500).send(new HttpException(true, 500, err.message));
-  }
-}

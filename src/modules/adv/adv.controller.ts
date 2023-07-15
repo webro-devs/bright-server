@@ -120,3 +120,12 @@ export async function remove(req: Request, res: Response) {
     res.status(500).send(new HttpException(true, 500, err.message));
   }
 }
+
+export async function updateImgUrl(req: Request, res: Response) {
+  try {
+    const response = await advertisementService.updateImgUrl();
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(new HttpException(true, 500, err.message));
+  }
+}

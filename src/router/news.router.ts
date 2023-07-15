@@ -64,6 +64,5 @@ router
   .patch("/news/favorite/:id", newsController.updateStateFavorite)
   .patch("/news/checking/:id", newsController.updateStateChecking)
   .patch("/news/publish_date/:id", newsController.updateDate)
-  .get("/news/img-url", newsController.updateImgUrl);
 
 module.exports = router;

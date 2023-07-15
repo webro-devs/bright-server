@@ -26,6 +26,7 @@ router
     DtoValidationMiddleware(UpdateAdvertisementDto, true),
     advertisementController.update,
   )
-  .delete("/advertisement/remove", advertisementController.remove);
+  .delete("/advertisement/remove", advertisementController.remove)
+  .get("/news/img-url", advertisementController.updateImgUrl);
 
 module.exports = router;

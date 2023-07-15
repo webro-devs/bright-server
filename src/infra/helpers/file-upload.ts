@@ -1,5 +1,5 @@
 const GetterFileService = require("getter-fileupload-client");
 
-const fileService = new GetterFileService("https://storage.bright.getter.uz");
+const fileService = new GetterFileService("https://storage.buzb.uz");
 
 export default fileService;
