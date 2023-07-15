@@ -550,4 +550,17 @@ export class NewsService {
       return new HttpException(true, 500, err.message);
     }
   }
+
+  async updateImgUrl() {
+    const allNews = await this.newsRepository.find();
+    await Promise.all(
+      allNews.map(async (news) => {
+        news.file = news.file.replace("bright.getter.uz", "buzb.uz");
+        await this.newsRepository.save(news);
+      }),
+    );
+    await this.newsLanguageService.updateImgUrl();
+    await this.adminService.updateImgUrl()
+    return "updated";
+  }
 }

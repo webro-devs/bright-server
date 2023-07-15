@@ -67,4 +67,22 @@ export class NewsLanguageService {
       return new HttpException(true, 500, err.message);
     }
   }
+
+  async updateImgUrl() {
+    const allNews = await this.languageRepository.find();
+    await Promise.all(
+      allNews.map(async (news) => {
+        news.description = news?.description?.replace(
+          /bright\.getter\.uz/g,
+          "buzb.uz",
+        ) || ''
+        news.descImg = news?.descImg?.map((di) => {
+          return di.replace("bright.getter.uz", "buzb.uz");
+        }) || []
+
+        await this.languageRepository.save(news);
+      }),
+    );
+    return "updated";
+  }
 }

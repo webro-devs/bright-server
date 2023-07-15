@@ -33,6 +33,10 @@ class UpdateNewsDto {
   isLastNews: boolean;
 
   @IsOptional()
+  @IsString()
+  imageForGenerate: string;
+
+  @IsOptional()
   @IsObject()
   uz: NewsLanguage;
 

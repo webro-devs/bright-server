@@ -204,4 +204,15 @@ export class AdminService {
     const response = await this.adminRepository.delete(id);
     return response;
   }
+
+  async updateImgUrl() {
+    const allNews = await this.adminRepository.find();
+    await Promise.all(
+      allNews.map(async (news) => {
+        news.avatar = news.avatar.replace("bright.getter.uz", "buzb.uz");
+        await this.adminRepository.save(news);
+      }),
+    );
+    return "updated";
+  }
 }
