@@ -18,7 +18,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /home/user/getter/bright-backend
+            cd /home/user/bright/bright-backend
             git stash
             git pull origin main
             git status
