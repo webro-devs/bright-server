@@ -19,5 +19,6 @@ export async function getCurrency(req: Request, res: Response) {
     );
   } catch (err) {
     // throw new HttpException(true, 500, err.message);
+    res.send({})
   }
 }
