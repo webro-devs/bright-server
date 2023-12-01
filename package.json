@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc -p . && node ./dist/server.js",
-    "dev": "nodemon ./src/server.ts"
+    "dev": "ts-node ./src/server.ts"
   },
   "keywords": [],
   "author": "",
