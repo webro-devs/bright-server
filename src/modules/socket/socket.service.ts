@@ -16,7 +16,7 @@ export class SocketService {
     }
   }
 
-  async create(values: { socketId: string; admin: string }) {
+  async create(values: { socketId: string, admin: string }) {
     try {
       const response = await this.socketRepository
         .createQueryBuilder()

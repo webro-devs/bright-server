@@ -22,6 +22,7 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
     await adminService.changeProfile(data?.id, {
       isOnline: true,
     } as UpdateAdminProfileDto);
+
     await socketService.create({ socketId: socket.id, admin: data?.id });
     socket.emit("user_joined", data.id);
   } catch (error) {
@@ -33,10 +34,12 @@ export const OnDisconnect = async (socket: any, io: any) => {
   try {
     const date = new Date();
     const data = await socketService.getBySocketId(socket?.id);
-    await adminService.changeProfile(data.admin, {
-      isOnline: false,
-      lastSeen: date,
-    } as UpdateAdminProfileDto);
+    if(data?.admin){
+      await adminService.changeProfile(data?.admin, {
+        isOnline: false,
+        lastSeen: date,
+      } as UpdateAdminProfileDto);
+    }
     if (data?.news) {
       if (io.sockets.adapter.rooms.get(data.news)?.size == 1) {
         const news = await newsService.getByIdForUpdateIndexing(data.news);
