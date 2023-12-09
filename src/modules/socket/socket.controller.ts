@@ -22,8 +22,10 @@ export const OnJoin = async (data: OnJoinType, socket: any, io: any) => {
     await adminService.changeProfile(data?.id, {
       isOnline: true,
     } as UpdateAdminProfileDto);
-    await socketService.create({ socketId: socket.id, admin: data?.id });
-    socket.emit("user_joined", data.id);
+    if (data && data?.id) {
+      await socketService.create({ socketId: socket.id, admin: data?.id });
+    }
+    socket.emit("user_joined", data?.id);
   } catch (error) {
     console.log(error);
   }
@@ -33,10 +35,12 @@ export const OnDisconnect = async (socket: any, io: any) => {
   try {
     const date = new Date();
     const data = await socketService.getBySocketId(socket?.id);
-    await adminService.changeProfile(data.admin, {
-      isOnline: false,
-      lastSeen: date,
-    } as UpdateAdminProfileDto);
+    if (data?.admin) {
+      await adminService.changeProfile(data?.admin, {
+        isOnline: false,
+        lastSeen: date,
+      } as UpdateAdminProfileDto);
+    }
     if (data?.news) {
       if (io.sockets.adapter.rooms.get(data.news)?.size == 1) {
         const news = await newsService.getByIdForUpdateIndexing(data.news);
@@ -157,8 +161,8 @@ export async function newMessage(data, socket, io) {
 
 export async function onMessageEdited(data, socket, io) {
   try {
-    const {msgId, msg, roomId} = data
-    socket.broadcast.to(roomId).emit('on_edited_message', {msg, msgId})
+    const { msgId, msg, roomId } = data;
+    socket.broadcast.to(roomId).emit("on_edited_message", { msg, msgId });
   } catch (error) {
     console.log(error);
   }
@@ -166,8 +170,8 @@ export async function onMessageEdited(data, socket, io) {
 
 export async function onMessageDeleted(data, socket, io) {
   try {
-    const {msgId, roomId} = data
-    socket.broadcast.to(roomId).emit('on_deleted_message', {msgId})
+    const { msgId, roomId } = data;
+    socket.broadcast.to(roomId).emit("on_deleted_message", { msgId });
   } catch (error) {
     console.log(error);
   }
