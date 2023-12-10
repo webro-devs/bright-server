@@ -29,6 +29,10 @@ class CreateNewsDto {
   file: string;
 
   @IsOptional()
+  @IsString()
+  imageForGenerate: string;
+
+  @IsOptional()
   @IsBoolean()
   isLastNews: boolean;
 

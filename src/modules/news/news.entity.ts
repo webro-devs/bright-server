@@ -39,6 +39,9 @@ export class News {
   @Column({ type: "varchar", nullable: true })
   file: string;
 
+  @Column({ type: "text", nullable: true })
+  imageForGenerate: string;
+
   @Column({ type: "boolean", default: true })
   isLastNews: boolean;
 

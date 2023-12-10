@@ -249,4 +249,15 @@ export class AdvertisementService {
       throw new HttpException(true, 500, err.message);
     }
   }
+
+  async updateImgUrl(){
+    const allNews = await this.advertisementRepository.find();
+    await Promise.all(
+      allNews.map(async (news) => {
+        news.imgUrl = news.imgUrl?.replace("bright.getter.uz", "buzb.uz");
+        news.imgMobileUrl = news.imgMobileUrl?.replace("bright.getter.uz", "buzb.uz");
+        await this.advertisementRepository.save(news);
+      }),
+    );
+  }
 }

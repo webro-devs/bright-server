@@ -122,7 +122,7 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
   try {
     const ctgPadding = 10
     const image = await loadImage(imgPath)
-    const logo = await loadImage(path.resolve(__dirname, './uploads/logo.png'))
+    const logo = await loadImage(path.resolve(__dirname, './uploads/logo.svg'))
     const bottomMask = await loadImage(path.resolve(__dirname, './uploads/mask/bottom.png'))
     const canvas = createCanvas(1000, 900)
     const ctx = canvas.getContext("2d");
@@ -153,7 +153,7 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
 
     ctx.font = '27px MontBold'
     const { width: ctgWidth } = ctx.measureText(ctg)
-    const imageData = ctx.getImageData(72, 49, ctgWidth, 50);
+    const imageData = ctx.getImageData(72, 49, ctgWidth, 54);
 
     const data = imageData.data;
     const colors = {};
@@ -174,38 +174,38 @@ const MainImage = async ({ txt = '', ctg = "", imgPath, imgName }) => {
     const brightness = getBrightness(...bgColor.match(/\d+/g)); // 150.6
 
     if (brightness > 127.5) {
-        const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
+        const ctgBgWidth = Math.max(264, (ctgWidth + (ctgPadding * 2)))
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.roundRect(72, 49, ctgBgWidth, 54, 16)
         ctx.fill();
         ctx.fillStyle = '#fff'
         ctx.textBaseline = 'top'
-        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 62)
+        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 64)
     } else {
-        const ctgBgWidth = Math.max(250, (ctgWidth + (ctgPadding * 2)))
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-        ctx.roundRect(72, 49, ctgBgWidth, 50, 16)
+        const ctgBgWidth = Math.max(264, (ctgWidth + (ctgPadding * 2)))
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.roundRect(72, 49, ctgBgWidth, 54, 16)
         ctx.fill();
         ctx.fillStyle = '#000'
         ctx.textBaseline = 'top'
-        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 62)
+        ctx.fillText(ctg, 72 + ((ctgBgWidth - ctgWidth) / 2), 64)
     }
 
-    ctx.drawImage(bottomMask, 0, 110)
+    ctx.drawImage(bottomMask, 0, 0)
 
     ctx.fillStyle = '#fff'
     wrapText({
         ctx,
         text: txt,
-        x: 72, y: 536,
+        x: 72, y: 545,
         maxWidth: 848,
         maxHeight: 220,
-        lineHeight: 57,
+        lineHeight: 52,
         fontFamily: 'MontBold',
-        fontSize: 52
+        fontSize: 47
     });
 
-    ctx.drawImage(logo, 72, 773)
+    ctx.drawImage(logo, 72, 779)
 
     const buffer = canvas.toBuffer("image/png");
     fs.writeFileSync(path.resolve(__dirname, `./output/${imgName}`), buffer)
