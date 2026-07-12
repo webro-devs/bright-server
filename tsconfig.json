@@ -8,8 +8,9 @@
     "outDir": "./dist",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-    // "esModuleInterop": true
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/infra/helpers/image.js", "src/infra/helpers/telegram.js"],
   "exclude": ["./node_modules"]

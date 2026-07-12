@@ -1,10 +1,10 @@
 import { connectSocket } from "./modules/socket/index";
-import * as express from "express";
+import express from "express";
 require("dotenv").config();
 // import { Server } from "socket.io";
 import * as http from "http";
-import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 const fileUpload = require("express-fileupload");
 import { TypeOrmDataSource } from "./config";
 
